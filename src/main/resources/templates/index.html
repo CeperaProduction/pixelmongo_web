@@ -5,6 +5,12 @@
 		<title>PixelmonGO</title>
 	</head>
 	<body>
-		<p th:text="${test}"></p>
+		<div th:each="user : ${users}">
+			<p>Id: <span th:text="${user.getId()}"></span>
+			<p>Name: <span th:text="${user.getName()}"></span>
+			<p>Email: <span th:text="${user.getEmail()}"></span>
+			<hr>
+		</div>
+		<a th:href="@{/testuser}">Добавить тестового юзера</a>
 	</body>
 </html>
