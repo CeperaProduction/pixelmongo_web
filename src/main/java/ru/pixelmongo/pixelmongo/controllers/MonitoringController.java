@@ -12,13 +12,13 @@ import ru.pixelmongo.pixelmongo.services.MonitoringService;
 @RestController
 @RequestMapping("/monitoring")
 public class MonitoringController {
-	
-	@Autowired
-	private MonitoringService monitoring;
-	
-	@GetMapping
-	public List<MonitoringService.MonitoringResult> pingTest() {
-		return monitoring.getMonitoringList();
-	}
+    
+    @Autowired
+    private MonitoringService monitoring;
+    
+    @GetMapping
+    public List<MonitoringService.MonitoringResult> pingTest() {
+        return monitoring.getMonitoringList();
+    }
 
 }

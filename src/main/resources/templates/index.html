@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<meta charset="UTF-8">
-		<title>PixelmonGO</title>
-	</head>
-	<body>
-		<div th:each="user : ${users}">
-			<p>Id: <span th:text="${user.getId()}"></span>
-			<p>Name: <span th:text="${user.getName()}"></span>
-			<p>Email: <span th:text="${user.getEmail()}"></span>
-			<hr>
-		</div>
-		<a th:href="@{/testuser}">Добавить тестового юзера</a>
-	</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>PixelmonGO</title>
+    </head>
+    <body>
+        <div th:each="user : ${users}">
+            <p>Id: <span th:text="${user.getId()}"></span>
+            <p>Name: <span th:text="${user.getName()}"></span>
+            <p>Email: <span th:text="${user.getEmail()}"></span>
+            <hr>
+        </div>
+        <a th:href="@{/testuser}">Добавить тестового юзера</a>
+    </body>
 </html>

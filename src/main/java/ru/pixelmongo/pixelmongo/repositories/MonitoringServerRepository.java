@@ -8,6 +8,6 @@ import ru.pixelmongo.pixelmongo.data.MonitoringServer;
 @Repository
 public interface MonitoringServerRepository extends CrudRepository<MonitoringServer, Integer>{
 
-	public MonitoringServer findByTag(String serverTag);
-	
+    public MonitoringServer findByTag(String serverTag);
+    
 }

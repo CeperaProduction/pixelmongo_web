@@ -10,12 +10,12 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:config.properties")
 public class PixelmongoApplication extends SpringBootServletInitializer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PixelmongoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PixelmongoApplication.class, args);
+    }
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(PixelmongoApplication.class);
-	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(PixelmongoApplication.class);
+    }
 }
