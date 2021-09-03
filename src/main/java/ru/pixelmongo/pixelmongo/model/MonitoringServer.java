@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.data;
+package ru.pixelmongo.pixelmongo.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

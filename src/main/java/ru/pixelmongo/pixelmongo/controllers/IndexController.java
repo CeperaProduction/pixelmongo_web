@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import ru.pixelmongo.pixelmongo.data.User;
+import ru.pixelmongo.pixelmongo.model.User;
 import ru.pixelmongo.pixelmongo.repositories.UserRepository;
 
 @Controller
