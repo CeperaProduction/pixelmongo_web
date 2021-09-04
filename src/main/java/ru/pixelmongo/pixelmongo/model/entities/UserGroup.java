@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model;
+package ru.pixelmongo.pixelmongo.model.entities;
 
 import java.util.Set;
 

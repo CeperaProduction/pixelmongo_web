@@ -3,6 +3,7 @@ package ru.pixelmongo.pixelmongo.configs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,7 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth
+            //.parentAuthenticationManager(authenticationManagerBean())
+            .userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -35,6 +38,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         /* This password encryption method is old and weak, but we must use it
         for compability with our other old systems.  */
         return new MD5PasswordEncoder(2);
+    }
+    
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override

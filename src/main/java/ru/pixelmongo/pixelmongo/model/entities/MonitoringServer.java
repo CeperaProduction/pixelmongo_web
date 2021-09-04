@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model;
+package ru.pixelmongo.pixelmongo.model.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +31,9 @@ public class MonitoringServer {
     
     @Column(nullable = false)
     private short port = 25565;
+    
+    @Column(nullable = false)
+    private int priority = 20;
     
     private transient boolean nowPinging = false;
     
@@ -85,6 +88,14 @@ public class MonitoringServer {
 
     public void setPort(short port) {
         this.port = port;
+    }
+    
+    public int getPriority() {
+        return priority;
+    }
+    
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
     
     public boolean isNowPinging() {

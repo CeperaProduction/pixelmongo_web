@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
-import ru.pixelmongo.pixelmongo.model.User;
-import ru.pixelmongo.pixelmongo.model.UserGroup;
+import ru.pixelmongo.pixelmongo.model.entities.User;
+import ru.pixelmongo.pixelmongo.model.entities.UserGroup;
 import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserRepository;
 

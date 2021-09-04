@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
-import ru.pixelmongo.pixelmongo.model.User;
+import ru.pixelmongo.pixelmongo.model.entities.User;
 
 public interface UserService {
 

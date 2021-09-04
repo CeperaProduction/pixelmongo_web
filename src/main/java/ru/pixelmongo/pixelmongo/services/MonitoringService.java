@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import ru.pixelmongo.pixelmongo.model.MonitoringServer;
+import ru.pixelmongo.pixelmongo.model.entities.MonitoringServer;
 
 public interface MonitoringService {
     
@@ -49,6 +49,9 @@ public interface MonitoringService {
         
         @JsonIgnore
         public int getPingTime();
+        
+        @JsonIgnore
+        public int getPriority();
         
     }
 
