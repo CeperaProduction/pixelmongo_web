@@ -18,6 +18,8 @@ public interface UserService {
 
     public List<GrantedAuthority> makeAuthority(User user);
 
+    public void saveLoginData(User user, String ip);
+
     public User registerUser(String name, String email, String password,
             String registerIp) throws UserAlreadyExistsException;
 

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
+import ru.pixelmongo.pixelmongo.model.entities.UserDetails;
 import ru.pixelmongo.pixelmongo.model.entities.forms.UserLoginForm;
 import ru.pixelmongo.pixelmongo.model.entities.forms.UserRegistrationForm;
 import ru.pixelmongo.pixelmongo.model.results.DefaultResult;
@@ -54,11 +55,10 @@ public class AuthController {
     //mappings
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResultMessage login(UserLoginForm user) {
+    public ResultMessage login(HttpServletRequest request, UserLoginForm user) {
         if(isLoggedIn())
             return new ResultMessage(DefaultResult.ERROR, "Already logged in!");
-        Authentication auth = doLogin(user.getLogin(), user.getPassword());
-        System.out.println(auth.getPrincipal());
+        Authentication auth = doLogin(user.getLogin(), user.getPassword(), request.getRemoteAddr());
         return new ResultMessage(DefaultResult.OK, "Name: "+auth.getName());
     }
 
@@ -86,7 +86,7 @@ public class AuthController {
         captchaService.processResponse(captcha, ip);
 
         userService.registerUser(form.getLogin(), form.getEmail(), form.getPassword(), ip);
-        doLogin(form.getLogin(), form.getPassword());
+        doLogin(form.getLogin(), form.getPassword(), ip);
 
         return new ResultMessage(DefaultResult.OK, "User registered and logged in");
     }
@@ -99,10 +99,12 @@ public class AuthController {
         return auth != null && !(auth instanceof AnonymousAuthenticationToken);
     }
 
-    private Authentication doLogin(String login, String password) {
+    private Authentication doLogin(String login, String password, String ip) {
         Authentication auth = new UsernamePasswordAuthenticationToken(login, password);
         auth = authenticationManager.authenticate(auth);
         SecurityContextHolder.getContext().setAuthentication(auth);
+        userService.getUser((UserDetails) auth.getPrincipal()).ifPresent(user ->
+                    userService.saveLoginData(user, ip));
         return auth;
     }
 

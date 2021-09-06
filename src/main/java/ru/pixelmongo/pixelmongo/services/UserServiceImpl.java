@@ -15,7 +15,9 @@ import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.entities.User;
 import ru.pixelmongo.pixelmongo.model.entities.UserDetails;
 import ru.pixelmongo.pixelmongo.model.entities.UserGroup;
+import ru.pixelmongo.pixelmongo.model.entities.UserLoginRecord;
 import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
+import ru.pixelmongo.pixelmongo.repositories.UserLoginRecordRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserRepository;
 
 @Service
@@ -26,6 +28,9 @@ class UserServiceImpl implements UserService {
 
     @Autowired
     private UserGroupRepository groups;
+
+    @Autowired
+    private UserLoginRecordRepository loginRecords;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -72,8 +77,14 @@ class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException("User with this email is already registered!");
         password = passwordEncoder.encode(password);
         User user = new User(name, groups.findById(2).get(), email, password);
-        users.save(user);
-        return user;
+        return users.save(user);
+    }
+
+    @Override
+    public void saveLoginData(User user, String ip) {
+        UserLoginRecord record = new UserLoginRecord(user, ip);
+        user.getLoginRecords().add(record);
+        loginRecords.save(record);
     }
 
 }

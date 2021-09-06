@@ -1,7 +1,7 @@
 package ru.pixelmongo.pixelmongo.model.entities;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 @Entity(name = "users")
 public class User {
@@ -41,7 +42,8 @@ public class User {
     private Date registrationDate;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private Set<UserLoginRecord> loginRecords;
+    @OrderBy("date DESC")
+    private List<UserLoginRecord> loginRecords;
 
     public User() {}
 
@@ -105,7 +107,7 @@ public class User {
         this.registrationDate = registrationDate;
     }
 
-    public Set<UserLoginRecord> getLoginRecords() {
+    public List<UserLoginRecord> getLoginRecords() {
         return loginRecords;
     }
 
