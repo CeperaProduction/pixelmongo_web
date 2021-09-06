@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.transport;
+package ru.pixelmongo.pixelmongo.model.results;
 
 import java.util.function.Supplier;
 

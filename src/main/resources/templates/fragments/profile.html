@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	<div class="auth_container" th:fragment="profile">
+		<div class="auth">
+			<div class="open"><div style="margin-top: 6px;" ><p2>Аккаунт</p2></div></div>
+			<div class="auth_content" sec:authorize="isAnonymous()">
+				<div class="auth_img"></div>
+				<form id="login_form" th:action="@{/auth/login}" th:method="POST">
+					<input placeholder="Никнейм" style="text-align: center;" maxlength="20" type="text" name="login" value=""></input>
+					<input placeholder="Пароль" style="text-align: center;" type="password" name="password"></input>
+					<input type="submit" value="Войти"></input>
+				</form>
+			</div>
+			<div class="auth_content" sec:authorize="isFullyAuthenticated()">
+				<div class="auth_img"></div>
+				<form id="login_form" th:action="@{/auth/logout}" th:method="POST">
+					<p th:text=${user.getName()}></p>
+					<input type="submit" value="Выйти"></input>
+				</form>
+			</div>
+		</div>
+	</div>
+</html>

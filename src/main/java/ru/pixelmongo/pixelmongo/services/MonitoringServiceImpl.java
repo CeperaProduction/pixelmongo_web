@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,6 +96,11 @@ class MonitoringServiceImpl implements MonitoringService{
             serverCache = servers;
         }
         return serverCache;
+    }
+    
+    @Override
+    public void markServersChanged() {
+        lastServerCacheUpdate = 0;
     }
     
     private void startMonitoring() {
@@ -221,17 +225,14 @@ class MonitoringServiceImpl implements MonitoringService{
                 }
             }
             
-        } catch (UnknownHostException ex) {
-            LOGGER.warn("An exception while pinging server "+server.getTag());
-            LOGGER.catching(ex);
-        } catch (IOException ex) {
+        }catch (Exception ex) {
             if(debug) {
                 LOGGER.warn("An exception while pinging server "+server.getTag());
                 LOGGER.catching(ex);
             }
         }
-        server.setNowPinging(false);
         result.setPingTime((int)(System.currentTimeMillis()-start));
+        server.setNowPinging(false);
         return result;
     }
     

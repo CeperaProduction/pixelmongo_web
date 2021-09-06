@@ -28,6 +28,8 @@ public interface MonitoringService {
      */
     public MonitoringResult pingServer(MonitoringServer server);
     
+    public void markServersChanged();
+    
     public static interface MonitoringResult {
         
         public boolean isOnline();

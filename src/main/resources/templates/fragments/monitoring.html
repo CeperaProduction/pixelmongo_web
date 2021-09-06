@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<div class="monitor_container" th:fragment="monitoring">
+		<div class="monitor">
+			<div class="open">
+				<div class="monitor_full">
+					<div class="monitor_scale">
+					</div>
+				</div>
+				<m2><div class="monitor_full_display">0<br> из <br>0</div></m2>
+			</div>
+			<div class="monitor_refresh" title="Обновить мониторинг"></div>
+			<div class="monitoring">
+				<div style="margin-top: 100px;"></div>
+				<m2>Загрузка...</m2>
+			</div>
+		</div>
+		<div id="monitoring_template" style="display: none">
+			<div class="line"></div>
+			<p2><div style="text-align: center; width: 146px; font-size: 16px;" server_data="name">Загрузка...</div></p2>
+			<div class="monitor_back">
+				<div class="monitor_scale" server_data="fill_percent"></div>
+				<p2><div class="monitor_display" server_data="status">Загрузка...</div></p2>
+			</div>
+			
+			<div class="line"></div>
+		</div>
+		<script type="text/javascript" charset="UTF-8" th:src="@{js/monitoring.js}"></script>
+	</div>
+</html>

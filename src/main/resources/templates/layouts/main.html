@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+
+	<link rel="icon" th:href="@{favicon.ico}" type="image/x-icon" />
+	<link rel="shortcut icon" th:href="@{favicon.ico}" type="image/x-icon" />
+
+	<meta http-equiv="cleartype" content="on">
+
+	<link rel="stylesheet" type="text/css" th:href="@{css/style.css}" />
+
+	<script type="text/javascript" charset="UTF-8" th:src="@{js/jquery.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{js/jquery.cookies.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{js/main.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{js/modal.js}"></script>
+
+	<meta name="theme-color" content="#24505d" />
+
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+	<title>Pixelmon Go</title>
+</head>
+<body>
+	<div th:replace="/fragments/messages :: messages"></div>
+	<div id="main" class="main">
+		<section layout:fragment="main_content"></section>
+	</div>
+</body>
+</html>

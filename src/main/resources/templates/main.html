@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Главная страница</title>
+
+</head>
+<body>
+	<section layout:fragment="content">
+		<div id="vk_news"></div>
+		<script type="text/javascript" th:src="|//vk.com/js/api/openapi.js?121|"></script>
+		<script type="text/javascript">
+			VK.Widgets.Group("vk_news", {mode: 2, wide:1, width: "600", height: "600", color1: 'FFFFFF', color2: '24505d', color3: '#24505d'}, 59962871);
+		</script>
+	</section>
+</body>
+</html>

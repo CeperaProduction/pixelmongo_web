@@ -1,5 +1,9 @@
 package ru.pixelmongo.pixelmongo.model.entities;
 
+import java.util.Date;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,39 +11,48 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity(name = "users")
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
-    @Column(nullable = false, unique = true)
+
+    @Column(length = 32, nullable = false, unique = true)
     private String name;
-    
+
     @Column(nullable = false)
     private String email;
-    
+
     //password hash
     @Column(nullable = false)
     private String password;
-    
+
     @ManyToOne
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id", nullable = false)
     private UserGroup group;
-    
-    //auth session cache
-    private String session = "";
-    
+
+    @Column(nullable = false)
+    private int balance = 0;
+
+    @Column(name="reg_date", nullable = false)
+    private Date registrationDate;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<UserLoginRecord> loginRecords;
+
     public User() {}
-    
-    public User(String name, String email, String passwordHash) {
+
+    public User(String name, UserGroup group, String email, String passwordHash) {
         this.name = name;
         this.email = email;
         this.password = passwordHash;
+        this.group = group;
+        this.registrationDate = new Date();
     }
-    
+
     public int getId() {
         return id;
     }
@@ -51,11 +64,11 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public UserGroup getGroup() {
         return group;
     }
-    
+
     public void setGroup(UserGroup group) {
         this.group = group;
     }
@@ -76,14 +89,24 @@ public class User {
         this.password = passwordHash;
     }
 
-    public String getSession() {
-        return session;
+    public int getBalance() {
+        return balance;
     }
 
-    public void setSession(String session) {
-        this.session = session;
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
-    
-    
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public Set<UserLoginRecord> getLoginRecords() {
+        return loginRecords;
+    }
 
 }

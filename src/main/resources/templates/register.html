@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	layout:decorate="~{layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Регистрация</title>
+
+</head>
+<body>
+	<div layout:fragment="content">
+		<script th:src="|//www.google.com/recaptcha/api.js|"></script>
+		<h1 style="margin-top: 0">* Регистрация *</h1>
+		<div align="center">
+			<form id="register_form" th:action="@{/auth/register}" th:method="POST" th:object="${register}">
+				<table>
+					<tr title="От 3 до 16 латинских букв, цифр, знаков '_' и '-'">
+						<td>Логин (Ник):</td>
+						<td>
+							<input th:field="*{login}" type="text" placeholder="Логин" maxlength="16" pattern="[a-zA-Z0-9_-]{3,16}" required />
+						</td>
+					</tr>
+					<tr title="От 6 до 32 символов">
+						<td>Пароль:</td>
+						<td>
+							<input th:field="*{password}" type="password" placeholder="Пароль" maxlength="32" pattern=".{6,32}" required />
+						</td>
+					</tr>
+					<tr title="От 6 до 32 символов">
+						<td>Повторите пароль:</td>
+						<td>
+							<input th:field="*{passwordRepeat}" type="password" placeholder="Пароль" maxlength="32" pattern=".{6,32}" required />
+						</td>
+					</tr>
+					<tr>
+						<td>Ваш e-mail:</td>
+						<td>
+							<input th:field="*{email}" type="email" placeholder="e-mail" maxlength="128" required>
+						</td>
+					</tr>
+				</table>
+				<br>
+				<input type="checkbox" required />Я согласен с <a href="/rules">правилами проекта</a>
+				<br>
+				<div class="g-recaptcha" th:attr="data-sitekey=${@captchaService.getPublicKey()}"></div>
+				<br>
+				<input type="submit" value="Продолжить" />
+			</form>
+		</div>
+	</div>
+</body>
+</html>

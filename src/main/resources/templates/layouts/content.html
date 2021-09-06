@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/main}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE"></title>
+</head>
+<body>
+	<section layout:fragment="main_content">
+		<div th:replace="/fragments/header :: header"></div>
+		<div th:replace="/fragments/menu :: menu"></div>
+		<div class="side_containers">
+			<div class="side_container left">
+				<div th:replace="/fragments/profile :: profile"></div>
+			</div>
+	        <div class="side_container right">
+				<div th:replace="/fragments/monitoring :: monitoring"></div>
+			</div>
+		</div>
+		<div class="content">
+			<div style="width: 600px; height: 600px; overflow: hidden">
+				<section layout:fragment="content"></section>
+			</div>
+        </div>
+		<div th:replace="/fragments/footer :: footer"></div>
+	</section>
+</body>
+</html>

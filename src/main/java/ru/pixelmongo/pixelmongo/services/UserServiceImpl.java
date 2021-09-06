@@ -7,13 +7,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.entities.User;
+import ru.pixelmongo.pixelmongo.model.entities.UserDetails;
 import ru.pixelmongo.pixelmongo.model.entities.UserGroup;
 import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserRepository;
@@ -23,37 +23,33 @@ class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository users;
-    
+
     @Autowired
     private UserGroupRepository groups;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+    public UserDetails loadUserDetails(String name) throws UsernameNotFoundException {
         User user = users.findByName(name)
                 .orElseThrow(()->new UsernameNotFoundException("User "+name+" not found!"));
-        return makeUserDetails(user);
-    }  
-    
-    private UserDetails makeUserDetails(User user) {
-        return new org.springframework.security.core.userdetails
-                .User(user.getName(), user.getPassword(), getAuthority(user));
+        return new UserDetails(user, makeAuthority(user));
     }
-    
+
     @Override
-    public List<GrantedAuthority> getAuthority(User user){
+    public List<GrantedAuthority> makeAuthority(User user){
         List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
         UserGroup group = user.getGroup();
         if(group != null) {
             auth.add(new SimpleGrantedAuthority("GROUP_"+group.getId()));
             getCustomGroupTag(group).ifPresent(tag->
                 auth.add(new SimpleGrantedAuthority("GROUP_"+tag)));
+            auth.addAll(group.getPermissions());
         }
         return auth;
     }
-    
+
     private Optional<String> getCustomGroupTag(UserGroup group){
         switch(group.getId()) {
         case 1: return Optional.of("ADMIN");
@@ -61,19 +57,23 @@ class UserServiceImpl implements UserService {
         default: return Optional.empty();
         }
     }
-    
+
     @Override
-    public UserDetails registerUser(User user) throws UserAlreadyExistsException{
-        if(users.findByName(user.getName()).isPresent())
+    public Optional<User> getUser(UserDetails userDetails) {
+        return users.findById(userDetails.getUserId());
+    }
+
+    @Override
+    public User registerUser(String name, String email, String password,
+            String registerIp) throws UserAlreadyExistsException{
+        if(users.findByName(name).isPresent())
             throw new UserAlreadyExistsException("User with this name is already registered!");
-        if(users.findByEmail(user.getName()).isPresent())
+        if(users.findByEmail(email).isPresent())
             throw new UserAlreadyExistsException("User with this email is already registered!");
-        if(user.getGroup() == null) {
-            user.setGroup(groups.findById(2).get());
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        password = passwordEncoder.encode(password);
+        User user = new User(name, groups.findById(2).get(), email, password);
         users.save(user);
-        return makeUserDetails(user);
+        return user;
     }
 
 }
