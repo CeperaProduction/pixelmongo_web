@@ -1,5 +1,6 @@
 package ru.pixelmongo.pixelmongo.model.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class User {
         this.password = passwordHash;
         this.group = group;
         this.registrationDate = new Date();
+        this.loginRecords = new ArrayList<>();
     }
 
     public int getId() {

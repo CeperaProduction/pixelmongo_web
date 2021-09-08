@@ -34,7 +34,7 @@ public class MainController {
 
     @GetMapping("/register")
     public String register(Model model) {
-        //model.addAttribute("captcha_key", captchaService.getPublicKey());
+        model.addAttribute("user", new User());
         model.addAttribute("register", new UserRegistrationForm());
         return "register";
     }

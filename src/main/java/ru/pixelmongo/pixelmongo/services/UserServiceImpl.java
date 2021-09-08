@@ -72,9 +72,9 @@ class UserServiceImpl implements UserService {
     public User registerUser(String name, String email, String password,
             String registerIp) throws UserAlreadyExistsException{
         if(users.findByName(name).isPresent())
-            throw new UserAlreadyExistsException("User with this name is already registered!");
+            throw new UserAlreadyExistsException("User with name "+name+" is already registered!");
         if(users.findByEmail(email).isPresent())
-            throw new UserAlreadyExistsException("User with this email is already registered!");
+            throw new UserAlreadyExistsException("User with email "+email+" is already registered!");
         password = passwordEncoder.encode(password);
         User user = new User(name, groups.findById(2).get(), email, password);
         return users.save(user);

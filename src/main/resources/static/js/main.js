@@ -1,16 +1,4 @@
 
-//ajax with csrf tocken
-function securedAjax(settings) {
-	let token = $("meta[name='_csrf']").attr("content");
-    let header = $("meta[name='_csrf_header']").attr("content");
-	let ex = {
-		beforeSend: function(req) {
-			req.setRequestHeader(header, token);
-		}
-	};
-	$.ajax({settings, ex});
-}
-
 //Side blocks
 $(document).ready(function(){
 	let b_auth = false;
@@ -53,61 +41,32 @@ $(document).ready(function(){
 	apply();
 });
 
-//Login form
 $(document).ready(function(){
-	let errorHandler = function(xhr,status,error){
-		console.log('Auth error.');
-		console.log('Status: '+status);
-		console.log('Error data: ');
-		console.log(error);
+	let dh = ajax.forms.defaultErrorHandler;
+	ajax.forms.defaultErrorHandler = function(res, xhr, status, error) {
+		let text = status+' '+error;
+		if(res !== null && res.message !== undefined){
+			text = res.message;
+		}
+		dh(res, xhr, status, error);
+		messages.showMessage(text, 'error');
 	}
-	$('#login_form').submit(function(){
-		let form = $(this);
-		$.ajax({
-			type: 'POST',
-			url: form.attr('action'),
-			data: form.serialize(),
-			dataType: 'json',
-			success: function(res, status, xhr){
-				if(res.result == 'ok'){
-					//alert(JSON.stringify(res));
-					document.location = '/';
-				}else{
-					errorHandler(xhr, status, res);
-				}
-			},
-			error: errorHandler
-		});
-		return false;
-	});
 });
 
-//Register form
 $(document).ready(function(){
-	let errorHandler = function(xhr,status,error){
-		console.log('Register error.');
-		console.log('Status: '+status);
-		console.log('Error data: ');
-		console.log(error);
+
+	function msg(res, type){
+		messages.prepareMessage(res.message, type);
 	}
-	$('#register_form').submit(function(){
-		let form = $(this);
-		$.ajax({
-			type: 'POST',
-			url: form.attr('action'),
-			data: form.serialize(),
-			dataType: 'json',
-			success: function(res, status, xhr){
-				if(res.result == 'ok'){
-					//alert(JSON.stringify(res));
-					document.location = '/';
-				}else{
-					errorHandler(xhr, status, res);
-				}
-			},
-			error: errorHandler
-		});
-		return false;
+
+	ajax.forms.bind($('#login_form'), function(res){
+		msg(res, 'ok');
+		document.location.reload();
+	});
+
+	ajax.forms.bind($('#register_form'), function(res){
+		msg(res, 'ok');
+		document.location = '/';
 	});
 });
 
