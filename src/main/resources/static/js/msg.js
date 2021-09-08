@@ -63,19 +63,19 @@ function MessageHandler(){
 
 	this.prepareMessage = function(msg, type, time) {
 		msg = getMsg(msg, type, time);
-		let cookie = Cookies('message');
+		let cookie = $.cookie('message');
 		let msgs = JSON.parse(cookie != undefined ? cookie : '[]');
 		msgs.push(msg);
 		cookie = JSON.stringify(msgs);
-		Cookies('message', cookie);
+		$.cookie('message', cookie);
 	}
 
 
 	function loadFromCookies() {
-		let cookie = Cookies('message');
+		let cookie = $.cookie('message');
 		let msgs = JSON.parse(cookie != undefined ? cookie : '[]');
 		if(msgs.length > 0) {
-			Cookies('message', '[]');
+			$.cookie('message', '[]');
 			$(document).ready(function(){
 				for(var i = 0; i<msgs.length; i++){
 					let msg = msgs[i];

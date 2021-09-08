@@ -1,11 +1,13 @@
 var monitoring = {
-	
+
 	started : false,
-	
+
+	refreshTime : 10000,
+
 	lineTemplate : '',
-	
+
 	printedServers : [],
-	
+
 	data : {
 		servers : {},
 		summary : {
@@ -13,9 +15,9 @@ var monitoring = {
 			maxPlayers : 0
 		}
 	},
-	
+
 	updateTimerId : 0,
-	
+
 	loadData : function(callback){
 		$.ajax({
 				type: "GET",
@@ -41,7 +43,7 @@ var monitoring = {
 				}
 			});
 	},
-	
+
 	initTemplate : function(){
 		let tpl = $('#monitoring_template');
 		if(tpl){
@@ -50,7 +52,7 @@ var monitoring = {
 			tpl.remove();
 		}
 	},
-	
+
 	printTemplates : function(){
 		console.log('Print monitoring templates');
 		let html = '';
@@ -68,7 +70,7 @@ var monitoring = {
 		});
 		monitoring.updateDisplay();
 	},
-	
+
 	updateDisplay : function(){
 		monitoring.data.servers.forEach(function(server, index){
 			let mon = $('.monitoring [server="'+server.tag+'"]');
@@ -89,7 +91,7 @@ var monitoring = {
 			$('.monitor_full .monitor_scale').css({'height' : '100%'});
 		}
 	},
-	
+
 	checkTemplates : function(){
 		let dataTags = [];
 		monitoring.data.servers.forEach(function(server, index){
@@ -101,7 +103,7 @@ var monitoring = {
 		}
 		return true;
 	},
-	
+
 	refresh : function(){
 		monitoring.loadData(function(){
 			if(!monitoring.checkTemplates())
@@ -110,7 +112,7 @@ var monitoring = {
 				monitoring.updateDisplay();
 		});
 	},
-	
+
 	vh : (function(){
 		var stateKey, eventKey, keys = {
 			hidden: "visibilitychange",
@@ -129,17 +131,16 @@ var monitoring = {
 			return !document[stateKey];
 		}
 	})(),
-	
+
 	start : function(){
 		monitoring.initTemplate();
-		let refreshTime = !isNaN(Cookies.get('mon_rel_delay')) ? Cookies.get('mon_rel_delay')*1000 : 20000;
 		monitoring.refresh();
 		monitoring.vh(()=>{
 			if(monitoring.started){
 				if (monitoring.vh()){
 					if(!monitoring.updateTimerId){
 						monitoring.refresh();
-						monitoring.updateTimerId = setInterval(monitoring.refresh, refreshTime);
+						monitoring.updateTimerId = setInterval(monitoring.refresh, monitoring.refreshTime);
 						console.log('Continue monitoring');
 					}
 				}else{
@@ -151,18 +152,18 @@ var monitoring = {
 				}
 			}
 		});
-		monitoring.updateTimerId = setInterval(monitoring.refresh, refreshTime);
+		monitoring.updateTimerId = setInterval(monitoring.refresh, monitoring.refreshTime);
 		monitoring.started = true;
 		console.log('Monitoring started');
-		
+
 	},
-	
+
 	stop : function(){
 		clearInterval(monitoring.updateTimerId);
 		monitoring.started = false;
 		console.log('Monitoring stoped');
 	}
-	
+
 }
 
 monitoring.start();
