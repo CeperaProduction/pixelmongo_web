@@ -15,7 +15,7 @@
 			<div class="auth_content" sec:authorize="isFullyAuthenticated()">
 				<div class="auth_img"></div>
 				<form id="login_form" th:action="@{/auth/logout}" th:method="POST">
-					<p th:text=${user.getName()}></p>
+					<p th:text="${@user.getName()}"></p>
 					<input type="submit" value="Выйти"></input>
 				</form>
 			</div>
