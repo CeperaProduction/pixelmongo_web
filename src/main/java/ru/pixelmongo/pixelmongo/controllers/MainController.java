@@ -11,9 +11,6 @@ import ru.pixelmongo.pixelmongo.model.entities.forms.UserRegistrationForm;
 @RequestMapping("/")
 public class MainController {
 
-    //@Autowired
-    //private CaptchaService captchaService;
-
     @GetMapping
     public String index(Model model) {
         return "main";

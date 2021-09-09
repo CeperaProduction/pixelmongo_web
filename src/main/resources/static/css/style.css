@@ -130,7 +130,7 @@ a:visited{
 	padding-left: 15px;
 	padding-right: 15px;
 	padding-bottom: 10px;
-	opacity: 0;
+	margin-bottom: 5px;
 	background: #ffffff;
 	word-wrap: break-word;
 	cursor: pointer;

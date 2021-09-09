@@ -42,14 +42,15 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-	let dh = ajax.forms.defaultErrorHandler;
 	ajax.forms.defaultErrorHandler = function(res, xhr, status, error) {
 		let text = status+' '+error;
 		if(res !== null && res.message !== undefined){
 			text = res.message;
 		}
-		dh(res, xhr, status, error);
 		messages.showMessage(text, 'error');
+	}
+	ajax.forms.defaultHandler = function(res, xhr, status) {
+		messages.showMessage(res.message, 'ok');
 	}
 });
 

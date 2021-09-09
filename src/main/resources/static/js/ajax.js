@@ -25,6 +25,12 @@ function Ajax(){
 			console.log(res);
 		}
 
+		this.defaultHandler = function(res, xhr, status){
+			console.log("Form send success");
+			console.log("Response: ");
+			console.log(res);
+		}
+
 		var getErrorHandler = function(result, providedHandler){
 			if(providedHandler !== null && providedHandler !== undefined)
 				return providedHandler;
@@ -39,6 +45,9 @@ function Ajax(){
 		}
 
 		this.sendForm = function(form, successHandler, failHandler){
+			if(successHandler == undefined){
+				successHandler = this.defaultHandler;
+			}
 			securedAjax({
 				type: form.attr('method'),
 				url: form.attr('action'),

@@ -5,6 +5,8 @@ function MessageHandler(){
 
 	let msgCounter = 0;
 
+	let displayCounter = 0;
+
 	this.delayTime = 10000;
 
 	function getMessageClass(msg){
@@ -16,11 +18,27 @@ function MessageHandler(){
 		}
 	}
 
+	this.fadeIn = function(message, displayCounter) {
+		if(displayCounter == 0){
+			message.css({'margin-top':'-200px', "opacity":"0"});
+			message.animate({"margin-top":"0px", "opacity":"1"}, 500);
+		}else{
+			message.css({"opacity":"0"});
+			message.animate({"opacity":"1"}, 250);
+		}
+	}
+
+	this.fadeOut = function(message, displayCounter, innerCallback) {
+		message.fadeOut(800, innerCallback());
+	}
+
 	function close(message){
 		if(!message.showed) return false;
 		message.showed = false;
-		message.fadeOut(800, function(){
+		_this.fadeOut(message, displayCounter, function(){
 			message.remove();
+			--displayCounter;
+			if(displayCounter < 0) displayCounter = 0;
 		});
 		return true;
 	}
@@ -48,10 +66,10 @@ function MessageHandler(){
 		$('#msg_block').prepend('<div message-index="'+index+'" class="message"></div>')
 		let message = $('#msg_block .message[message-index="'+index+'"]');
 		message.showed = true;
-		message.css({'margin-top':'-200px'});
+		this.fadeIn(message, displayCounter);
+		++displayCounter;
 		message.addClass(getMessageClass(msg));
 		message.html(msg.text);
-		message.animate({"margin-top":"0px", "opacity":"1"}, 500);
 		message.on("click", function(){close(message)});
 		let delay = this.delayTime;
 		if(msg.time !== undefined && msg.time >= -1) delay = msg.time;

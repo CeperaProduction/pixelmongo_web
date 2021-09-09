@@ -18,6 +18,7 @@ import ru.pixelmongo.pixelmongo.model.entities.UserGroup;
 import ru.pixelmongo.pixelmongo.model.entities.UserLoginRecord;
 import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserLoginRecordRepository;
+import ru.pixelmongo.pixelmongo.repositories.UserPermissionRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserRepository;
 
 @Service
@@ -31,6 +32,9 @@ class UserServiceImpl implements UserService {
 
     @Autowired
     private UserLoginRecordRepository loginRecords;
+
+    @Autowired
+    private UserPermissionRepository permissions;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -50,7 +54,11 @@ class UserServiceImpl implements UserService {
             auth.add(new SimpleGrantedAuthority("GROUP_"+group.getId()));
             getCustomGroupTag(group).ifPresent(tag->
                 auth.add(new SimpleGrantedAuthority("GROUP_"+tag)));
-            auth.addAll(group.getPermissions());
+            if(group.getId() == 1) {
+                permissions.findAll().forEach(auth::add);
+            }else {
+                auth.addAll(group.getPermissions());
+            }
         }
         return auth;
     }
