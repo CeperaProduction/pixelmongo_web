@@ -42,8 +42,9 @@ body{
   display: none;
 }
 
-#sidebar-content.fixed {
+#sidebar-container.fixed {
 	position: fixed;
+	height: 100%;
 	top: 0;
 }
 
@@ -132,3 +133,26 @@ form.link button:active{
 	color: inherit;
 }
 
+.error-container {
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
+}
+
+.error-content {
+	min-width: 100px;
+	min-height: 100px;
+	text-align: center;
+}
+
+.error-status {
+	font-size: 5em;
+}
+
+.error-message {
+	padding: 15px;
+	overflow-wrap: break-word;
+}

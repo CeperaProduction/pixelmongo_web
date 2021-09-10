@@ -695,3 +695,31 @@ opacity: 1;
 	height: 1px;
 	border-radius: 50px;
 }
+
+.error_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.error_content {
+  min-width: 100px;
+  min-height: 100px;
+  max-width: 800px;
+  text-align: center;
+}
+
+.error_status {
+	font-size: 5em;
+}
+
+.error_message {
+	padding: 15px;
+	margin-bottom: 10px;
+	background: rgba(36, 80, 93, 0.5);
+	border: 0px solid #fff;
+	border-radius: 10px;
+	overflow-wrap: break-word;
+}

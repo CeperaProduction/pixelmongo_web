@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="${message}">Ошибка</title>
+
+</head>
+<body>
+	<div class="error-container" layout:fragment="content">
+		<div class="error-content">
+			<div class="error-status">
+				<b th:text="${status}">Error</b>
+			</div>
+			<div class="error-message">
+				<span th:text="${message}">Something went wrong</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

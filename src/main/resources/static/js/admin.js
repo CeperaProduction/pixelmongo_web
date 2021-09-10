@@ -8,15 +8,16 @@ $(document).ready(function() {
 
 //Scrolling elements movement
 $(document).ready(function(){
-	let sc = $('#sidebar-content');
+	let sc = $('#sidebar-container');
 	let scp = sc.offset();
 	let y = scp.top;
+	sc.addClass('fixed');
 	function apply(){
 		let scroll = $(document).scrollTop();
 		if(scroll>y){
-			sc.addClass('fixed');
+			sc.css({"padding-top" : "0px"});
 		}else if(scroll<=y){
-			sc.removeClass('fixed');
+			sc.css({"padding-top" : (y-scroll)+"px"});
 		}
 	}
 	$(document).scroll(apply);
