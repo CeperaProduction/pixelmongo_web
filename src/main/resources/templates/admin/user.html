@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление [[${user.name}]]</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Управление пользователем [[${user.name}]]
+		    </div>
+		    <div class="card-body">
+	        	<form th:method="post">
+
+	        	</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

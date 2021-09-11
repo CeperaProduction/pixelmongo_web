@@ -1,6 +1,7 @@
 package ru.pixelmongo.pixelmongo.services;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,6 +94,13 @@ class UserServiceImpl implements UserService {
         UserLoginRecord record = new UserLoginRecord(user, ip);
         user.getLoginRecords().add(record);
         loginRecords.save(record);
+    }
+
+    @Override
+    public Optional<UserLoginRecord> getLastLogin(User user) {
+        Iterator<UserLoginRecord> it = user.getLoginRecords().iterator();
+        if(it.hasNext()) return Optional.of(it.next());
+        return Optional.empty();
     }
 
 }

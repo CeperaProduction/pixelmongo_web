@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.controllers;
+package ru.pixelmongo.pixelmongo.controllers.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

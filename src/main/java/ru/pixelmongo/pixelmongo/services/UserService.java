@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.entities.User;
 import ru.pixelmongo.pixelmongo.model.entities.UserDetails;
+import ru.pixelmongo.pixelmongo.model.entities.UserLoginRecord;
 
 public interface UserService {
 
@@ -22,5 +23,7 @@ public interface UserService {
 
     public User registerUser(String name, String email, String password,
             String registerIp) throws UserAlreadyExistsException;
+
+    public Optional<UserLoginRecord> getLastLogin(User user);
 
 }

@@ -2,6 +2,15 @@ body{
 	min-height: 100vh;
 }
 
+a.page-link.disabled{
+	pointer-events: none;
+	opacity: 0.65;
+}
+
+.pagination.center{
+	justify-content: center;
+}
+
 #wrapper{
     display: flex;
     min-height: 100vh;

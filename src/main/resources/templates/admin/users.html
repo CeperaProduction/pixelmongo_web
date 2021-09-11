@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление пользователями</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Поиск пользователей
+		    </div>
+		    <div class="card-body">
+	        	<form th:method="GET">
+		        	<div class="input-group mb-2">
+		        		<input type="text" class="form-control"
+							placeholder="Имя пользователя"
+							aria-label="Имя пользователя"
+							aria-describedby="basic-addon2"
+							name="search"
+							th:value="${search}">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="fa fa-search"></i>
+								Поиск
+							</button>
+						</div>
+					</div>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<label class="input-group-text" for="groupSelect">Группа</label>
+						</div>
+						<select class="custom-select" id="groupSelect" name="group">
+							<option th:selected="${group_selected == 0}" value="0">
+								Любая группа
+							</option>
+							<option th:each="group : ${groups}"
+								th:value="${group.id}"
+								th:text="${group.name}"
+								th:selected="${group.id == group_selected}"></option>
+						</select>
+					</div>
+	        	</form>
+		    </div>
+		</div>
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Список пользователей (<span th:text="${users_count}"></span>)
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0" th:if="${users_count != 0}">
+					<thead>
+						<tr>
+							<th scope="col"></th>
+							<th scope="col">Логин</th>
+							<th scope="col">Группа</th>
+							<th scope="col">Дата регистрации</th>
+							<th scope="col">Последняя авторизация</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user : ${users}">
+							<td>
+								<img class="profile-img" style="width: 1.5em; height: 1.5em">
+							</td>
+							<td>
+								<a th:href="@{/admin/users/{user}(user=${user.name})}"
+									th:text="${user.name}"></a>
+							</td>
+							<td th:text="${user.group.name}"></td>
+							<td th:text="${@templateService.printUserRegisterDate(user)}"></td>
+							<td th:text="${@templateService.printUserLastLoginDate(user)}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="container" th:if="${users_count == 0}">
+					<table class="table" style="min-height: 200px">
+						<tbody>
+							<tr>
+								<td class="align-middle text-center">
+									По указанным параметрам не удалось найти ни одного пользователя
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+		    </div>
+		    <div class="card-footer p-1">
+		    	<div th:if="${users_count != 0}">
+					<div th:replace="~{admin/fragments/pagination :: pagination}"></div>
+				</div>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

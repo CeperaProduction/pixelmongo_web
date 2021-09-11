@@ -18,17 +18,17 @@ public class MvcConfig implements WebMvcConfigurer {
     public LayoutDialect layoutDialect() {
       return new LayoutDialect();
     }
-    
+
     @Bean
     public SpringSecurityDialect springSecurityDialect() {
         return new SpringSecurityDialect();
     }
-    
+
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
         slr.setDefaultLocale(Locale.forLanguageTag("ru"));
         return slr;
     }
-    
+
 }

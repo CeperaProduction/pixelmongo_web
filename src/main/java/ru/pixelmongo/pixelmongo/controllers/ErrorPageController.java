@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -37,7 +38,9 @@ public class ErrorPageController implements ErrorController{
 
             if(uri.startsWith("/admin")) {
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                boolean access = auth.getAuthorities().stream()
+                boolean access = auth != null
+                        && !(auth instanceof AnonymousAuthenticationToken)
+                        && auth.getAuthorities().stream()
                         .anyMatch(p->p.getAuthority().equals("admin.panel.access"));
                 if(access) {
                     template = "admin/error";
