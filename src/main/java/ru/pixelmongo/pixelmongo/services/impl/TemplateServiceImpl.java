@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.services;
+package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +13,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.pixelmongo.pixelmongo.model.PaginationElement;
 import ru.pixelmongo.pixelmongo.model.PaginationElement.Step;
 import ru.pixelmongo.pixelmongo.model.entities.User;
+import ru.pixelmongo.pixelmongo.services.TemplateService;
+import ru.pixelmongo.pixelmongo.services.UserService;
 
 @Service("templateService")
 public class TemplateServiceImpl implements TemplateService{
@@ -103,6 +105,14 @@ public class TemplateServiceImpl implements TemplateService{
         if(user != null) {
             Date date = userService.getLastLogin(user).map(r->r.getDate()).orElse(null);
             return printDate(date);
+        }
+        return "---";
+    }
+
+    @Override
+    public String printUserLastLoginIp(User user) {
+        if(user != null) {
+            return userService.getLastLogin(user).map(r->r.getIp()).orElse("---");
         }
         return "---";
     }

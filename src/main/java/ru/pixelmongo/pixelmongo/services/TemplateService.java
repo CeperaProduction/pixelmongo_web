@@ -49,6 +49,8 @@ public interface TemplateService {
 
     public String printUserLastLoginDate(User user);
 
+    public String printUserLastLoginIp(User user);
+
     public String addParameterToCurrentUrl(String parameter, String value);
 
 }

@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.services;
+package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.net.URI;
 import java.util.regex.Pattern;
@@ -11,6 +11,7 @@ import org.springframework.web.client.RestOperations;
 
 import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
 import ru.pixelmongo.pixelmongo.model.ReCaptchaResponse;
+import ru.pixelmongo.pixelmongo.services.CaptchaService;
 
 public class ReCaptchaV2Service implements CaptchaService{
 

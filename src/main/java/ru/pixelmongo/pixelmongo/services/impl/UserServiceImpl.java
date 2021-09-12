@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.services;
+package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,10 @@ import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserLoginRecordRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserPermissionRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserRepository;
+import ru.pixelmongo.pixelmongo.services.UserService;
 
-@Service
-class UserServiceImpl implements UserService {
+@Service("userService")
+class UserServiceImpl implements UserService{
 
     @Autowired
     private UserRepository users;
@@ -41,10 +44,11 @@ class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserDetails(String name) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = users.findByName(name)
                 .orElseThrow(()->new UsernameNotFoundException("User "+name+" not found!"));
-        return new UserDetails(user, makeAuthority(user));
+        UserDetails details = new UserDetails(user, makeAuthority(user));
+        return details;
     }
 
     @Override
@@ -85,7 +89,7 @@ class UserServiceImpl implements UserService {
         if(users.findByEmail(email).isPresent())
             throw new UserAlreadyExistsException("User with email "+email+" is already registered!");
         password = passwordEncoder.encode(password);
-        User user = new User(name, groups.findById(2).get(), email, password);
+        User user = new User(name, groups.findById(2).get(), email, password, registerIp);
         return users.save(user);
     }
 
@@ -100,6 +104,33 @@ class UserServiceImpl implements UserService {
     public Optional<UserLoginRecord> getLastLogin(User user) {
         Iterator<UserLoginRecord> it = user.getLoginRecords().iterator();
         if(it.hasNext()) return Optional.of(it.next());
+        return Optional.empty();
+    }
+
+    @Override
+    public void changePassword(User user, Object principal, String newPassword, boolean saveUser) {
+        final String password = passwordEncoder.encode(newPassword);
+        user.setPassword(password);
+        if(principal == null) {
+
+        }
+        if(principal instanceof UserDetails && ((UserDetails) principal).getUsername().equals(user.getName())) {
+            ((UserDetails) principal).setPassword(password);
+        }
+        if(saveUser) users.save(user);
+    }
+
+    @Override
+    public void updateAuthorities(User user, Object principal) {
+        getCurrentDetails().filter(d->d.getUsername().equals(user.getName()))
+            .ifPresent(d->d.setAuthorities(makeAuthority(user)));
+    }
+
+    private Optional<UserDetails> getCurrentDetails(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth != null && auth.getPrincipal() instanceof UserDetails) {
+            return Optional.of((UserDetails) auth.getPrincipal());
+        }
         return Optional.empty();
     }
 

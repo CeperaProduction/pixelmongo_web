@@ -12,13 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.context.annotation.RequestScope;
 
 import ru.pixelmongo.pixelmongo.model.entities.AnonymousUser;
 import ru.pixelmongo.pixelmongo.model.entities.User;
 import ru.pixelmongo.pixelmongo.model.entities.UserDetails;
-import ru.pixelmongo.pixelmongo.services.UserAuthDetailsService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 
@@ -27,20 +27,16 @@ import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
-    private UserAuthDetailsService userDetailsService;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
 
-    @Bean
     @Override
-    public UserAuthDetailsService userDetailsService() {
-        return new UserAuthDetailsService();
+    public UserDetailsService userDetailsService() {
+        return userService;
     }
 
     @Bean
@@ -58,9 +54,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/admin", "/admin/*")
-            .hasAuthority("admin.panel.access");
-        http.authorizeRequests().antMatchers("/*").permitAll();
+        http
+        .authorizeRequests()
+            .antMatchers("/admin/**").hasAuthority("admin.panel.access")
+            .antMatchers("/**").permitAll();
+
     }
 
     @Bean

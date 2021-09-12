@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import ru.pixelmongo.pixelmongo.services.CaptchaService;
-import ru.pixelmongo.pixelmongo.services.ReCaptchaV2Service;
+import ru.pixelmongo.pixelmongo.services.impl.ReCaptchaV2Service;
 
 @Configuration
 @PropertySource("classpath:recaptcha.properties")

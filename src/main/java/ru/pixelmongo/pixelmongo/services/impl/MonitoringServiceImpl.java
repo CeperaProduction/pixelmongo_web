@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.services;
+package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -35,6 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ru.pixelmongo.pixelmongo.model.entities.MonitoringServer;
 import ru.pixelmongo.pixelmongo.repositories.MonitoringServerRepository;
+import ru.pixelmongo.pixelmongo.services.MonitoringService;
+import ru.pixelmongo.pixelmongo.services.MonitoringService.MonitoringResult;
 
 @Service
 class MonitoringServiceImpl implements MonitoringService{

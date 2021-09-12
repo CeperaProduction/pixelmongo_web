@@ -42,17 +42,21 @@ public class User {
     @Column(name="reg_date", nullable = false)
     private Date registrationDate;
 
+    @Column(name="reg_ip", nullable = false)
+    private String registrationIp;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @OrderBy("date DESC")
     private List<UserLoginRecord> loginRecords;
 
     public User() {}
 
-    public User(String name, UserGroup group, String email, String passwordHash) {
+    public User(String name, UserGroup group, String email, String passwordHash, String ip) {
         this.name = name;
         this.email = email;
         this.password = passwordHash;
         this.group = group;
+        this.registrationIp = ip;
         this.registrationDate = new Date();
         this.loginRecords = new ArrayList<>();
     }
@@ -111,6 +115,14 @@ public class User {
 
     public List<UserLoginRecord> getLoginRecords() {
         return loginRecords;
+    }
+
+    public String getRegistrationIp() {
+        return registrationIp;
+    }
+
+    public void setRegistrationIp(String registrationIp) {
+        this.registrationIp = registrationIp;
     }
 
 }
