@@ -4,7 +4,7 @@
 	layout:decorate="~{admin/layouts/content}">
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Редактирование правил</title>
-	<th:block th:include="admin/fragments/froala :: headers"></th:block>
+	<th:block th:include="admin/fragments/tinymce :: headers"></th:block>
 </head>
 <body>
 	<div class="container" layout:fragment="content">
@@ -30,14 +30,11 @@
 					<hr class="separator">
 					<div class="form-group">
 						<textarea id="ruleContent" th:field="*{content}"></textarea>
-						<script th:replace="admin/fragments/froala :: script_buttons"></script>
+						<script th:include="admin/fragments/tinymce :: script_settings"></script>
 						<script>
-							new FroalaEditor('textarea#ruleContent', {
-								language: 'ru',
-								placeholderText: 'Перечень правил данного раздела',
-								attribution: false,
-								toolbarButtons: froalaButtons
-							});
+							var settings = {...default_settings,
+									...{selector: '#ruleContent'}}
+							tinymce.init(settings);
 						</script>
 					</div>
 	        	</form>

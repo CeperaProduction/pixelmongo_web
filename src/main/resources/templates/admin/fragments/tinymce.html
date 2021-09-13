@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block  th:fragment="headers">
+		<!-- TinyMCE -->
+		<script src="https://cdn.tiny.cloud/1/x2tvpal0gz88voljkqsc8lbojuep6eyafwooswg7bunb1eyv/tinymce/5/tinymce.min.js"
+			referrerpolicy="origin"></script>
+	</th:block>
+</head>
+<body>
+	<script th:fragment="script_settings">
+		var default_settings = {
+			      plugins: 'autoresize paste charmap hr link lists',
+			      menubar: '',
+			      toolbar: 'styleselect numlist bullist fontselect fontsizeselect forecolor backcolor link charmap hr removeformat undo redo',
+			      toolbar_mode: 'floating',
+			      language: 'ru',
+			      min_height: 300,
+			      statusbar: false
+			   };
+	</script>
+</body>
+</html>

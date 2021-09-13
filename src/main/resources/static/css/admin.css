@@ -1,5 +1,11 @@
 body{
 	min-height: 100vh;
+	max-width: 100%;
+}
+
+#wrapper {
+	max-width: 100%;
+	overflow-x: hidden;
 }
 
 a.page-link.disabled{
