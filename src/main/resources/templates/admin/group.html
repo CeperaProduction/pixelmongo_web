@@ -24,7 +24,8 @@
 						<div class="col-sm-9">
 							<input type="text" class="form-control"
 								id="inputName" placeholder="Название группы"
-								th:field="*{name}">
+								th:field="*{name}"
+								required>
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
 								th:errors="*{name}"></div>

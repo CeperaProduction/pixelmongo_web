@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Редактирование правил</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Список разделов правил
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0">
+					<tbody>
+						<tr th:each="rule : ${rules}">
+							<td>
+								<a th:href="@{/admin/rules/{id}(id=${rule.id})}"
+									th:text="${rule.title}"></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="card-footer">
+		    	<a th:href="@{/admin/rules/new}" class="btn btn-primary">Добавить раздел</a>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

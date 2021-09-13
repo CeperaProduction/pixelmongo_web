@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Редактирование правил</title>
+	<th:block th:include="admin/fragments/froala :: headers"></th:block>
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+
+		<div class="card mb-4">
+		    <div class="card-header">
+		        <span th:if="${rule.id == 0}">Добавление раздела правил</span>
+		        <span th:if="${rule.id != 0}">
+		        	Изменение раздела правил
+		        </span>
+		    </div>
+		    <div class="card-body">
+	        	<form id="ruleForm" th:action="@{''}" th:method="post" th:object="${rule}">
+					<div class="form-group">
+						<input type="text" class="form-control"
+								id="inputName" placeholder="Название раздела правил"
+								th:field="*{title}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{title}"></div>
+					</div>
+					<hr class="separator">
+					<div class="form-group">
+						<textarea id="ruleContent" th:field="*{content}"></textarea>
+						<script th:replace="admin/fragments/froala :: script_buttons"></script>
+						<script>
+							new FroalaEditor('textarea#ruleContent', {
+								language: 'ru',
+								placeholderText: 'Перечень правил данного раздела',
+								attribution: false,
+								toolbarButtons: froalaButtons
+							});
+						</script>
+					</div>
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="ruleForm" type="submit" class="btn btn-primary">Сохранить</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${rule.id > 0}">
+					<button type="submit" class="btn btn-danger">Удалить</button>
+				</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>
