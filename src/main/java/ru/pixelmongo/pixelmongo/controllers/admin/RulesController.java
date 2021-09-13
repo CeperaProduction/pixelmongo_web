@@ -120,4 +120,9 @@ public class RulesController {
                         msg.getMessage("error.status.404.rules", null, loc)));
     }
 
+    @ModelAttribute
+    public void applyMode(Model model) {
+        model.addAttribute("mode", "rules");
+    }
+
 }

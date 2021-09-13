@@ -151,4 +151,9 @@ public class UserGroupsController {
         return !binding.hasErrors();
     }
 
+    @ModelAttribute
+    public void applyMode(Model model) {
+        model.addAttribute("mode", "users");
+    }
+
 }

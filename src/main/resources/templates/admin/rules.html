@@ -17,7 +17,8 @@
 					<tbody>
 						<tr th:each="rule : ${rules}">
 							<td>
-								<a th:href="@{/admin/rules/{id}(id=${rule.id})}"
+								<a class="px-2"
+									th:href="@{/admin/rules/{id}(id=${rule.id})}"
 									th:text="${rule.title}"></a>
 							</td>
 						</tr>

@@ -169,4 +169,9 @@ public class UsersController {
                         msg.getMessage("error.status.404.user", null, loc)));
     }
 
+    @ModelAttribute
+    public void applyMode(Model model) {
+        model.addAttribute("mode", "users");
+    }
+
 }

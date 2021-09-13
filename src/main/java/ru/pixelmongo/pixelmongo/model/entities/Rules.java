@@ -1,6 +1,5 @@
 package ru.pixelmongo.pixelmongo.model.entities;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

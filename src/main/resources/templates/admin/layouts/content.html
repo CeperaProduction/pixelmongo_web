@@ -69,10 +69,10 @@
 			                    </li>
 			                </ul>
 			            </li>
-			            <li class="active">
+			            <li th:classappend="${mode == 'main'} ? active">
 			                <a th:href="@{/admin}"><i class="fa fa-home fa-fw"></i> Главная</a>
 			            </li>
-			            <li>
+			            <li th:classappend="${mode == 'users'} ? active">
 			                <a href="#menuUsers" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
 			                	<i class="fa fa-user-circle fa-fw"></i>
 			                	Пользователи
@@ -92,13 +92,13 @@
 			                    </li>
 			                </ul>
 			            </li>
-			            <li>
+			            <li th:classappend="${mode == 'rules'} ? active">
 			                <a th:href="@{/admin/rules}"><i class="fa fa-book fa-fw"></i> Правила</a>
 			            </li>
-			            <li>
+			            <li th:classappend="${mode == 'player_logs'} ? active">
 			                <a th:href="@{/admin/playerlogs}"><i class="fa fa-file fa-fw"></i> Логи игроков</a>
 			            </li>
-			            <li>
+			            <li th:classappend="${mode == 'donate'} ? active">
 			                <a href="#menuDonate" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
 			                	<i class="fa fa-shopping-bag fa-fw"></i>
 			                	Донат-система
@@ -121,10 +121,10 @@
 			                    </li>
 			                </ul>
 			            </li>
-			            <li>
+			            <li th:classappend="${mode == 'monitoring'} ? active">
 			                <a th:href="@{/admin/monitoring}"><i class="fa fa-server fa-fw"></i> Мониторинг серверов</a>
 			            </li>
-			            <li>
+			            <li th:classappend="${mode == 'logs'} ? active">
 			                <a th:href="@{/admin/logs}"><i class="fa fa-file fa-fw"></i> Логи админ-панели</a>
 			            </li>
 			            <li>
