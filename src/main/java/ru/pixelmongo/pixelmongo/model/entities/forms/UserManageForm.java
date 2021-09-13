@@ -6,7 +6,7 @@ import ru.pixelmongo.pixelmongo.model.entities.User;
 
 public class UserManageForm{
 
-    @Email(message = "auth.email.invalid")
+    @Email(message = "{auth.email.invalid}")
     private String email;
 
     private String password = "";

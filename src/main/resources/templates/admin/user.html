@@ -47,7 +47,7 @@
 		        Изменение пользователя
 		    </div>
 		    <div class="card-body">
-	        	<form id="userForm" th:method="post" th:object="${userForm}" autocomplete="off">
+	        	<form id="userForm" th:action="@{''}" th:method="post" th:object="${userForm}" autocomplete="off">
 	        		<input id="email" style="display:none" type="email" name="dontrememberthis1">
 					<input id="password" style="display:none" type="password" name="dontrememberthis2">
 					<div class="form-group row">
@@ -95,13 +95,13 @@
 								th:errors="*{passwordRepeat}"></div>
 						</div>
 					</div>
-					<input type="hidden"
-						th:name="${_csrf.parameterName}"
-						th:value="${_csrf.token}" />
 	        	</form>
 		    </div>
-		    <div class="card-footer p1">
+		    <div class="card-footer">
 				<button form="userForm" type="submit" class="btn btn-primary">Применить</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${user.id != @user.id}">
+					<button type="submit" class="btn btn-danger">Удалить</button>
+				</form>
 		    </div>
 		</div>
 		<div class="card mb-3">

@@ -59,7 +59,7 @@ class UserServiceImpl implements UserService{
             auth.add(new SimpleGrantedAuthority("GROUP_"+group.getId()));
             getCustomGroupTag(group).ifPresent(tag->
                 auth.add(new SimpleGrantedAuthority("GROUP_"+tag)));
-            if(group.getId() == 1) {
+            if(group.getId() == UserGroupRepository.GROUP_ID_ADMIN) {
                 permissions.findAll().forEach(auth::add);
             }else {
                 auth.addAll(group.getPermissions());
@@ -70,8 +70,8 @@ class UserServiceImpl implements UserService{
 
     private Optional<String> getCustomGroupTag(UserGroup group){
         switch(group.getId()) {
-        case 1: return Optional.of("ADMIN");
-        case 2: return Optional.of("USER");
+        case UserGroupRepository.GROUP_ID_ADMIN: return Optional.of("ADMIN");
+        case UserGroupRepository.GROUP_ID_USER: return Optional.of("USER");
         default: return Optional.empty();
         }
     }

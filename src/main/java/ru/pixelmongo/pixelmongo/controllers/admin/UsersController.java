@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,6 +57,9 @@ public class UsersController {
 
     @Autowired
     private PopupMessageService popupMsg;
+
+    @Autowired
+    private User currentUser;
 
     @GetMapping
     public String userList(@RequestParam(defaultValue = "1") int page,
@@ -130,7 +134,7 @@ public class UsersController {
                 users.save(user);
                 popupMsg.sendUsingCookies(
                         new PopupMessage(
-                                msg.getMessage("admin.user.edited", null, loc),
+                                msg.getMessage("admin.user.edited", new Object[] {user.getName()}, loc),
                                 PopupMessage.Type.OK),
                         request, response);
             }
@@ -138,6 +142,25 @@ public class UsersController {
         }
 
         return user(userName, model, loc);
+    }
+
+    @DeleteMapping("/{userName}")
+    public String userDelete(@PathVariable String userName,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Locale loc) {
+        User user = findUser(userName, loc);
+        if(user.getId() == currentUser.getId()) {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED,
+                    msg.getMessage("error.status.405.user", null, loc));
+        }
+        users.delete(user);
+        popupMsg.sendUsingCookies(
+                new PopupMessage(
+                        msg.getMessage("admin.user.deleted", new Object[] {user.getName()}, loc),
+                        PopupMessage.Type.WARN),
+                request, response);
+        return "redirect:/admin/users";
     }
 
     private User findUser(String userName, Locale loc) {

@@ -33,7 +33,9 @@ public class PopupMessageServiceImpl implements PopupMessageService{
         ObjectMapper mapper = new ObjectMapper();
         try {
             String msgCookie = mapper.writeValueAsString(messages);
-            response.addCookie(new Cookie(COOKIE_KEY, URLEncoder.encode(msgCookie, "UTF-8")));
+            Cookie cookie = new Cookie(COOKIE_KEY, URLEncoder.encode(msgCookie, "UTF-8"));
+            cookie.setPath("/");
+            response.addCookie(cookie);
         }catch(Exception ex) {
             throw new RuntimeException(ex);
         }

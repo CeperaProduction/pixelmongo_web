@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<div th:fragment="messages">
+		<div id="msg_block"></div>
+		<script type="text/javascript" charset="UTF-8" th:src="@{/js/msg.js}"></script>
+		<script type="text/javascript">
+			messages.template='<div class="message-content">{text}</div>';
+			messages.append = true;
+			messages.fadeIn = function(msg, index) {
+				msg.css({'margin-left':'300px', "opacity":"0"});
+				msg.animate({"margin-left":"0px", "opacity":"1"}, 500);
+			};
+		</script>
+	</div>
+</html>

@@ -1,8 +1,8 @@
 package ru.pixelmongo.pixelmongo.model.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity(name = "user_groups")
 public class UserGroup {
@@ -23,14 +26,15 @@ public class UserGroup {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @LazyCollection(LazyCollectionOption.EXTRA)
     @OneToMany(mappedBy = "group")
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany
     @JoinTable(name = "user_groups_permissions",
-            joinColumns = @JoinColumn(name="permission_id"),
-            inverseJoinColumns = @JoinColumn(name="group_id"))
-    private Set<UserPermission> permissions;
+            joinColumns = @JoinColumn(name="group_id"),
+            inverseJoinColumns = @JoinColumn(name="permission_id"))
+    private Set<UserPermission> permissions = new HashSet<>();
 
     public UserGroup() {}
 

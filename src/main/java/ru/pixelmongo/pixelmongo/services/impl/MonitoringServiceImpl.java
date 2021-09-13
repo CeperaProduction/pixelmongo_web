@@ -36,34 +36,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.pixelmongo.pixelmongo.model.entities.MonitoringServer;
 import ru.pixelmongo.pixelmongo.repositories.MonitoringServerRepository;
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
-import ru.pixelmongo.pixelmongo.services.MonitoringService.MonitoringResult;
 
 @Service
 class MonitoringServiceImpl implements MonitoringService{
 
     @Autowired
     private MonitoringServerRepository serverData;
-    
+
     @Autowired
     private Environment env;
-    
+
     private boolean debug;
-    
+
     private int timeout;
-    
+
     private int nextPingDelay;
-    
+
     private int serverCacheUpdatePeriod;
-    
+
     private List<MonitoringServer> serverCache = Collections.emptyList();
     private Map<String, MonitoringResult> monitoringCache = new ConcurrentHashMap<>();
-    
+
     private long lastUpdate;
     private long lastServerCacheUpdate;
-    
+
     private Timer updateTimer;
     private ExecutorService threadPool;
-    
+
     @PostConstruct
     private void init() {
         debug = env.getProperty("monitoring.debug_mode", boolean.class);
@@ -73,7 +72,7 @@ class MonitoringServiceImpl implements MonitoringService{
         serverCacheUpdatePeriod = env.getProperty("monitoring.server_cache_time", int.class);
         startMonitoring();
     }
-    
+
     @PreDestroy
     private void stop() {
         LOGGER.info("Shutdown monitoring service...");
@@ -86,7 +85,7 @@ class MonitoringServiceImpl implements MonitoringService{
         }
         LOGGER.info("Monitorind service terminated.");
     }
-    
+
     private List<MonitoringServer> getServers() {
         long now = System.currentTimeMillis();
         if(now-lastServerCacheUpdate > serverCacheUpdatePeriod) {
@@ -99,12 +98,12 @@ class MonitoringServiceImpl implements MonitoringService{
         }
         return serverCache;
     }
-    
+
     @Override
     public void markServersChanged() {
         lastServerCacheUpdate = 0;
     }
-    
+
     private void startMonitoring() {
         threadPool = Executors.newCachedThreadPool();
         updateTimer = new Timer("monitoring_update");
@@ -137,39 +136,39 @@ class MonitoringServiceImpl implements MonitoringService{
                     LOGGER.catching(e);
                 }
             }
-            
+
         };
         updateTimer.schedule(updateTask, 0, nextPingDelay);
         LOGGER.info("Monitorind service started.");
     }
-    
+
     @Override
     public long getLastUpdateTime() {
         return lastUpdate;
     }
-    
+
     @Override
     public Map<String, MonitoringResult> getMonitoringMap(){
         return new HashMap<>(monitoringCache);
     }
-    
+
     @Override
     public List<MonitoringResult> getMonitoringList(){
         List<MonitoringResult> list = new ArrayList<>(monitoringCache.values());
         Collections.sort(list, (a, b)->Integer.compare(b.getPriority(), a.getPriority()));
         return list;
     }
-    
+
     @Override
     public MonitoringResult pingServer(MonitoringServer server) {
         MonitoringResultImpl result = new MonitoringResultImpl(server);
         server.setNowPinging(true);
         long start = System.currentTimeMillis();
         try (Socket socket = new Socket()){
-            
+
             socket.connect(new InetSocketAddress(server.getIp(), server.getPort()), timeout);
             OutputStream out = socket.getOutputStream();
-            
+
             //HANDSHAKE START
             ByteArrayOutputStream dataBytes = new ByteArrayOutputStream();
             DataOutputStream data = new DataOutputStream(dataBytes);
@@ -179,21 +178,21 @@ class MonitoringServiceImpl implements MonitoringService{
             data.writeBytes(server.getIp());
             data.writeShort(server.getPort());
             writeVarInt(data, 1);
-            
+
             ByteArrayOutputStream dataBytes1 = new ByteArrayOutputStream();
             DataOutputStream data1 = new DataOutputStream(dataBytes1);
             writeVarInt(data1, dataBytes.size());
             data1.write(dataBytes.toByteArray());
-            
+
             dataBytes1.writeTo(out);
             out.flush();
             //HANDSHAKE END
-            
+
             //STATUS REQUEST START
             out.write(new byte[] {0x1, 0x0});
             out.flush();
             //STATUS REQUEST END
-            
+
             //READING DATA
             DataInputStream response = new DataInputStream(socket.getInputStream());
             readVarInt(response);
@@ -226,7 +225,7 @@ class MonitoringServiceImpl implements MonitoringService{
                     LOGGER.warn("Server "+server.getTag()+" returned packet with wrong id. Expected '0', but received '"+packetId+"'");
                 }
             }
-            
+
         }catch (Exception ex) {
             if(debug) {
                 LOGGER.warn("An exception while pinging server "+server.getTag());
@@ -237,7 +236,7 @@ class MonitoringServiceImpl implements MonitoringService{
         server.setNowPinging(false);
         return result;
     }
-    
+
     //write int without zeros
     private static void writeVarInt(DataOutputStream out, int val) throws IOException {
         while (true) {
@@ -249,7 +248,7 @@ class MonitoringServiceImpl implements MonitoringService{
             val >>>= 7;
         }
     }
-    
+
     private static int readVarInt(DataInputStream in) throws IOException {
         int i = 0;
         int j = 0;
@@ -265,26 +264,26 @@ class MonitoringServiceImpl implements MonitoringService{
         }
         return i;
     }
-    
+
     public static class MonitoringResultImpl implements MonitoringService.MonitoringResult{
-        
+
         private String tag;
         private String name;
         private String description;
         private boolean online;
         private int currentPlayers, maxPlayers;
         private String motd;
-        
+
         private transient int priotiry;
         private transient int pingTime = 0;
-        
+
         private MonitoringResultImpl(MonitoringServer server) {
             this.tag = server.getTag();
             this.name = server.getName();
             this.description = server.getDescription();
             this.priotiry = server.getPriority();
         }
-        
+
         private MonitoringResultImpl(MonitoringServer server, int currentPlayers,
                 int maxPlayers, String motd) {
             this(server);
@@ -293,12 +292,12 @@ class MonitoringServiceImpl implements MonitoringService{
             this.maxPlayers = maxPlayers;
             this.motd = motd;
         }
-        
+
         @Override
         public boolean isOnline() {
             return online;
         }
-        
+
         @Override
         public String getServerTag() {
             return tag;
@@ -308,12 +307,12 @@ class MonitoringServiceImpl implements MonitoringService{
         public String getServerName() {
             return name;
         }
-        
+
         @Override
         public String getServerDescription() {
             return description;
         }
-        
+
         @Override
         public int getCurrentPlayers() {
             return currentPlayers;
@@ -328,21 +327,21 @@ class MonitoringServiceImpl implements MonitoringService{
         public String getMotd() {
             return motd;
         }
-        
+
         public void setPingTime(int pingTime) {
             this.pingTime = pingTime;
         }
-        
+
         @Override
         public int getPingTime() {
             return pingTime;
         }
-        
+
         @Override
         public int getPriority() {
             return priotiry;
         }
-        
+
         @Override
         public String toString() {
             ObjectMapper mapper = new ObjectMapper();
@@ -353,7 +352,7 @@ class MonitoringServiceImpl implements MonitoringService{
                 return super.toString();
             }
         }
-    
+
     }
-    
+
 }

@@ -9,6 +9,10 @@ function MessageHandler(){
 
 	this.delayTime = 10000;
 
+	this.template = '{text}';
+
+	this.append = false;
+
 	function getMessageClass(msg){
 		switch(msg.type){
 			case 'err': case 'error': return 'message_err';
@@ -29,7 +33,7 @@ function MessageHandler(){
 	}
 
 	this.fadeOut = function(message, displayCounter, innerCallback) {
-		message.fadeOut(800, innerCallback());
+		message.fadeOut(800, innerCallback);
 	}
 
 	function close(message){
@@ -63,13 +67,18 @@ function MessageHandler(){
 	this.showMessage = function(msg, type, time) {
 		msg = getMsg(msg, type, time);
 		let index = ++msgCounter;
-		$('#msg_block').prepend('<div message-index="'+index+'" class="message"></div>')
+		let tpl = this.template.replaceAll('{text}', msg.text);
+		tpl = '<div message-index="'+index+'" class="message">'+tpl+'</div>';
+		if(this.append){
+			$('#msg_block').append(tpl);
+		}else{
+			$('#msg_block').prepend(tpl);
+		}
 		let message = $('#msg_block .message[message-index="'+index+'"]');
 		message.showed = true;
 		this.fadeIn(message, displayCounter);
 		++displayCounter;
 		message.addClass(getMessageClass(msg));
-		message.html(msg.text);
 		message.on("click", function(){close(message)});
 		let delay = this.delayTime;
 		if(msg.time !== undefined && msg.time >= -1) delay = msg.time;
@@ -93,7 +102,7 @@ function MessageHandler(){
 		let cookie = $.cookie('message');
 		let msgs = JSON.parse(cookie != undefined ? cookie : '[]');
 		if(msgs.length > 0) {
-			$.cookie('message', '[]');
+			$.cookie('message', '[]', { 'path': '/' });
 			$(document).ready(function(){
 				for(var i = 0; i<msgs.length; i++){
 					let msg = msgs[i];

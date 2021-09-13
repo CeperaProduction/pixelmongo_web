@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.pixelmongo.pixelmongo.model.PaginationElement;
 import ru.pixelmongo.pixelmongo.model.PaginationElement.Step;
 import ru.pixelmongo.pixelmongo.model.entities.User;
+import ru.pixelmongo.pixelmongo.model.entities.UserPermission;
 import ru.pixelmongo.pixelmongo.services.TemplateService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
@@ -24,6 +26,9 @@ public class TemplateServiceImpl implements TemplateService{
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageSource msg;
 
     public List<PaginationElement> getPagination(int currentPage,
             int totalPages, int maxButtons) {
@@ -121,6 +126,11 @@ public class TemplateServiceImpl implements TemplateService{
     public String addParameterToCurrentUrl(String parameter, String value) {
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
         return builder.replaceQueryParam(parameter, value).toUriString();
+    }
+
+    @Override
+    public String printPerm(UserPermission perm, Locale loc) {
+        return msg.getMessage("permission."+perm.getValue(), null, perm.getValue(), loc);
     }
 
 }

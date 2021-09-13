@@ -1,5 +1,7 @@
 package ru.pixelmongo.pixelmongo.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class PopupMessage {
 
     private String text = "";
@@ -49,6 +51,7 @@ public class PopupMessage {
         ERROR;
 
         @Override
+        @JsonValue
         public String toString() {
             return name().toLowerCase();
         }

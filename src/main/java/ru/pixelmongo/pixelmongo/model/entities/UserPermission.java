@@ -21,6 +21,14 @@ public class UserPermission implements GrantedAuthority{
 
     private String value;
 
+    public int getId() {
+        return id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public String getAuthority() {
         return value;

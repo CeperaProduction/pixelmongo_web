@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 
 import ru.pixelmongo.pixelmongo.model.PaginationElement;
 import ru.pixelmongo.pixelmongo.model.entities.User;
+import ru.pixelmongo.pixelmongo.model.entities.UserPermission;
 
 public interface TemplateService {
 
@@ -52,5 +53,12 @@ public interface TemplateService {
     public String printUserLastLoginIp(User user);
 
     public String addParameterToCurrentUrl(String parameter, String value);
+
+    public String printPerm(UserPermission perm, Locale loc);
+
+    public default String printPerm(UserPermission perm) {
+        Locale loc = LocaleContextHolder.getLocale();
+        return printPerm(perm, loc);
+    }
 
 }

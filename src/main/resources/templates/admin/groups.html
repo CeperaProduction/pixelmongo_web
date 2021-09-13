@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление группами</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Список групп (<span th:text="${groups.size()}"></span>)
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0" th:if="${users_count != 0}">
+					<thead>
+						<tr>
+							<th scope="col">Название группы</th>
+							<th scope="col">Количество пользователей</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="group : ${groups}">
+							<td>
+								<a th:href="@{/admin/groups/{id}(id=${group.id})}"
+									th:text="${group.name}"></a>
+							</td>
+							<td th:text="${group.users.size()}"></td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="card-footer">
+		    	<a th:href="@{/admin/groups/new}" class="btn btn-primary">Создать</a>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

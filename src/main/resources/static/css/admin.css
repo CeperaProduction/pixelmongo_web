@@ -165,3 +165,51 @@ form.link button:active{
 	padding: 15px;
 	overflow-wrap: break-word;
 }
+
+#msg_block{
+	top: 80px;
+	right: 0;
+	position: fixed;
+	z-index: 20000;
+	width: 250px;
+}
+
+.message{
+	width: 250px;
+	border: 0px solid #ffffff;
+	border-radius: 5px 0 0 5px;
+	padding: 0 0 0 20px;
+	margin-bottom: 10px;
+	cursor: pointer;
+	font-weight: 600;
+	font-size: 0.8em;
+	background: var(--info);
+	box-shadow: 0 0 5px rgba(0.3, 0.3, 0.3, 0.5);
+}
+
+.message-content{
+	background: #ffffff;
+	padding: 10px;
+	word-wrap: break-word;
+	width: 100%;
+}
+
+.message_ok{
+	background: var(--success);
+	box-shadow: 0 0 5px var(--success);
+}
+
+.message_err{
+	background: var(--danger);
+	box-shadow: 0 0 5px var(--danger);
+}
+
+.message_warn{
+	background: var(--warning);
+	box-shadow: 0 0 5px var(--warning);
+}
+
+.message_info{
+	background: var(--info);
+	box-shadow: 0 0 5px var(--info);
+}
