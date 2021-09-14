@@ -72,6 +72,11 @@
 									th:value="${group.id}"
 									th:text="${group.name}"></option>
 							</select>
+							<th:block th:if="${user.id == @user.id}">
+							<small class="text-muted">
+								Изменив собственную группу вы потеряете некоторые полномочия. В том числе вы не сможете её вернуть.
+							</small>
+							</th:block>
 						</div>
 					</div>
 					<hr class="separator">
@@ -98,12 +103,15 @@
 					</div>
 	        	</form>
 		    </div>
-		    <div class="card-footer">
+		    <div class="card-footer" th:if="${can_manage}">
 				<button form="userForm" type="submit" class="btn btn-primary">Применить</button>
 				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${user.id != @user.id}">
 					<button type="submit" class="btn btn-danger">Удалить</button>
 				</form>
 		    </div>
+		    <script th:if="${!can_manage}">
+				$("#userForm :input").prop("disabled", true);
+			</script>
 		</div>
 		<div class="card mb-3">
 		    <div class="card-header">

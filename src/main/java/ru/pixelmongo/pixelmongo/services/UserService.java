@@ -11,7 +11,7 @@ import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.User;
 import ru.pixelmongo.pixelmongo.model.dao.UserLoginRecord;
 
-public interface UserService  extends UserDetailsService{
+public interface UserService extends UserDetailsService{
 
     public Optional<User> getUser(UserDetails userDetails);
 
@@ -49,5 +49,19 @@ public interface UserService  extends UserDetailsService{
     }
 
     public Optional<UserLoginRecord> getLastLogin(User user);
+
+    /**
+     * Check if current user has given permission
+     * @param permission
+     * @return
+     */
+    public boolean hasPerm(String permission);
+
+    /**
+     * Check if given user has given permission
+     * @param permission
+     * @return
+     */
+    public boolean hasPerm(User user, String permission);
 
 }

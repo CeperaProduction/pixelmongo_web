@@ -1,6 +1,8 @@
 package ru.pixelmongo.pixelmongo.controllers.admin;
 
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,12 +25,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.model.dao.User;
 import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserGroupManageForm;
 import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserPermissionRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
+import ru.pixelmongo.pixelmongo.services.UserService;
 
 @Controller
 @RequestMapping("/admin/groups")
@@ -47,6 +51,9 @@ public class UserGroupsController {
     private PopupMessageService popupMsg;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private User currentUser;
 
     @Autowired
@@ -62,7 +69,9 @@ public class UserGroupsController {
     public String newGroup(Model model, Locale loc) {
         model.addAttribute("group", new UserGroup());
         model.addAttribute("groupForm", new UserGroupManageForm());
-        model.addAttribute("permissions", permissions.findAll());
+        model.addAttribute("permissions", permissions.findAllSorted());
+        model.addAttribute("own_permissions", getAvilablePermissions());
+        model.addAttribute("max_perm_level", getMaxPermLevel());
         return "admin/group";
     }
 
@@ -76,8 +85,10 @@ public class UserGroupsController {
             Locale loc) {
 
         UserGroup group = new UserGroup();
+        Set<UserPermission> avPerms = getAvilablePermissions();
+        int permLevel = getMaxPermLevel();
         if(checkForm(form, binding, 0, loc)) {
-            form.apply(group);
+            form.apply(group, avPerms, permLevel);
             group = groups.save(group);
             logs.log("admin.log.group.create",
                     new Object[] {group.getName()+" #"+group.getId()},
@@ -90,7 +101,10 @@ public class UserGroupsController {
             return "redirect:/admin/groups/"+group.getId();
         }
         model.addAttribute("group", group);
-        model.addAttribute("permissions", permissions.findAll());
+        model.addAttribute("can_manage", true);
+        model.addAttribute("permissions", permissions.findAllSorted());
+        model.addAttribute("own_permissions", avPerms);
+        model.addAttribute("max_perm_level", permLevel-1);
         return "admin/group";
     }
 
@@ -98,8 +112,11 @@ public class UserGroupsController {
     public String group(@PathVariable int groupId, Model model, Locale loc) {
         UserGroup group = findGroup(groupId, loc);
         model.addAttribute("group", group);
+        model.addAttribute("can_manage", hasManagePerm() && canManage(group));
         model.addAttribute("groupForm", new UserGroupManageForm(group));
-        model.addAttribute("permissions", permissions.findAll());
+        model.addAttribute("permissions", permissions.findAllSorted());
+        model.addAttribute("own_permissions", getAvilablePermissions());
+        model.addAttribute("max_perm_level", getMaxPermLevel());
         return "admin/group";
     }
 
@@ -112,8 +129,11 @@ public class UserGroupsController {
             HttpServletResponse response,
             Locale loc) {
         UserGroup group = findGroup(groupId, loc);
+        checkPermLevel(group);
+        Set<UserPermission> avPerms = getAvilablePermissions();
+        int permLevel = getMaxPermLevel();
         if(checkForm(form, binding, groupId, loc)) {
-            form.apply(group);
+            form.apply(group, avPerms, permLevel);
             group = groups.save(group);
             logs.log("admin.log.group.edit",
                     new Object[] {group.getName()+" #"+group.getId()},
@@ -125,7 +145,10 @@ public class UserGroupsController {
                     request, response);
         }
         model.addAttribute("group", group);
-        model.addAttribute("permissions", permissions.findAll());
+        model.addAttribute("can_manage", canManage(group));
+        model.addAttribute("permissions", permissions.findAllSorted());
+        model.addAttribute("own_permissions", avPerms);
+        model.addAttribute("max_perm_level", permLevel);
         return "admin/group";
     }
 
@@ -140,6 +163,7 @@ public class UserGroupsController {
                     msg.getMessage("error.status.405.group", null, loc));
         }
         UserGroup group = findGroup(groupId, loc);
+        checkPermLevel(group);
         groups.freeGroup(group);
         groups.delete(group);
         logs.log("admin.log.group.delete",
@@ -171,6 +195,40 @@ public class UserGroupsController {
     @ModelAttribute
     public void applyMode(Model model) {
         model.addAttribute("mode", "users");
+    }
+
+    private Set<UserPermission> getAvilablePermissions(){
+        UserGroup currentGroup = currentUser.getGroup();
+        if(currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN) {
+            Set<UserPermission> result = new HashSet<UserPermission>();
+            permissions.findAll().forEach(result::add);
+            return result;
+        }
+        return new HashSet<>(currentGroup.getPermissions());
+    }
+
+    private boolean canManage(UserGroup targetGroup) {
+        UserGroup currentGroup = currentUser.getGroup();
+        return currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN
+                || targetGroup.getPermissionLevel() < currentGroup.getPermissionLevel();
+    }
+
+    private void checkPermLevel(UserGroup targetGroup) {
+        if(!canManage(targetGroup)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    private int getMaxPermLevel() {
+        UserGroup currentGroup = currentUser.getGroup();
+        if(currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN) {
+            return 99;
+        }
+        return currentGroup.getPermissionLevel()-1;
+    }
+
+    private boolean hasManagePerm() {
+        return userService.hasPerm("admin.panel.groups.edit");
     }
 
 }

@@ -134,4 +134,20 @@ class UserServiceImpl implements UserService{
         return Optional.empty();
     }
 
+    @Override
+    public boolean hasPerm(String permission) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(permission));
+    }
+
+    @Override
+    public boolean hasPerm(User user, String permission) {
+        if(user != null) {
+            return user.getGroup().getPermissions().stream()
+                .anyMatch(p->p.getAuthority().equals(permission));
+        }
+        return false;
+    }
+
 }

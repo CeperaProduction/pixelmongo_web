@@ -31,6 +31,22 @@
 								th:errors="*{name}"></div>
 						</div>
 					</div>
+					<div class="form-group row">
+						<label for="inputName" class="col-sm-3 col-form-label text-truncate">Уровень полномочий</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control"
+								id="inputName" placeholder="Уровень полномочий"
+								th:field="*{permLevel}"
+								min="1"
+								th:max="${max_perm_level}"
+								th:disabled="${group.id == 1}"
+								required>
+							<small class="text-muted">
+								Пользователи не могут управлять группами и пользователями,
+								чей уровень полномочий равен или выше чем их
+							</small>
+						</div>
+					</div>
 					<hr class="separator">
 					<div class="form-group row">
 						<div class="col-sm-3 col-form-label text-truncate">Полномочия</div>
@@ -41,13 +57,16 @@
 							<div th:if="${group.id != 1}">
 								<div class="custom-control custom-checkbox"
 									th:each="perm : ${permissions}"
-									th:with="checkbox_id = 'perm_'+${perm.id}">
+									th:with="checkbox_id = 'perm_'+${perm.id},
+										canChange = ${own_permissions.contains(perm)},
+										checkGroup = ${canChange ? groupForm : group}">
 									<input type="checkbox"
 										class="custom-control-input"
 										th:id="${checkbox_id}"
 										th:name="permissions"
 										th:value="${perm.id}"
-										th:checked="${groupForm.permissions.contains(perm)}">
+										th:checked="${checkGroup.permissions.contains(perm)}"
+										th:disabled="${!canChange}">
 									<label class="custom-control-label"
 										th:for="${checkbox_id}"
 										th:text="${@templateService.printPerm(perm)}"></label>
@@ -57,13 +76,16 @@
 					</div>
 	        	</form>
 		    </div>
-		    <div class="card-footer">
+		    <div class="card-footer" th:if="${can_manage}">
 				<button form="groupForm" type="submit" class="btn btn-primary">Применить</button>
 				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${group.id > 2}">
 					<button type="submit" class="btn btn-danger">Удалить</button>
 				</form>
 		    </div>
 		</div>
+		<script th:if="${!can_manage}">
+			$("#groupForm :input").prop("disabled", true);
+		</script>
 	</div>
 </body>
 </html>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -57,7 +58,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http
         .authorizeRequests()
+
             .antMatchers("/admin/**").hasAuthority("admin.panel.access")
+
+            .antMatchers("/admin/users/**").hasAuthority("admin.panel.users")
+            //Users controller handles edit permissions by itself.
+            //It lets user manage his own profile.
+
+            .antMatchers("/admin/groups/**").hasAuthority("admin.panel.groups")
+            .antMatchers(HttpMethod.POST, "/admin/groups/**").hasAuthority("admin.panel.groups.edit")
+            .antMatchers(HttpMethod.DELETE, "/admin/groups/**").hasAuthority("admin.panel.groups.edit")
+            .antMatchers("/admin/groups/new").hasAuthority("admin.panel.groups.edit")
+
+            .antMatchers("/admin/rules/**").hasAuthority("admin.panel.rules")
+
+            .antMatchers("/admin/logs/**").hasAuthority("admin.panel.logs")
+
             .antMatchers("/**").permitAll();
 
     }

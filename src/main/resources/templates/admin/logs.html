@@ -46,9 +46,11 @@
 					</thead>
 					<tbody>
 						<tr th:each="log : ${logs}">
-							<td th:text="${log.userName}"></td>
+							<td th:text="${log.userName}"
+								th:title="${log.userName+'#'+log.userId}"></td>
 							<td th:text="${log.data}"></td>
-							<td th:text="${@templateService.printDate(log.date)}"></td>
+							<td th:text="${@templateService.printDate(log.date)}"
+								th:title="${'IP: '+log.userIp}"></td>
 						</tr>
 					</tbody>
 				</table>

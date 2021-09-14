@@ -94,7 +94,7 @@ function MessageHandler(){
 		let msgs = JSON.parse(cookie != undefined ? cookie : '[]');
 		msgs.push(msg);
 		cookie = JSON.stringify(msgs);
-		$.cookie('message', cookie);
+		$.cookie('message', cookie, { 'path': '/' });
 	}
 
 

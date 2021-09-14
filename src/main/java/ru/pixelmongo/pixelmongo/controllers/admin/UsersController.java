@@ -1,5 +1,7 @@
 package ru.pixelmongo.pixelmongo.controllers.admin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,6 +78,7 @@ public class UsersController {
         Pageable pageable = PageRequest.of(page-1, 50);
         Page<User> usersPage = this.users.findAllSorted(search, userGroup, pageable);
         templateService.addPagination(model, page, usersPage.getTotalPages(), 9);
+
         model.addAttribute("search", StringUtils.hasText(search) ? search : "");
         model.addAttribute("users", usersPage.getContent());
         model.addAttribute("users_count", usersPage.getTotalElements());
@@ -89,11 +92,9 @@ public class UsersController {
         User user = findUser(userName, loc);
 
         model.addAttribute("user", user);
-        if(!model.containsAttribute("userForm")) {
-            model.addAttribute("userForm", new UserManageForm(user));
-        }
-
-        model.addAttribute("groups", groups.findAll());
+        model.addAttribute("can_manage", hasManagePerm(user) && canManage(user));
+        model.addAttribute("userForm", new UserManageForm(user));
+        model.addAttribute("groups", getAvailableGroups(user));
 
         return "admin/user";
     }
@@ -107,14 +108,15 @@ public class UsersController {
             HttpServletResponse response,
             Locale loc) {
 
+        User user = findUser(userName, loc);
+        checkPerms(user);
+
         if(!userForm.getPassword().equals(userForm.getPasswordRepeat())) {
             binding.addError(new FieldError("userForm", "passwordRepeat",
                     msg.getMessage("auth.password.not_same", null, loc)));
         }
 
         if(!binding.hasErrors()) {
-
-            User user = findUser(userName, loc);
             boolean changed = false;
 
             if(StringUtils.hasText(userForm.getEmail())
@@ -130,12 +132,18 @@ public class UsersController {
 
             if(user.getGroup().getId() != userForm.getGroupId()) {
                 groups.findById(userForm.getGroupId())
+                    .filter(g->{
+                        UserGroup cg = currentUser.getGroup();
+                        if(cg.getId() == UserGroupRepository.GROUP_ID_ADMIN)
+                            return true;
+                        return cg.getPermissionLevel() > g.getPermissionLevel();
+                    })
                     .ifPresent(user::setGroup);
                 changed = true;
             }
 
             if(changed) {
-                users.save(user);
+                user = users.save(user);
                 logs.log("admin.log.user.edit",
                         new Object[] {user.getName()+" #"+user.getId()},
                         currentUser, request.getRemoteAddr());
@@ -148,7 +156,11 @@ public class UsersController {
 
         }
 
-        return user(userName, model, loc);
+        model.addAttribute("user", user);
+        model.addAttribute("can_manage", hasManagePerm(user) && canManage(user));
+        model.addAttribute("groups", getAvailableGroups(user));
+
+        return "admin/user";
     }
 
     @DeleteMapping("/{userName}")
@@ -157,6 +169,7 @@ public class UsersController {
             HttpServletResponse response,
             Locale loc) {
         User user = findUser(userName, loc);
+        checkPerms(user);
         if(user.getId() == currentUser.getId()) {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED,
                     msg.getMessage("error.status.405.user", null, loc));
@@ -177,6 +190,52 @@ public class UsersController {
         return users.findByName(userName).orElseThrow(()->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         msg.getMessage("error.status.404.user", null, loc)));
+    }
+
+    private void checkPerms(User targetUser) {
+        checkPerm(targetUser);
+        checkPermLevel(targetUser);
+    }
+
+    private void checkPermLevel(User targetUser) {
+        if(!canManage(targetUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    private void checkPerm(User targetUser) {
+        if(!hasManagePerm(targetUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    private boolean canManage(User targetUser) {
+        User currentUser = this.currentUser;
+        UserGroup currentGroup = currentUser.getGroup();
+        return currentUser.getId() == targetUser.getId()
+                || currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN
+                || targetUser.getGroup().getPermissionLevel() < currentGroup.getPermissionLevel();
+    }
+
+    private boolean hasManagePerm(User target) {
+        return target.getId() == currentUser.getId()
+                || userService.hasPerm("admin.panel.users.edit");
+    }
+
+    private List<UserGroup> getAvailableGroups(User target){
+        ArrayList<UserGroup> av = new ArrayList<>();
+        UserGroup currentGroup = currentUser.getGroup();
+        if(currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN) {
+            groups.findAll().forEach(av::add);
+        }else {
+            for(UserGroup g : groups.findAll())
+                if(currentGroup.getPermissionLevel() > g.getPermissionLevel())
+                    av.add(g);
+            if(!av.stream().anyMatch(g->g.getId() == target.getGroup().getId())) {
+                av.add(0, target.getGroup());
+            }
+        }
+        return av;
     }
 
     @ModelAttribute
