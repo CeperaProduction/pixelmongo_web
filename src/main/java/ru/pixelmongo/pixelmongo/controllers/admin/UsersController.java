@@ -32,6 +32,7 @@ import ru.pixelmongo.pixelmongo.model.entities.UserGroup;
 import ru.pixelmongo.pixelmongo.model.entities.forms.UserManageForm;
 import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserRepository;
+import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 import ru.pixelmongo.pixelmongo.services.TemplateService;
 import ru.pixelmongo.pixelmongo.services.UserService;
@@ -60,6 +61,9 @@ public class UsersController {
 
     @Autowired
     private User currentUser;
+
+    @Autowired
+    private AdminLogService logs;
 
     @GetMapping
     public String userList(@RequestParam(defaultValue = "1") int page,
@@ -132,6 +136,9 @@ public class UsersController {
 
             if(changed) {
                 users.save(user);
+                logs.log("admin.log.user.edit",
+                        new Object[] {user.getName()+" #"+user.getId()},
+                        currentUser, request.getRemoteAddr());
                 popupMsg.sendUsingCookies(
                         new PopupMessage(
                                 msg.getMessage("admin.user.edited", new Object[] {user.getName()}, loc),
@@ -155,6 +162,9 @@ public class UsersController {
                     msg.getMessage("error.status.405.user", null, loc));
         }
         users.delete(user);
+        logs.log("admin.log.user.delete",
+                new Object[] {user.getName()+" #"+user.getId()},
+                currentUser, request.getRemoteAddr());
         popupMsg.sendUsingCookies(
                 new PopupMessage(
                         msg.getMessage("admin.user.deleted", new Object[] {user.getName()}, loc),

@@ -22,7 +22,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.model.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.entities.Rules;
+import ru.pixelmongo.pixelmongo.model.entities.User;
 import ru.pixelmongo.pixelmongo.repositories.RulesRepository;
+import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 
 @Controller
@@ -37,6 +39,12 @@ public class RulesController {
 
     @Autowired
     private PopupMessageService popup;
+
+    @Autowired
+    private User currentUser;
+
+    @Autowired
+    private AdminLogService logs;
 
     @GetMapping
     public String list(Model model) {
@@ -60,6 +68,8 @@ public class RulesController {
             HttpServletResponse response) {
         if(!binding.hasErrors()) {
             rule = rules.save(rule);
+            logs.log("admin.log.rules.edit", null,
+                    currentUser, request.getRemoteAddr());
             popup.sendUsingCookies(
                     new PopupMessage(
                             msg.getMessage("admin.rules.created", null, loc),
@@ -89,6 +99,8 @@ public class RulesController {
             Rules savedRule = findRule(id, loc);
             rule.copyTo(savedRule);
             savedRule = rules.save(savedRule);
+            logs.log("admin.log.rules.edit", null,
+                    currentUser, request.getRemoteAddr());
             popup.sendUsingCookies(
                     new PopupMessage(
                             msg.getMessage("admin.rules.edited", null, loc),
@@ -106,6 +118,8 @@ public class RulesController {
             HttpServletResponse response) {
         Rules rule = findRule(id, loc);
         rules.delete(rule);
+        logs.log("admin.log.rules.edit", null,
+                currentUser, request.getRemoteAddr());
         popup.sendUsingCookies(
                 new PopupMessage(
                         msg.getMessage("admin.rules.deleted", null, loc),

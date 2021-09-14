@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Логи админ-панели</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Поиск в логах
+		    </div>
+		    <div class="card-body">
+	        	<form th:method="GET">
+		        	<div class="input-group mb-2">
+		        		<input type="text" class="form-control"
+							placeholder="Строка для поиска"
+							aria-label="Строка для поиска"
+							aria-describedby="basic-addon2"
+							name="search"
+							th:value="${search}">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="fa fa-search"></i>
+								Поиск
+							</button>
+						</div>
+					</div>
+	        	</form>
+		    </div>
+		</div>
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Логи админ-панели
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0" th:if="${logs_count != 0}">
+					<thead>
+						<tr>
+							<th scope="col">Логин</th>
+							<th scope="col">Информация</th>
+							<th scope="col">Дата</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="log : ${logs}">
+							<td th:text="${log.userName}"></td>
+							<td th:text="${log.data}"></td>
+							<td th:text="${@templateService.printDate(log.date)}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="container" th:if="${logs_count == 0}">
+					<table class="table" style="min-height: 200px">
+						<tbody>
+							<tr>
+								<td class="align-middle text-center">
+									По указанным параметрам не удалось найти ни одной записи
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+		    </div>
+		    <div class="card-footer p-1">
+		    	<div th:if="${logs_count != 0}">
+					<div th:replace="~{admin/fragments/pagination :: pagination}"></div>
+				</div>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

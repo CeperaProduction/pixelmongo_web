@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.model.PopupMessage;
+import ru.pixelmongo.pixelmongo.model.entities.User;
 import ru.pixelmongo.pixelmongo.model.entities.UserGroup;
 import ru.pixelmongo.pixelmongo.model.entities.forms.UserGroupManageForm;
 import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserPermissionRepository;
+import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 
 @Controller
@@ -43,6 +45,12 @@ public class UserGroupsController {
 
     @Autowired
     private PopupMessageService popupMsg;
+
+    @Autowired
+    private User currentUser;
+
+    @Autowired
+    private AdminLogService logs;
 
     @GetMapping
     public String groupList(Model model) {
@@ -71,6 +79,9 @@ public class UserGroupsController {
         if(checkForm(form, binding, 0, loc)) {
             form.apply(group);
             group = groups.save(group);
+            logs.log("admin.log.group.create",
+                    new Object[] {group.getName()+" #"+group.getId()},
+                    currentUser, request.getRemoteAddr());
             popupMsg.sendUsingCookies(
                     new PopupMessage(
                             msg.getMessage("admin.group.created", new Object[] {group.getName()}, loc),
@@ -104,6 +115,9 @@ public class UserGroupsController {
         if(checkForm(form, binding, groupId, loc)) {
             form.apply(group);
             group = groups.save(group);
+            logs.log("admin.log.group.edit",
+                    new Object[] {group.getName()+" #"+group.getId()},
+                    currentUser, request.getRemoteAddr());
             popupMsg.sendUsingCookies(
                     new PopupMessage(
                             msg.getMessage("admin.group.edited", new Object[] {group.getName()}, loc),
@@ -128,6 +142,9 @@ public class UserGroupsController {
         UserGroup group = findGroup(groupId, loc);
         groups.freeGroup(group);
         groups.delete(group);
+        logs.log("admin.log.group.delete",
+                new Object[] {group.getName()+" #"+group.getId()},
+                currentUser, request.getRemoteAddr());
         popupMsg.sendUsingCookies(
                 new PopupMessage(
                         msg.getMessage("admin.group.deleted", new Object[] {group.getName()}, loc),
