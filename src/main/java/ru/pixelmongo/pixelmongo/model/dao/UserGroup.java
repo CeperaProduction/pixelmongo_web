@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.entities;
+package ru.pixelmongo.pixelmongo.model.dao;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,11 +12,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-@Entity(name = "user_groups")
+@Entity
+@Table(name = "user_groups")
 public class UserGroup {
 
     @Id
@@ -25,6 +27,9 @@ public class UserGroup {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(name = "perm_level")
+    private int permissionLevel = 1;
 
     @LazyCollection(LazyCollectionOption.EXTRA)
     @OneToMany(mappedBy = "group")

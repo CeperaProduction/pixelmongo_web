@@ -1,51 +1,53 @@
-package ru.pixelmongo.pixelmongo.model.entities;
+package ru.pixelmongo.pixelmongo.model.dao;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
 
-@Entity(name = "monitoring_servers")
+@Entity
+@Table(name = "monitoring_servers")
 public class MonitoringServer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @Column(nullable = false, unique = true)
     private String tag;
-    
+
     @Column(nullable = false)
     private String name;
-    
+
     private String description = "";
-    
+
     @Column(nullable = false)
     private String ip;
-    
+
     @Column(nullable = false)
     private short port = 25565;
-    
+
     @Column(nullable = false)
     private int priority = 20;
-    
+
     private transient boolean nowPinging = false;
-    
+
     public MonitoringServer() {}
-    
+
     public MonitoringServer(String tag, String name, String ip, short port) {
         this.tag = tag;
         this.name = name;
         this.ip = ip;
         this.port = port;
     }
-    
+
     public int getId() {
         return id;
     }
@@ -65,11 +67,11 @@ public class MonitoringServer {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -89,23 +91,23 @@ public class MonitoringServer {
     public void setPort(short port) {
         this.port = port;
     }
-    
+
     public int getPriority() {
         return priority;
     }
-    
+
     public void setPriority(int priority) {
         this.priority = priority;
     }
-    
+
     public boolean isNowPinging() {
         return nowPinging;
     }
-    
+
     public void setNowPinging(boolean nowPinging) {
         this.nowPinging = nowPinging;
     }
-    
+
     @Override
     public String toString() {
         ObjectMapper mapper = new ObjectMapper();
@@ -116,5 +118,5 @@ public class MonitoringServer {
             return super.toString();
         }
     }
-    
+
 }

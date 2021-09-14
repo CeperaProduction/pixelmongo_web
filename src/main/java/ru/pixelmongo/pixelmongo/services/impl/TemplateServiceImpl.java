@@ -11,10 +11,10 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import ru.pixelmongo.pixelmongo.model.PaginationElement;
-import ru.pixelmongo.pixelmongo.model.PaginationElement.Step;
-import ru.pixelmongo.pixelmongo.model.entities.User;
-import ru.pixelmongo.pixelmongo.model.entities.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dto.PaginationElement;
+import ru.pixelmongo.pixelmongo.model.dto.PaginationElement.Step;
 import ru.pixelmongo.pixelmongo.services.TemplateService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 

@@ -17,9 +17,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.context.annotation.RequestScope;
 
-import ru.pixelmongo.pixelmongo.model.entities.AnonymousUser;
-import ru.pixelmongo.pixelmongo.model.entities.User;
-import ru.pixelmongo.pixelmongo.model.entities.UserDetails;
+import ru.pixelmongo.pixelmongo.model.AnonymousUser;
+import ru.pixelmongo.pixelmongo.model.UserDetails;
+import ru.pixelmongo.pixelmongo.model.dao.User;
 import ru.pixelmongo.pixelmongo.services.UserService;
 import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 

@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import ru.pixelmongo.pixelmongo.model.entities.AdminLogRecord;
+import ru.pixelmongo.pixelmongo.model.dao.AdminLogRecord;
 
 @Repository
 public interface AdminLogRecordRepositiory extends JpaRepository<AdminLogRecord, Integer>{

@@ -7,9 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
-import ru.pixelmongo.pixelmongo.model.entities.User;
-import ru.pixelmongo.pixelmongo.model.entities.UserDetails;
-import ru.pixelmongo.pixelmongo.model.entities.UserLoginRecord;
+import ru.pixelmongo.pixelmongo.model.UserDetails;
+import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.UserLoginRecord;
 
 public interface UserService  extends UserDetailsService{
 

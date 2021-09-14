@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model;
+package ru.pixelmongo.pixelmongo.model.dto;
 
 import org.apache.logging.log4j.LogManager;
 

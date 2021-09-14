@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.entities;
+package ru.pixelmongo.pixelmongo.model.dao;
 
 import java.util.Date;
 
@@ -9,8 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-@Entity(name = "users_login_data")
+@Entity
+@Table(name = "users_login_data")
 public class UserLoginRecord {
 
     @Id

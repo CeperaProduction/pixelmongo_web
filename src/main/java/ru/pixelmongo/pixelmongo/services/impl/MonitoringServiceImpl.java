@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ru.pixelmongo.pixelmongo.model.entities.MonitoringServer;
+import ru.pixelmongo.pixelmongo.model.dao.MonitoringServer;
 import ru.pixelmongo.pixelmongo.repositories.MonitoringServerRepository;
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
 

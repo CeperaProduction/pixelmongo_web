@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import ru.pixelmongo.pixelmongo.model.entities.User;
-import ru.pixelmongo.pixelmongo.model.entities.UserLoginRecord;
+import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.UserLoginRecord;
 
 public interface UserLoginRecordRepository extends CrudRepository<UserLoginRecord, Integer>{
 

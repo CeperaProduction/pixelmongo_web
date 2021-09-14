@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.entities;
+package ru.pixelmongo.pixelmongo.model.dao;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,8 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.Table;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id

@@ -1,13 +1,15 @@
-package ru.pixelmongo.pixelmongo.model.entities;
+package ru.pixelmongo.pixelmongo.model.dao;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 
-@Entity(name = "permission_list")
+@Entity
+@Table(name = "permission_list")
 public class UserPermission implements GrantedAuthority{
 
     /**

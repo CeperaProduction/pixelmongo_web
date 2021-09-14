@@ -35,14 +35,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
-import ru.pixelmongo.pixelmongo.model.entities.User;
-import ru.pixelmongo.pixelmongo.model.entities.UserDetails;
-import ru.pixelmongo.pixelmongo.model.entities.forms.UserLoginForm;
-import ru.pixelmongo.pixelmongo.model.entities.forms.UserRegistrationForm;
-import ru.pixelmongo.pixelmongo.model.results.DefaultResult;
-import ru.pixelmongo.pixelmongo.model.results.ResultDataMessage;
-import ru.pixelmongo.pixelmongo.model.results.ResultMessage;
-import ru.pixelmongo.pixelmongo.model.results.ValidationErrorMessage;
+import ru.pixelmongo.pixelmongo.model.UserDetails;
+import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dto.forms.UserLoginForm;
+import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
+import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
+import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;
+import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
+import ru.pixelmongo.pixelmongo.model.dto.results.ValidationErrorMessage;
 import ru.pixelmongo.pixelmongo.services.CaptchaService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 

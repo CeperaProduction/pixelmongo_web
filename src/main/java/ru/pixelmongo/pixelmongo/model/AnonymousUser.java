@@ -1,9 +1,14 @@
-package ru.pixelmongo.pixelmongo.model.entities;
+package ru.pixelmongo.pixelmongo.model;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.UserLoginRecord;
+import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
 
 public final class AnonymousUser extends User{
 

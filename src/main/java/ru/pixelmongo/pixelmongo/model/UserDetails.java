@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.entities;
+package ru.pixelmongo.pixelmongo.model;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -7,6 +7,8 @@ import java.util.TreeSet;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
+
+import ru.pixelmongo.pixelmongo.model.dao.User;
 
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 

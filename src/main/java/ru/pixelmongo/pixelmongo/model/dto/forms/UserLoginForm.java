@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.entities.forms;
+package ru.pixelmongo.pixelmongo.model.dto.forms;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

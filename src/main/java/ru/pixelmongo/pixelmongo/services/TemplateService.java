@@ -7,9 +7,9 @@ import java.util.Locale;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 
-import ru.pixelmongo.pixelmongo.model.PaginationElement;
-import ru.pixelmongo.pixelmongo.model.entities.User;
-import ru.pixelmongo.pixelmongo.model.entities.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dto.PaginationElement;
 
 public interface TemplateService {
 

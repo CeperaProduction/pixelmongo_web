@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.entities;
+package ru.pixelmongo.pixelmongo.model.dao;
 
 import java.util.Date;
 
@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "admin_log")
+@Table(name = "admin_logs")
 public class AdminLogRecord {
 
     @Id

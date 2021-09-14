@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import ru.pixelmongo.pixelmongo.model.PopupMessage;
+import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 
 public interface PopupMessageService {
 

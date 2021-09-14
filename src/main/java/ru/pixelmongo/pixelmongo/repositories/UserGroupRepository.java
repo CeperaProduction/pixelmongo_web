@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import ru.pixelmongo.pixelmongo.model.entities.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
 
 @Repository
 public interface UserGroupRepository extends CrudRepository<UserGroup, Integer>{
@@ -21,7 +21,7 @@ public interface UserGroupRepository extends CrudRepository<UserGroup, Integer>{
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE users u SET u.group = "+GROUP_ID_USER+" WHERE u.group = ?1")
+    @Query("UPDATE User u SET u.group = "+GROUP_ID_USER+" WHERE u.group = ?1")
     public void freeGroup(UserGroup group);
 
 }

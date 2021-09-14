@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import ru.pixelmongo.pixelmongo.model.entities.MonitoringServer;
+import ru.pixelmongo.pixelmongo.model.dao.MonitoringServer;
 
 @Repository
 public interface MonitoringServerRepository extends CrudRepository<MonitoringServer, Integer>{

@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestOperations;
 
 import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
-import ru.pixelmongo.pixelmongo.model.ReCaptchaResponse;
+import ru.pixelmongo.pixelmongo.model.dto.ReCaptchaResponse;
 import ru.pixelmongo.pixelmongo.services.CaptchaService;
 
 public class ReCaptchaV2Service implements CaptchaService{

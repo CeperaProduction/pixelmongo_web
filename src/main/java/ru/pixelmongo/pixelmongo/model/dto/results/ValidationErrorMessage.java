@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.results;
+package ru.pixelmongo.pixelmongo.model.dto.results;
 
 import java.util.HashMap;
 import java.util.Map;

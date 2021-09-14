@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ru.pixelmongo.pixelmongo.model.entities.AdminLogRecord;
+import ru.pixelmongo.pixelmongo.model.dao.AdminLogRecord;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.TemplateService;
 

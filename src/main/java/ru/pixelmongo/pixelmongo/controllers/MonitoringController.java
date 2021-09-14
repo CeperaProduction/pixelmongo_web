@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ru.pixelmongo.pixelmongo.model.results.DefaultResult;
-import ru.pixelmongo.pixelmongo.model.results.ResultDataMessage;
+import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
+import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
 
 @RestController

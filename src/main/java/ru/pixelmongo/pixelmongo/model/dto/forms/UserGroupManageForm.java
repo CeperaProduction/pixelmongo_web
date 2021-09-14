@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.entities.forms;
+package ru.pixelmongo.pixelmongo.model.dto.forms;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -6,8 +6,8 @@ import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 
-import ru.pixelmongo.pixelmongo.model.entities.UserGroup;
-import ru.pixelmongo.pixelmongo.model.entities.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
 import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
 
 public class UserGroupManageForm {
