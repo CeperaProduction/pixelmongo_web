@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ErrorPageController implements ErrorController{
@@ -22,8 +23,9 @@ public class ErrorPageController implements ErrorController{
     private MessageSource msg;
 
     @RequestMapping("/error")
-    public String handleError(HttpServletRequest request, Model model, Locale loc) {
-        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+    public String handleError(@RequestParam(required = false) String c,
+            HttpServletRequest request, Model model, Locale loc) {
+        Object status = c != null ? c : request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         if (status != null) {
             Integer statusCode = Integer.valueOf(status.toString());
             String uri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI).toString();

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -16,13 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -31,13 +30,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
-import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.User;
-import ru.pixelmongo.pixelmongo.model.dto.forms.UserLoginForm;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;
@@ -48,16 +44,18 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
 @RequestMapping("/auth")
-@RestControllerAdvice
 public class AuthController {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired
+    private AuthenticationManager authManager;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private RememberMeServices rememberMe;
 
     @Autowired
     private CaptchaService captchaService;
@@ -67,28 +65,11 @@ public class AuthController {
 
     //mappings
 
-    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResultMessage login(HttpServletRequest request, UserLoginForm user, Locale loc) {
-        if(isLoggedIn())
-            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("auth.logged.already", null, loc));
-        doLogin(user.getLogin(), user.getPassword(), request.getRemoteAddr());
-        return new ResultMessage(DefaultResult.OK, msg.getMessage("auth.logged.in", null, loc));
-    }
-
-    @PostMapping(path = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResultMessage logout(HttpServletRequest request, HttpServletResponse response, Locale loc) {
-        if(!isLoggedIn()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return new ResultMessage(DefaultResult.ERROR,
-                    msg.getMessage("auth.logged.not", null, loc));
-        }
-        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        logoutHandler.logout(request, null, null);
-        return new ResultMessage(DefaultResult.OK, msg.getMessage("auth.logged.out", null, loc));
-    }
-
     @PostMapping(path = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResultMessage register(HttpServletRequest request, @Valid UserRegistrationForm form, Locale loc) {
+    public ResultMessage register(HttpServletRequest request,
+            HttpServletResponse response,
+            @Valid UserRegistrationForm form,
+            Locale loc) throws ServletException {
         if(!form.getPassword().equals(form.getPasswordRepeat()))
             return new ValidationErrorMessage(msg.getMessage("auth.password.not_same", null, loc),
                     new String[] {"passwordRepeat"},
@@ -104,7 +85,8 @@ public class AuthController {
         User user = userService.registerUser(form.getLogin(), form.getEmail(), form.getPassword(), ip);
         LOGGER.debug("User "+user.getName()+" registered with IP "+ip);
 
-        doLogin(form.getLogin(), form.getPassword(), ip);
+        login(request, response, form.getLogin(), form.getPassword());
+
 
         return new ResultMessage(DefaultResult.OK, msg.getMessage("auth.register.success", null, loc));
     }
@@ -116,27 +98,19 @@ public class AuthController {
         return auth != null && !(auth instanceof AnonymousAuthenticationToken);
     }
 
-    private Authentication doLogin(String login, String password, String ip) {
-        Authentication auth = new UsernamePasswordAuthenticationToken(login, password);
-        auth = authenticationManager.authenticate(auth);
+    private Authentication login(HttpServletRequest request,
+            HttpServletResponse response,
+            String login,
+            String password) {
+        UsernamePasswordAuthenticationToken tocken = new UsernamePasswordAuthenticationToken(login, password);
+        tocken.setDetails(new WebAuthenticationDetails(request));
+        Authentication auth = authManager.authenticate(tocken);
         SecurityContextHolder.getContext().setAuthentication(auth);
-        userService.getUser((UserDetails) auth.getPrincipal()).ifPresent(user -> {
-            userService.saveLoginData(user, ip);
-            LOGGER.debug(user.getName()+" logged in with IP "+ip);
-        });
+        rememberMe.loginSuccess(request, response, auth);
         return auth;
     }
 
     //exception handlers
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({
-        BadCredentialsException.class,
-        UsernameNotFoundException.class
-        })
-    public ResultMessage handleAuthenticationException(AuthenticationException ex, Locale loc){
-        return new ResultMessage(DefaultResult.ERROR, msg.getMessage("auth.fail", null, loc));
-    }
 
     @ExceptionHandler
     public ResultMessage handleUserAlreadyExistsException(UserAlreadyExistsException ex, Locale loc){
@@ -171,7 +145,7 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ResultMessage handleMissingParametersException(InvalidCaptchaEcxeption ex, Locale loc){
+    public ResultMessage handleCaptchaException(InvalidCaptchaEcxeption ex, Locale loc){
         return new ResultMessage(DefaultResult.ERROR, msg.getMessage("captcha.fail", null, loc));
     }
 

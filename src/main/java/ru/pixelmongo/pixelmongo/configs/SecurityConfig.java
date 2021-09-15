@@ -2,7 +2,10 @@ package ru.pixelmongo.pixelmongo.configs;
 
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -16,8 +19,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.context.annotation.RequestScope;
 
+import ru.pixelmongo.pixelmongo.handlers.AuthHandler;
+import ru.pixelmongo.pixelmongo.handlers.impl.AuthHandlerImpl;
 import ru.pixelmongo.pixelmongo.model.AnonymousUser;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.User;
@@ -28,8 +37,14 @@ import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
+    @Value( "${spring.security.rememberme.key}" )
+    private String rememberMeKey;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
@@ -54,29 +69,78 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         return super.authenticationManagerBean();
     }
 
+    @Bean
+    public PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setCreateTableOnStartup(false);
+        repo.setDataSource(dataSource);
+        return repo;
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        PersistentTokenBasedRememberMeServices services
+            = new PersistentTokenBasedRememberMeServices(
+                    rememberMeKey, userDetailsService(), tokenRepository());
+        services.setAlwaysRemember(true);
+        services.setCookieName("remember-me");
+        services.setParameter("remember-me");
+        services.setSeriesLength(16);
+        services.setTokenLength(16);
+        //services.setUseSecureCookie(true);
+        return services;
+    }
+
+    @Bean
+    public AuthHandler authHandler() {
+        return new AuthHandlerImpl();
+    }
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
         .authorizeRequests()
 
-            .antMatchers("/admin/**").hasAuthority("admin.panel.access")
-
             .antMatchers("/admin/users/**").hasAuthority("admin.panel.users")
             //Users controller handles edit permissions by itself.
             //It lets user manage his own profile.
 
+            .antMatchers("/admin/groups/new").hasAuthority("admin.panel.groups.edit")
             .antMatchers("/admin/groups/**").hasAuthority("admin.panel.groups")
             .antMatchers(HttpMethod.POST, "/admin/groups/**").hasAuthority("admin.panel.groups.edit")
             .antMatchers(HttpMethod.DELETE, "/admin/groups/**").hasAuthority("admin.panel.groups.edit")
-            .antMatchers("/admin/groups/new").hasAuthority("admin.panel.groups.edit")
 
             .antMatchers("/admin/rules/**").hasAuthority("admin.panel.rules")
 
             .antMatchers("/admin/logs/**").hasAuthority("admin.panel.logs")
 
-            .antMatchers("/**").permitAll();
+            .antMatchers("/admin/**").hasAuthority("admin.panel.access")
+
+            .anyRequest().permitAll()
+
+        .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(authHandler())
+        .and()
+            .formLogin()
+                .usernameParameter("login")
+                .passwordParameter("password")
+                .loginProcessingUrl("/auth/login")
+                .loginPage("/auth/login-required")
+                .failureHandler(authHandler())
+                .successHandler(authHandler())
+        .and()
+            .logout()
+                .logoutUrl("/auth/logout")
+                .logoutSuccessHandler(authHandler())
+                .deleteCookies("JSESSIONID", "remember-me")
+        .and()
+            .rememberMe().rememberMeServices(rememberMeServices());
 
     }
+
+
 
     @Bean
     @RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
