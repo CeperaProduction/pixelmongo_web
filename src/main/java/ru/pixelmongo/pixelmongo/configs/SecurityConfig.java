@@ -106,10 +106,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             //Users controller handles edit permissions by itself.
             //It lets user manage his own profile.
 
-            .antMatchers("/admin/groups/new").hasAuthority("admin.panel.groups.edit")
-            .antMatchers("/admin/groups/**").hasAuthority("admin.panel.groups")
             .antMatchers(HttpMethod.POST, "/admin/groups/**").hasAuthority("admin.panel.groups.edit")
             .antMatchers(HttpMethod.DELETE, "/admin/groups/**").hasAuthority("admin.panel.groups.edit")
+            .antMatchers("/admin/groups/new").hasAuthority("admin.panel.groups.edit")
+            .antMatchers("/admin/groups/**").hasAuthority("admin.panel.groups")
 
             .antMatchers("/admin/rules/**").hasAuthority("admin.panel.rules")
 

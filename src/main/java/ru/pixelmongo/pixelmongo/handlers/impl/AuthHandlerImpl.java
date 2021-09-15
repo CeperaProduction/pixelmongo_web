@@ -18,10 +18,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ru.pixelmongo.pixelmongo.handlers.AuthHandler;
+import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
+import ru.pixelmongo.pixelmongo.services.UserService;
 
 public class AuthHandlerImpl implements AuthHandler{
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MessageSource msg;
@@ -35,6 +40,11 @@ public class AuthHandlerImpl implements AuthHandler{
         ResultMessage result = new ResultMessage(DefaultResult.OK,
                 msg.getMessage("auth.logged.in", null, request.getLocale()));
         response.getWriter().println(json.writeValueAsString(result));
+        Object principal = authentication.getPrincipal();
+        if(principal instanceof UserDetails) {
+            userService.getUser(((UserDetails) principal))
+                .ifPresent(u->userService.saveLoginData(u, request.getRemoteAddr()));
+        }
     }
 
     @Override

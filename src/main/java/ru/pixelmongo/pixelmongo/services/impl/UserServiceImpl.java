@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -96,7 +97,9 @@ class UserServiceImpl implements UserService{
     @Override
     public void saveLoginData(User user, String ip) {
         UserLoginRecord record = new UserLoginRecord(user, ip);
-        user.getLoginRecords().add(record);
+        try {
+            user.getLoginRecords().add(record);
+        }catch(LazyInitializationException e) {}
         loginRecords.save(record);
     }
 

@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
+import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.User;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
@@ -107,6 +108,11 @@ public class AuthController {
         Authentication auth = authManager.authenticate(tocken);
         SecurityContextHolder.getContext().setAuthentication(auth);
         rememberMe.loginSuccess(request, response, auth);
+        Object principal = auth.getPrincipal();
+        if(principal instanceof UserDetails) {
+            userService.getUser(((UserDetails) principal))
+            .ifPresent(u->userService.saveLoginData(u, request.getRemoteAddr()));
+        }
         return auth;
     }
 
