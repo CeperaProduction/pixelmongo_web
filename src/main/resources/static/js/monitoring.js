@@ -1,5 +1,7 @@
 var monitoring = {
 
+	url : "/open/monitoring",
+
 	started : false,
 
 	refreshTime : 10000,
@@ -21,7 +23,7 @@ var monitoring = {
 	loadData : function(callback){
 		$.ajax({
 				type: "GET",
-				url: "/monitoring",
+				url: monitoring.url,
 				success: function(res){
 					if(res.result == 'ok'){
 						let currentPlayers = 0;

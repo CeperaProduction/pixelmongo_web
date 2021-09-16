@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -124,6 +125,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         return new UserDetailsValidCheckHttpSessionSecurityContextRepository(
                 userService(),
                 rememberMeServices());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(
+                "/css/**", "/js/**", "/fonts/**", "/img/**", "/favicon.ico",
+                "/open/**"
+                );
     }
 
     @Override

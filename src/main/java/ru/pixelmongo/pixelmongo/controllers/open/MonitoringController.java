@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.controllers;
+package ru.pixelmongo.pixelmongo.controllers.open;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +15,7 @@ import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
 
 @RestController
-@RequestMapping("/monitoring")
+@RequestMapping("/open/monitoring")
 public class MonitoringController {
 
     @Autowired
