@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.model.dao.Rules;
-import ru.pixelmongo.pixelmongo.model.dao.User;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.repositories.RulesRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
+import ru.pixelmongo.pixelmongo.services.UserService;
 
 @Controller
 @RequestMapping("/admin/rules")
@@ -35,13 +35,13 @@ public class RulesController {
     private RulesRepository rules;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private MessageSource msg;
 
     @Autowired
     private PopupMessageService popup;
-
-    @Autowired
-    private User currentUser;
 
     @Autowired
     private AdminLogService logs;
@@ -69,7 +69,7 @@ public class RulesController {
         if(!binding.hasErrors()) {
             rule = rules.save(rule);
             logs.log("admin.log.rules.edit", null,
-                    currentUser, request.getRemoteAddr());
+                    userService.getCurrentUser(), request.getRemoteAddr());
             popup.sendUsingCookies(
                     new PopupMessage(
                             msg.getMessage("admin.rules.created", null, loc),
@@ -100,7 +100,7 @@ public class RulesController {
             rule.copyTo(savedRule);
             savedRule = rules.save(savedRule);
             logs.log("admin.log.rules.edit", null,
-                    currentUser, request.getRemoteAddr());
+                    userService.getCurrentUser(), request.getRemoteAddr());
             popup.sendUsingCookies(
                     new PopupMessage(
                             msg.getMessage("admin.rules.edited", null, loc),
@@ -119,7 +119,7 @@ public class RulesController {
         Rules rule = findRule(id, loc);
         rules.delete(rule);
         logs.log("admin.log.rules.edit", null,
-                currentUser, request.getRemoteAddr());
+                userService.getCurrentUser(), request.getRemoteAddr());
         popup.sendUsingCookies(
                 new PopupMessage(
                         msg.getMessage("admin.rules.deleted", null, loc),

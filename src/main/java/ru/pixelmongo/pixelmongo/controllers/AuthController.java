@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -108,12 +109,17 @@ public class AuthController {
         Authentication auth = authManager.authenticate(tocken);
         SecurityContextHolder.getContext().setAuthentication(auth);
         rememberMe.loginSuccess(request, response, auth);
+        saveLoginData(auth, request.getRemoteAddr());
+        return auth;
+    }
+
+    @Transactional
+    private void saveLoginData(Authentication auth, String ip) {
         Object principal = auth.getPrincipal();
         if(principal instanceof UserDetails) {
             userService.getUser(((UserDetails) principal))
-            .ifPresent(u->userService.saveLoginData(u, request.getRemoteAddr()));
+                .ifPresent(u->userService.saveLoginData(u, ip));
         }
-        return auth;
     }
 
     //exception handlers

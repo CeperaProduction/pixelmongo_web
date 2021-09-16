@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.TreeSet;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.util.Assert;
 
 import ru.pixelmongo.pixelmongo.model.dao.User;
 
@@ -20,18 +19,28 @@ public class UserDetails implements org.springframework.security.core.userdetail
     private final int userId;
     private final String name;
 
+    private int groupId;
     private String password;
     private Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
+
+    private long createTime;
+    private boolean invalid;
 
     public UserDetails(User user, Collection<? extends GrantedAuthority> authorities) {
         this.userId = user.getId();
         this.name = user.getName();
         this.password = user.getPassword();
+        this.groupId = user.getGroup().getId();
         this.setAuthorities(authorities);
+        this.createTime = System.currentTimeMillis();
     }
 
     public int getUserId() {
         return userId;
+    }
+
+    public int getGroupId() {
+        return groupId;
     }
 
     @Override
@@ -44,8 +53,16 @@ public class UserDetails implements org.springframework.security.core.userdetail
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public boolean isInvalid() {
+        return invalid;
+    }
+
+    public void invalidate() {
+        this.invalid = true;
     }
 
     @Override
@@ -53,10 +70,9 @@ public class UserDetails implements org.springframework.security.core.userdetail
         return authorities;
     }
 
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+    private void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
         TreeSet<GrantedAuthority> sortedAuthorities = new TreeSet<>(new AuthorityComparator());
         for (GrantedAuthority grantedAuthority : authorities) {
-            Assert.notNull(grantedAuthority, "GrantedAuthority list cannot contain any null elements");
             sortedAuthorities.add(grantedAuthority);
         }
         this.authorities = Collections.unmodifiableCollection(sortedAuthorities);

@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import ru.pixelmongo.pixelmongo.model.dao.User;
 import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
 import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
@@ -52,9 +51,6 @@ public class UserGroupsController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private User currentUser;
 
     @Autowired
     private AdminLogService logs;
@@ -92,7 +88,7 @@ public class UserGroupsController {
             group = groups.save(group);
             logs.log("admin.log.group.create",
                     new Object[] {group.getName()+" #"+group.getId()},
-                    currentUser, request.getRemoteAddr());
+                    userService.getCurrentUser(), request.getRemoteAddr());
             popupMsg.sendUsingCookies(
                     new PopupMessage(
                             msg.getMessage("admin.group.created", new Object[] {group.getName()}, loc),
@@ -137,12 +133,13 @@ public class UserGroupsController {
             group = groups.save(group);
             logs.log("admin.log.group.edit",
                     new Object[] {group.getName()+" #"+group.getId()},
-                    currentUser, request.getRemoteAddr());
+                    userService.getCurrentUser(), request.getRemoteAddr());
             popupMsg.sendUsingCookies(
                     new PopupMessage(
                             msg.getMessage("admin.group.edited", new Object[] {group.getName()}, loc),
                             PopupMessage.Type.OK),
                     request, response);
+            userService.invalidateDetails(group);
         }
         model.addAttribute("group", group);
         model.addAttribute("can_manage", canManage(group));
@@ -168,12 +165,13 @@ public class UserGroupsController {
         groups.delete(group);
         logs.log("admin.log.group.delete",
                 new Object[] {group.getName()+" #"+group.getId()},
-                currentUser, request.getRemoteAddr());
+                userService.getCurrentUser(), request.getRemoteAddr());
         popupMsg.sendUsingCookies(
                 new PopupMessage(
                         msg.getMessage("admin.group.deleted", new Object[] {group.getName()}, loc),
                         PopupMessage.Type.WARN),
                 request, response);
+        userService.invalidateDetails(group);
         return "redirect:/admin/groups";
     }
 
@@ -198,7 +196,7 @@ public class UserGroupsController {
     }
 
     private Set<UserPermission> getAvilablePermissions(){
-        UserGroup currentGroup = currentUser.getGroup();
+        UserGroup currentGroup = userService.getCurrentUser().getGroup();
         if(currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN) {
             Set<UserPermission> result = new HashSet<UserPermission>();
             permissions.findAll().forEach(result::add);
@@ -208,7 +206,7 @@ public class UserGroupsController {
     }
 
     private boolean canManage(UserGroup targetGroup) {
-        UserGroup currentGroup = currentUser.getGroup();
+        UserGroup currentGroup = userService.getCurrentUser().getGroup();
         return currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN
                 || targetGroup.getPermissionLevel() < currentGroup.getPermissionLevel();
     }
@@ -220,7 +218,7 @@ public class UserGroupsController {
     }
 
     private int getMaxPermLevel() {
-        UserGroup currentGroup = currentUser.getGroup();
+        UserGroup currentGroup = userService.getCurrentUser().getGroup();
         if(currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN) {
             return 99;
         }

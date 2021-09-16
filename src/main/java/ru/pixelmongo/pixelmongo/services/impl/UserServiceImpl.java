@@ -3,7 +3,12 @@ package ru.pixelmongo.pixelmongo.services.impl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.transaction.Transactional;
 
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +18,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
@@ -26,8 +30,7 @@ import ru.pixelmongo.pixelmongo.repositories.UserPermissionRepository;
 import ru.pixelmongo.pixelmongo.repositories.UserRepository;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
-@Service("userService")
-class UserServiceImpl implements UserService{
+public abstract class UserServiceImpl implements UserService{
 
     @Autowired
     private UserRepository users;
@@ -44,11 +47,33 @@ class UserServiceImpl implements UserService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private Set<Integer> invalidUserIds = ConcurrentHashMap.newKeySet();
+    private Map<Integer, Long> invalidGroupIdsAndTimes = new ConcurrentHashMap<>();
+
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = users.findByName(name)
                 .orElseThrow(()->new UsernameNotFoundException("User "+name+" not found!"));
-        UserDetails details = new UserDetails(user, makeAuthority(user));
+
+        UserDetails details = new UserDetails(user, makeAuthority(user)) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -8378729763230637533L;
+
+            /**
+             * Check for service user details valid flags
+             */
+            public boolean isInvalid() {
+                if(super.isInvalid() || invalidUserIds.remove(this.getUserId())) {
+                    return true;
+                }
+                long gt = invalidGroupIdsAndTimes.getOrDefault(this.getGroupId(), 0L);
+                return gt >= this.getCreateTime();
+            };
+        };
+
         return details;
     }
 
@@ -75,6 +100,16 @@ class UserServiceImpl implements UserService{
         case UserGroupRepository.GROUP_ID_USER: return Optional.of("USER");
         default: return Optional.empty();
         }
+    }
+
+    @Override
+    public void invalidateDetails(User user) {
+        invalidUserIds.add(user.getId());
+    }
+
+    @Override
+    public void invalidateDetails(UserGroup group) {
+        invalidGroupIdsAndTimes.put(group.getId(), System.currentTimeMillis());
     }
 
     @Override
@@ -111,30 +146,11 @@ class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void changePassword(User user, Object principal, String newPassword, boolean saveUser) {
-        final String password = passwordEncoder.encode(newPassword);
+    public void changePassword(User user, String newPassword, boolean saveUser) {
+        String password = passwordEncoder.encode(newPassword);
         user.setPassword(password);
-        if(principal == null) {
-
-        }
-        if(principal instanceof UserDetails && ((UserDetails) principal).getUsername().equals(user.getName())) {
-            ((UserDetails) principal).setPassword(password);
-        }
         if(saveUser) users.save(user);
-    }
-
-    @Override
-    public void updateAuthorities(User user, Object principal) {
-        getCurrentDetails().filter(d->d.getUsername().equals(user.getName()))
-            .ifPresent(d->d.setAuthorities(makeAuthority(user)));
-    }
-
-    private Optional<UserDetails> getCurrentDetails(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth != null && auth.getPrincipal() instanceof UserDetails) {
-            return Optional.of((UserDetails) auth.getPrincipal());
-        }
-        return Optional.empty();
+        invalidateDetails(user);
     }
 
     @Override

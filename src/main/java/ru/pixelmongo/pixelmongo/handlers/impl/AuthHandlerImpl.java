@@ -6,6 +6,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -40,10 +41,15 @@ public class AuthHandlerImpl implements AuthHandler{
         ResultMessage result = new ResultMessage(DefaultResult.OK,
                 msg.getMessage("auth.logged.in", null, request.getLocale()));
         response.getWriter().println(json.writeValueAsString(result));
-        Object principal = authentication.getPrincipal();
+        saveLoginData(authentication, request.getRemoteAddr());
+    }
+
+    @Transactional
+    private void saveLoginData(Authentication auth, String ip) {
+        Object principal = auth.getPrincipal();
         if(principal instanceof UserDetails) {
             userService.getUser(((UserDetails) principal))
-                .ifPresent(u->userService.saveLoginData(u, request.getRemoteAddr()));
+                .ifPresent(u->userService.saveLoginData(u, ip));
         }
     }
 

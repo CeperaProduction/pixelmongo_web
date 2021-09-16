@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +35,7 @@ public class UserGroup {
     @OneToMany(mappedBy = "group")
     private Set<User> users = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "user_groups_permissions",
             joinColumns = @JoinColumn(name="group_id"),
             inverseJoinColumns = @JoinColumn(name="permission_id"))

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,12 +16,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.context.annotation.RequestScope;
 
 import ru.pixelmongo.pixelmongo.handlers.AuthHandler;
@@ -30,7 +33,9 @@ import ru.pixelmongo.pixelmongo.handlers.impl.AuthHandlerImpl;
 import ru.pixelmongo.pixelmongo.model.AnonymousUser;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.repositories.internal.UserDetailsValidCheckHttpSessionSecurityContextRepository;
 import ru.pixelmongo.pixelmongo.services.UserService;
+import ru.pixelmongo.pixelmongo.services.impl.UserServiceImpl;
 import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 
 @Configuration
@@ -41,19 +46,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     private String rememberMeKey;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private DataSource dataSource;
 
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService()).passwordEncoder(passwordEncoder());
     }
 
     @Override
     public UserDetailsService userDetailsService() {
-        return userService;
+        return userService();
+    }
+
+    @Bean
+    public UserService userService() {
+        return new UserServiceImpl() {
+
+            @Override
+            public User getCurrentUser() {
+                return user();
+            }
+        };
     }
 
     @Bean
@@ -78,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
     @Bean
-    public RememberMeServices rememberMeServices() {
+    public AbstractRememberMeServices rememberMeServices() {
         PersistentTokenBasedRememberMeServices services
             = new PersistentTokenBasedRememberMeServices(
                     rememberMeKey, userDetailsService(), tokenRepository());
@@ -96,12 +109,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         return new AuthHandlerImpl();
     }
 
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new UserDetailsValidCheckHttpSessionSecurityContextRepository(
+                userService(),
+                rememberMeServices());
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+            .securityContext().securityContextRepository(securityContextRepository())
+        .and()
         .authorizeRequests()
-
             .antMatchers("/admin/users/**").hasAuthority("admin.panel.users")
             //Users controller handles edit permissions by itself.
             //It lets user manage his own profile.
@@ -136,20 +166,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .logoutSuccessHandler(authHandler())
                 .deleteCookies("JSESSIONID", "remember-me")
         .and()
-            .rememberMe().rememberMeServices(rememberMeServices());
+            .rememberMe().rememberMeServices(rememberMeServices())
+        .and()
+            .sessionManagement()
+                .maximumSessions(-1)
+                .sessionRegistry(sessionRegistry())
+            .and()
+        .and();
 
     }
 
 
 
     @Bean
-    @RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+    @RequestScope
     public User user() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Object userDetails = auth.getPrincipal();
         Optional<User> optUser = Optional.empty();
         if(userDetails instanceof UserDetails) {
-            optUser = userService.getUser((UserDetails) userDetails);
+            optUser = userService().getUser((UserDetails) userDetails);
         }
         return optUser.orElse(AnonymousUser.getInstance());
     }

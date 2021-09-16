@@ -62,9 +62,6 @@ public class UsersController {
     private PopupMessageService popupMsg;
 
     @Autowired
-    private User currentUser;
-
-    @Autowired
     private AdminLogService logs;
 
     @GetMapping
@@ -133,7 +130,7 @@ public class UsersController {
             if(user.getGroup().getId() != userForm.getGroupId()) {
                 groups.findById(userForm.getGroupId())
                     .filter(g->{
-                        UserGroup cg = currentUser.getGroup();
+                        UserGroup cg = userService.getCurrentUser().getGroup();
                         if(cg.getId() == UserGroupRepository.GROUP_ID_ADMIN)
                             return true;
                         return cg.getPermissionLevel() > g.getPermissionLevel();
@@ -146,7 +143,7 @@ public class UsersController {
                 user = users.save(user);
                 logs.log("admin.log.user.edit",
                         new Object[] {user.getName()+" #"+user.getId()},
-                        currentUser, request.getRemoteAddr());
+                        userService.getCurrentUser(), request.getRemoteAddr());
                 popupMsg.sendUsingCookies(
                         new PopupMessage(
                                 msg.getMessage("admin.user.edited", new Object[] {user.getName()}, loc),
@@ -170,14 +167,14 @@ public class UsersController {
             Locale loc) {
         User user = findUser(userName, loc);
         checkPerms(user);
-        if(user.getId() == currentUser.getId()) {
+        if(user.getId() == userService.getCurrentUser().getId()) {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED,
                     msg.getMessage("error.status.405.user", null, loc));
         }
         users.delete(user);
         logs.log("admin.log.user.delete",
                 new Object[] {user.getName()+" #"+user.getId()},
-                currentUser, request.getRemoteAddr());
+                userService.getCurrentUser(), request.getRemoteAddr());
         popupMsg.sendUsingCookies(
                 new PopupMessage(
                         msg.getMessage("admin.user.deleted", new Object[] {user.getName()}, loc),
@@ -210,7 +207,7 @@ public class UsersController {
     }
 
     private boolean canManage(User targetUser) {
-        User currentUser = this.currentUser;
+        User currentUser = this.userService.getCurrentUser();
         UserGroup currentGroup = currentUser.getGroup();
         return currentUser.getId() == targetUser.getId()
                 || currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN
@@ -218,13 +215,13 @@ public class UsersController {
     }
 
     private boolean hasManagePerm(User target) {
-        return target.getId() == currentUser.getId()
+        return target.getId() == userService.getCurrentUser().getId()
                 || userService.hasPerm("admin.panel.users.edit");
     }
 
     private List<UserGroup> getAvailableGroups(User target){
         ArrayList<UserGroup> av = new ArrayList<>();
-        UserGroup currentGroup = currentUser.getGroup();
+        UserGroup currentGroup = userService.getCurrentUser().getGroup();
         if(currentGroup.getId() == UserGroupRepository.GROUP_ID_ADMIN) {
             groups.findAll().forEach(av::add);
         }else {
