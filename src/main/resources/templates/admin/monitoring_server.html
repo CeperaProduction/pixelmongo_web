@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Настройка мониторинга</title>
+
+	<link rel="stylesheet" type="text/css"
+		th:href="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css}|" />
+	<script type="text/javascript" charset="UTF-8"
+		th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}|"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/monitoring.js}"></script>
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        <span th:if="${server.id == 0}">Добавление сервера в мониторинг</span>
+		        <div th:if="${server.id != 0}">
+		        	<span>Изменение сервера в мониторинге</span>
+		        	<span class="text-secondary float-right"
+		        		th:text="|#${server.id}|"></span>
+		        </div>
+		    </div>
+		    <div class="card-body">
+	        	<form id="serverForm" th:action="@{''}" th:method="post" th:object="${serverForm}">
+					<div class="form-group row">
+						<label for="inputTag" class="col-sm-3 col-form-label text-truncate">Тэг</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputTag" placeholder="server_tag"
+								th:field="*{tag}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{tag}"></div>
+							<small class="text-muted">
+								Уникален для каждого сервера
+							</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputName" class="col-sm-3 col-form-label text-truncate">Название</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputName" placeholder="Название сервера"
+								th:field="*{name}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{name}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputDesc" class="col-sm-3 col-form-label text-truncate">Описание</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputDesc" placeholder="Описание сервера"
+								th:field="*{description}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{description}"></div>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group row">
+						<label for="inputIp" class="col-sm-3 col-form-label text-truncate">IP</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputIp" placeholder="127.0.0.1"
+								th:field="*{ip}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{ip}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputPort" class="col-sm-3 col-form-label text-truncate">Порт</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control"
+								max="65535"
+								min="0"
+								id="inputPort" placeholder="Порт сервера"
+								th:field="*{port}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{port}"></div>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group row">
+						<div class="col-sm-3 text-truncate col-form-label">Проверка</div>
+						<div class="col-sm-9">
+							<div id="monitoring-check"
+								class="input-group"
+								th:classappend="${check_status == 1 ? 'ok' : check_status == 2 ? 'fail' : ''}">
+				        		<input type="text" class="form-control"
+									th:value="${check_result}"
+									disabled>
+								<div class="input-group-append">
+									<a href="#" class="btn btn-outline-secondary">
+										<i class="fa fa-forward"></i>
+										Проверить
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxEnabled"
+								th:field="*{enabled}">
+							<label class="custom-control-label"
+								for="checkboxEnabled">Активировать мониторинг</label>
+						</div>
+					</div>
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="serverForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Применить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${server.id != 0}">
+					<button type="submit" class="btn btn-danger">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
+				</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

@@ -4,10 +4,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import ru.pixelmongo.pixelmongo.utils.DefaulPatterns;
+
 public class UserLoginForm {
 
     @NotNull()
-    @Pattern(regexp = "[a-zA-Z0-9_-]{3,16}", message = "{auth.login.invalid}")
+    @Pattern(regexp = DefaulPatterns.USERNAME_PATTERN, message = "{auth.login.invalid}")
     private String login;
 
     @NotNull

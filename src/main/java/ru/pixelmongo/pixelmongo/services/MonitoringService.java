@@ -53,7 +53,7 @@ public interface MonitoringService {
         public int getPingTime();
 
         @JsonIgnore
-        public int getPriority();
+        public int getOrdinary();
 
     }
 

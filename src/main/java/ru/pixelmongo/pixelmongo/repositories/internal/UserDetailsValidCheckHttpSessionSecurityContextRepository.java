@@ -35,7 +35,6 @@ public class UserDetailsValidCheckHttpSessionSecurityContextRepository
         if (auth instanceof UsernamePasswordAuthenticationToken && isAuthInvalid(auth)) {
             UserDetails userDetails = userService.loadUserByUsername(auth.getName());
             if(needToUpdate(auth.getPrincipal(), userDetails)) {
-                System.out.println("REAUTH LOG PASS");
                 UsernamePasswordAuthenticationToken newAuth
                     = new UsernamePasswordAuthenticationToken(
                             userDetails, auth.getCredentials(), userDetails.getAuthorities());
@@ -44,7 +43,6 @@ public class UserDetailsValidCheckHttpSessionSecurityContextRepository
         }else if(auth instanceof RememberMeAuthenticationToken && isAuthInvalid(auth)) {
             UserDetails userDetails = userService.loadUserByUsername(auth.getName());
             if(needToUpdate(auth.getPrincipal(), userDetails)) {
-                System.out.println("REAUTH REMEMBER ME");
                 RememberMeAuthenticationToken newAuth = new RememberMeAuthenticationToken(
                         rememberMeService.getKey(), userDetails, userDetails.getAuthorities());
                 context.setAuthentication(newAuth);

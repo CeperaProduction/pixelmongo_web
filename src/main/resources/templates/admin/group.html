@@ -77,9 +77,15 @@
 	        	</form>
 		    </div>
 		    <div class="card-footer" th:if="${can_manage}">
-				<button form="groupForm" type="submit" class="btn btn-primary">Применить</button>
+				<button form="groupForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Применить
+				</button>
 				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${group.id > 2}">
-					<button type="submit" class="btn btn-danger">Удалить</button>
+					<button type="submit" class="btn btn-danger">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
 				</form>
 		    </div>
 		</div>

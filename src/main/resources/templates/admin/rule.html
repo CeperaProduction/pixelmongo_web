@@ -40,9 +40,15 @@
 	        	</form>
 		    </div>
 		    <div class="card-footer">
-				<button form="ruleForm" type="submit" class="btn btn-primary">Сохранить</button>
+				<button form="ruleForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Сохранить
+				</button>
 				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${rule.id > 0}">
-					<button type="submit" class="btn btn-danger">Удалить</button>
+					<button type="submit" class="btn btn-danger">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
 				</form>
 		    </div>
 		</div>

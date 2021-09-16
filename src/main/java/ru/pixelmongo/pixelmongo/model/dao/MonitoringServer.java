@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +22,7 @@ public class MonitoringServer {
     private int id;
 
     @Column(nullable = false, unique = true)
+    @Pattern(regexp = "[a-zA-Z0-9_-]+", message = "{admin.monitoring.tag.invalid}")
     private String tag;
 
     @Column(nullable = false)
@@ -35,7 +37,9 @@ public class MonitoringServer {
     private short port = 25565;
 
     @Column(nullable = false)
-    private int priority = 20;
+    private int ordinary = 20;
+
+    private boolean enabled = true;
 
     private transient boolean nowPinging = false;
 
@@ -92,12 +96,20 @@ public class MonitoringServer {
         this.port = port;
     }
 
-    public int getPriority() {
-        return priority;
+    public int getOrdinary() {
+        return ordinary;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
+    public void setOrdinary(int priority) {
+        this.ordinary = priority;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public boolean isNowPinging() {

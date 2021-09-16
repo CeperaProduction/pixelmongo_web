@@ -91,9 +91,9 @@ class MonitoringServiceImpl implements MonitoringService{
         if(now-lastServerCacheUpdate > serverCacheUpdatePeriod) {
             lastServerCacheUpdate = now;
             List<MonitoringServer> servers = new ArrayList<>();
-            for(MonitoringServer server : serverData.findAll()) {
-                servers.add(server);
-            }
+            serverData.findAll().forEach(s->{
+                if(s.isEnabled()) servers.add(s);
+            });
             serverCache = servers;
         }
         return serverCache;
@@ -155,7 +155,7 @@ class MonitoringServiceImpl implements MonitoringService{
     @Override
     public List<MonitoringResult> getMonitoringList(){
         List<MonitoringResult> list = new ArrayList<>(monitoringCache.values());
-        Collections.sort(list, (a, b)->Integer.compare(b.getPriority(), a.getPriority()));
+        Collections.sort(list, (a, b)->Integer.compare(a.getOrdinary(), b.getOrdinary()));
         return list;
     }
 
@@ -274,14 +274,14 @@ class MonitoringServiceImpl implements MonitoringService{
         private int currentPlayers, maxPlayers;
         private String motd;
 
-        private transient int priotiry;
+        private transient int ordinary;
         private transient int pingTime = 0;
 
         private MonitoringResultImpl(MonitoringServer server) {
             this.tag = server.getTag();
             this.name = server.getName();
             this.description = server.getDescription();
-            this.priotiry = server.getPriority();
+            this.ordinary = server.getOrdinary();
         }
 
         private MonitoringResultImpl(MonitoringServer server, int currentPlayers,
@@ -338,8 +338,8 @@ class MonitoringServiceImpl implements MonitoringService{
         }
 
         @Override
-        public int getPriority() {
-            return priotiry;
+        public int getOrdinary() {
+            return ordinary;
         }
 
         @Override

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Мониторинг серверов</title>
+
+	<link rel="stylesheet" type="text/css"
+		th:href="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css}|" />
+	<script type="text/javascript" charset="UTF-8"
+		th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}|"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/monitoring.js}"></script>
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Мониторинг серверов
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table id="monitoring-list" class="table table-striped m-0">
+					<tbody>
+						<tr>
+							<td></td>
+							<th>Сервер</th>
+							<th>Действия</th>
+						</tr>
+						<tr class="monitoring-row"
+							th:each="server : ${servers}"
+							th:attrappend="mon-id=${server.id}">
+							<td>
+								<div class="monitoring-label"
+									th:classappend="${server.online}?online"></div>
+							</td>
+							<td th:text="${server.name}"
+								th:classappend="${!server.enabled}?text-muted"></td>
+							<td>
+								<a class="btn btn-secondary"
+									style="cursor: pointer"
+									th:href="@{/admin/monitoring/{tag}(tag=${server.tag})}">
+									<i class="fa fa-cog"></i>
+									Настроить
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="card-footer">
+		    	<a th:href="@{/admin/monitoring/new}" class="btn btn-primary">
+		    		<i class="fa fa-plus"></i> Добавить сервер
+		    	</a>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>
