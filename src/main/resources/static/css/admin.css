@@ -1,6 +1,7 @@
 body{
 	min-height: 100vh;
 	max-width: 100%;
+	min-width: 360px;
 }
 
 #wrapper {
@@ -33,6 +34,7 @@ a.page-link.disabled{
 #content {
 	padding: 50px 0 30px 0;
 	width: 100%;
+	min-width: 360px;
 }
 
 #sidebar {
