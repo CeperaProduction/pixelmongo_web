@@ -17,7 +17,7 @@
 		        </span>
 		    </div>
 		    <div class="card-body">
-	        	<form id="ruleForm" th:action="@{''}" th:method="post" th:object="${rule}">
+	        	<form id="ruleForm" th:action="@{''}" th:method="${method}" th:object="${rule}">
 					<div class="form-group">
 						<input type="text" class="form-control"
 								id="inputName" placeholder="Название раздела правил"

@@ -23,7 +23,7 @@
 		        </div>
 		    </div>
 		    <div class="card-body">
-	        	<form id="serverForm" th:action="@{''}" th:method="post" th:object="${serverForm}">
+	        	<form id="serverForm" th:action="@{''}" th:method="${method}" th:object="${serverForm}">
 					<div class="form-group row">
 						<label for="inputTag" class="col-sm-3 col-form-label text-truncate">Тэг</label>
 						<div class="col-sm-9">

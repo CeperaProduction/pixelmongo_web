@@ -18,7 +18,7 @@
 		        </div>
 		    </div>
 		    <div class="card-body">
-	        	<form id="groupForm" th:action="@{''}" th:method="post" th:object="${groupForm}">
+	        	<form id="groupForm" th:action="@{''}" th:method="${method}" th:object="${groupForm}">
 					<div class="form-group row">
 						<label for="inputName" class="col-sm-3 col-form-label text-truncate">Название</label>
 						<div class="col-sm-9">

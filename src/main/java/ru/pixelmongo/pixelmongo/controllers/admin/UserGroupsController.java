@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -63,15 +64,17 @@ public class UserGroupsController {
 
     @GetMapping("/new")
     public String newGroup(Model model, Locale loc) {
+        model.addAttribute("method", "put");
         model.addAttribute("group", new UserGroup());
         model.addAttribute("groupForm", new UserGroupManageForm());
+        model.addAttribute("can_manage", true);
         model.addAttribute("permissions", permissions.findAllSorted());
         model.addAttribute("own_permissions", getAvilablePermissions());
         model.addAttribute("max_perm_level", getMaxPermLevel());
         return "admin/group";
     }
 
-    @PostMapping("/new")
+    @PutMapping("/new")
     public String newGroupSave(
             @ModelAttribute("groupForm") @Valid UserGroupManageForm form,
             BindingResult binding,
@@ -96,6 +99,7 @@ public class UserGroupsController {
                     request, response);
             return "redirect:/admin/groups/"+group.getId();
         }
+        model.addAttribute("method", "put");
         model.addAttribute("group", group);
         model.addAttribute("can_manage", true);
         model.addAttribute("permissions", permissions.findAllSorted());
@@ -107,6 +111,7 @@ public class UserGroupsController {
     @GetMapping("/{groupId}")
     public String group(@PathVariable int groupId, Model model, Locale loc) {
         UserGroup group = findGroup(groupId, loc);
+        model.addAttribute("method", "post");
         model.addAttribute("group", group);
         model.addAttribute("can_manage", hasManagePerm() && canManage(group));
         model.addAttribute("groupForm", new UserGroupManageForm(group));
@@ -141,6 +146,7 @@ public class UserGroupsController {
                     request, response);
             userService.invalidateDetails(group);
         }
+        model.addAttribute("method", "post");
         model.addAttribute("group", group);
         model.addAttribute("can_manage", canManage(group));
         model.addAttribute("permissions", permissions.findAllSorted());

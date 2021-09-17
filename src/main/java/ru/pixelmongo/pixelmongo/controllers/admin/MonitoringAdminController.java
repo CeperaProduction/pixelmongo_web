@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -69,26 +70,22 @@ public class MonitoringAdminController {
     @GetMapping("/new")
     public String newServer(Model model, Locale loc) {
         MonitoringServer server = new MonitoringServer();
-        model.addAttribute("server", server);
+        addServerAttributes(model, server, loc);
+        model.addAttribute("method", "put");
         model.addAttribute("serverForm", makeForm(server));
-        Pair<Integer, String> check = getCheckResult(server, loc);
-        model.addAttribute("check_result", check.getSecond());
-        model.addAttribute("check_status", check.getFirst());
         return "admin/monitoring_server";
     }
 
     @GetMapping("/{tag}")
     public String server(@PathVariable("tag") String tag, Model model, Locale loc) {
         MonitoringServer server = getServer(tag, loc);
-        model.addAttribute("server", server);
+        addServerAttributes(model, server, loc);
+        model.addAttribute("method", "post");
         model.addAttribute("serverForm", makeForm(server));
-        Pair<Integer, String> check = getCheckResult(server, loc);
-        model.addAttribute("check_result", check.getSecond());
-        model.addAttribute("check_status", check.getFirst());
         return "admin/monitoring_server";
     }
 
-    @PostMapping("/new")
+    @PutMapping("/new")
     public String newServerSave(
             @ModelAttribute("serverForm") @Valid MonitoringServerForm serverForm,
             BindingResult binding,
@@ -96,11 +93,8 @@ public class MonitoringAdminController {
             Locale loc,
             HttpServletRequest request,
             HttpServletResponse response) {
-        if(servers.findByTag(serverForm.getTag()).isPresent()) {
-            binding.addError(new FieldError("server", "tag",
-                    msg.getMessage("admin.monitoring.tag.busy", null, loc)));
-        }
         MonitoringServer server = new MonitoringServer();
+        checkTag(serverForm, server, binding, loc);
         if(!binding.hasErrors()) {
             serverForm.apply(server);
             int maxOrdinary = servers.getMaxServerOrdinary();
@@ -118,10 +112,8 @@ public class MonitoringAdminController {
                     request, response);
             return "redirect:/admin/monitoring/"+server.getTag();
         }
-        model.addAttribute("server", new MonitoringServer());
-        Pair<Integer, String> check = getCheckResult(server, loc);
-        model.addAttribute("check_result", check.getSecond());
-        model.addAttribute("check_status", check.getFirst());
+        model.addAttribute("method", "put");
+        addServerAttributes(model, server, loc);
         return "admin/monitoring_server";
     }
 
@@ -134,12 +126,7 @@ public class MonitoringAdminController {
             HttpServletRequest request,
             HttpServletResponse response) {
         MonitoringServer server = getServer(tag, loc);
-        int serverId = server.getId();
-        if(servers.findByTag(tag)
-                .filter(s->s.getId() != serverId).isPresent()) {
-            binding.addError(new FieldError("server", "tag",
-                    msg.getMessage("admin.monitoring.tag.busy", null, loc)));
-        }
+        checkTag(serverForm, server, binding, loc);
         if(!binding.hasErrors()) {
             serverForm.apply(server);
             server = servers.save(server);
@@ -154,10 +141,8 @@ public class MonitoringAdminController {
                             PopupMessage.Type.OK),
                     request, response);
         }
-        model.addAttribute("server", server);
-        Pair<Integer, String> check = getCheckResult(server, loc);
-        model.addAttribute("check_result", check.getSecond());
-        model.addAttribute("check_status", check.getFirst());
+        model.addAttribute("method", "post");
+        addServerAttributes(model, server, loc);
         return "admin/monitoring_server";
     }
 
@@ -180,7 +165,27 @@ public class MonitoringAdminController {
         return "redirect:/admin/monitoring";
     }
 
+    private void addServerAttributes(Model model, MonitoringServer server, Locale loc) {
+        model.addAttribute("server", server);
+        Pair<Integer, String> check = getCheckResult(server, loc);
+        model.addAttribute("check_result", check.getSecond());
+        model.addAttribute("check_status", check.getFirst());
+    }
 
+    private void checkTag(MonitoringServerForm form,
+            MonitoringServer server,
+            BindingResult binding,
+            Locale loc) {
+        if(form.getTag().equalsIgnoreCase("new")) {
+            binding.addError(new FieldError("server", "tag",
+                    msg.getMessage("value.denied", null, loc)));
+
+        }else if(servers.findByTag(form.getTag())
+                .filter(s->s.getId() != server.getId()).isPresent()) {
+            binding.addError(new FieldError("server", "tag",
+                    msg.getMessage("admin.monitoring.tag.busy", null, loc)));
+        }
+    }
 
     private MonitoringServerForm makeForm(MonitoringServer server) {
         boolean online = false;

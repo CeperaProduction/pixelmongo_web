@@ -1,6 +1,7 @@
 package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,26 +56,7 @@ public abstract class UserServiceImpl implements UserService{
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = users.findByName(name)
                 .orElseThrow(()->new UsernameNotFoundException("User "+name+" not found!"));
-
-        UserDetails details = new UserDetails(user, makeAuthority(user)) {
-            /**
-             *
-             */
-            private static final long serialVersionUID = -8378729763230637533L;
-
-            /**
-             * Check for service user details valid flags
-             */
-            public boolean isInvalid() {
-                if(super.isInvalid() || invalidUserIds.remove(this.getUserId())) {
-                    return true;
-                }
-                long gt = invalidGroupIdsAndTimes.getOrDefault(this.getGroupId(), 0L);
-                return gt >= this.getCreateTime();
-            };
-        };
-
-        return details;
+        return new BindedValidationUserDetails(user, makeAuthority(user));
     }
 
     @Override
@@ -167,6 +149,29 @@ public abstract class UserServiceImpl implements UserService{
                 .anyMatch(p->p.getAuthority().equals(permission));
         }
         return false;
+    }
+
+    private class BindedValidationUserDetails extends UserDetails {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = -8378729763230637533L;
+
+        public BindedValidationUserDetails(User user, Collection<? extends GrantedAuthority> authorities) {
+            super(user, authorities);
+        }
+
+        /**
+         * Check for service user details valid flags
+         */
+        public boolean isInvalid() {
+            if(super.isInvalid() || invalidUserIds.remove(this.getUserId())) {
+                return true;
+            }
+            long gt = invalidGroupIdsAndTimes.getOrDefault(this.getGroupId(), 0L);
+            return gt >= this.getCreateTime();
+        };
     }
 
 }

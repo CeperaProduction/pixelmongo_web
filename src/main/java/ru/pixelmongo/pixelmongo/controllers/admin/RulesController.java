@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -55,11 +56,12 @@ public class RulesController {
     @GetMapping("/new")
     public String newCategory(Model model, Locale loc) {
         Rules rule = new Rules();
+        model.addAttribute("method", "put");
         model.addAttribute("rule", rule);
         return "admin/rule";
     }
 
-    @PostMapping("/new")
+    @PutMapping("/new")
     public String createCategory(Model model,
             @ModelAttribute("rule") @Valid Rules rule,
             BindingResult binding,
@@ -77,6 +79,7 @@ public class RulesController {
                     request, response);
             return "redirect:/admin/rules/"+rule.getId();
         }
+        model.addAttribute("method", "put");
         return "admin/rule";
     }
 
@@ -84,6 +87,7 @@ public class RulesController {
     public String category(@PathVariable int id, Model model, Locale loc) {
         Rules rule = findRule(id, loc);
         model.addAttribute("rule", rule);
+        model.addAttribute("method", "post");
         return "admin/rule";
     }
 
@@ -108,6 +112,7 @@ public class RulesController {
                     request, response);
             model.addAttribute("rule", savedRule);
         }
+        model.addAttribute("method", "post");
         return "admin/rule";
     }
 
