@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
-import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;

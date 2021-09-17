@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import ru.pixelmongo.pixelmongo.model.dao.User;
-import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
-import ru.pixelmongo.pixelmongo.model.dao.UserLoginRecord;
-import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
 
 public final class AnonymousUser extends User{
 

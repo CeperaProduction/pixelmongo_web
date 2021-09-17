@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import ru.pixelmongo.pixelmongo.model.dao.MonitoringServer;
+import ru.pixelmongo.pixelmongo.model.dao.primary.MonitoringServer;
 import ru.pixelmongo.pixelmongo.utils.DefaulPatterns;
 
 public class MonitoringServerForm {

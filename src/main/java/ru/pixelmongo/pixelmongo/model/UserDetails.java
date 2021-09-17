@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 

@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import ru.pixelmongo.pixelmongo.model.dao.MonitoringServer;
+import ru.pixelmongo.pixelmongo.model.dao.primary.MonitoringServer;
 
 public interface MonitoringService {
 

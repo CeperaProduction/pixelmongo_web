@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import ru.pixelmongo.pixelmongo.model.dao.Rules;
+import ru.pixelmongo.pixelmongo.model.dao.primary.Rules;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
-import ru.pixelmongo.pixelmongo.repositories.RulesRepository;
+import ru.pixelmongo.pixelmongo.repositories.primary.RulesRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 import ru.pixelmongo.pixelmongo.services.UserService;

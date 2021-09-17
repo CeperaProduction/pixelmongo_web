@@ -33,7 +33,7 @@ import ru.pixelmongo.pixelmongo.handlers.AuthHandler;
 import ru.pixelmongo.pixelmongo.handlers.impl.AuthHandlerImpl;
 import ru.pixelmongo.pixelmongo.model.AnonymousUser;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
-import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.repositories.internal.UserDetailsValidCheckHttpSessionSecurityContextRepository;
 import ru.pixelmongo.pixelmongo.services.UserService;
 import ru.pixelmongo.pixelmongo.services.impl.UserServiceImpl;

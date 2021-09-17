@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.model.dao;
+package ru.pixelmongo.pixelmongo.model.dao.primary;
 
 import java.util.Date;
 

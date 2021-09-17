@@ -2,7 +2,7 @@ package ru.pixelmongo.pixelmongo.model.dto.forms;
 
 import javax.validation.constraints.Email;
 
-import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 
 public class UserManageForm{
 

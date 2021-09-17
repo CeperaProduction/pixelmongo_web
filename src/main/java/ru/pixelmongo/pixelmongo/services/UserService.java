@@ -11,9 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.AnonymousUser;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
-import ru.pixelmongo.pixelmongo.model.dao.User;
-import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
-import ru.pixelmongo.pixelmongo.model.dao.UserLoginRecord;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
 
 public interface UserService extends UserDetailsService{
 

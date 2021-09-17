@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.repositories;
+package ru.pixelmongo.pixelmongo.repositories.primary;
 
 import java.util.Optional;
 
@@ -7,11 +7,9 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
-import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
 
-@Repository
 public interface UserGroupRepository extends CrudRepository<UserGroup, Integer>{
 
     public static final int GROUP_ID_ADMIN = 1;

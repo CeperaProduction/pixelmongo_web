@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import ru.pixelmongo.pixelmongo.model.dao.MonitoringServer;
+import ru.pixelmongo.pixelmongo.model.dao.primary.MonitoringServer;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.MonitoringServerForm;
-import ru.pixelmongo.pixelmongo.repositories.MonitoringServerRepository;
+import ru.pixelmongo.pixelmongo.repositories.primary.MonitoringServerRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
 import ru.pixelmongo.pixelmongo.services.MonitoringService.MonitoringResult;

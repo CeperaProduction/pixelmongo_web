@@ -22,13 +22,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
-import ru.pixelmongo.pixelmongo.model.dao.User;
-import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
-import ru.pixelmongo.pixelmongo.model.dao.UserLoginRecord;
-import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
-import ru.pixelmongo.pixelmongo.repositories.UserLoginRecordRepository;
-import ru.pixelmongo.pixelmongo.repositories.UserPermissionRepository;
-import ru.pixelmongo.pixelmongo.repositories.UserRepository;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
+import ru.pixelmongo.pixelmongo.repositories.primary.UserGroupRepository;
+import ru.pixelmongo.pixelmongo.repositories.primary.UserLoginRecordRepository;
+import ru.pixelmongo.pixelmongo.repositories.primary.UserPermissionRepository;
+import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
 public abstract class UserServiceImpl implements UserService{

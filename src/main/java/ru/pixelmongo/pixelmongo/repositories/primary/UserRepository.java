@@ -1,17 +1,15 @@
-package ru.pixelmongo.pixelmongo.repositories;
+package ru.pixelmongo.pixelmongo.repositories.primary;
 
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import ru.pixelmongo.pixelmongo.model.dao.User;
-import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
 
-@Repository
 public interface UserRepository extends JpaRepository<User, Integer>{
 
     public Optional<User> findByName(String name);
@@ -25,8 +23,6 @@ public interface UserRepository extends JpaRepository<User, Integer>{
     public Page<User> findByGroupOrderByNameAsc(UserGroup group, Pageable limits);
 
     public Page<User> findAllByOrderByNameAsc(Pageable limits);
-
-
 
     public default Page<User> findAllSorted(String namePart, UserGroup group, Pageable limits){
         if(group == null)

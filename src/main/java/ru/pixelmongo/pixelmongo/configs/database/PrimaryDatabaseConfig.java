@@ -26,9 +26,9 @@ import org.springframework.transaction.PlatformTransactionManager;
     transactionManagerRef = "primaryTransactionManager")
 public class PrimaryDatabaseConfig {
 
-    public static final String REPO_PACKAGE = "ru.pixelmongo.pixelmongo.repositories";
-    private static final String MODEL_PACKAGE = "ru.pixelmongo.pixelmongo.model.dao";
-    private static final String PROP_PREFIX = "spring.datasource";
+    public static final String REPO_PACKAGE = "ru.pixelmongo.pixelmongo.repositories.primary";
+    public static final String MODEL_PACKAGE = "ru.pixelmongo.pixelmongo.model.dao.primary";
+    public static final String PROP_PREFIX = "spring.datasource";
 
     @Autowired
     private Environment env;

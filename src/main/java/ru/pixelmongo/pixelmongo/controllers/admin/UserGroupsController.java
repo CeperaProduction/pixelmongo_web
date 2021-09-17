@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
-import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserGroupManageForm;
-import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
-import ru.pixelmongo.pixelmongo.repositories.UserPermissionRepository;
+import ru.pixelmongo.pixelmongo.repositories.primary.UserGroupRepository;
+import ru.pixelmongo.pixelmongo.repositories.primary.UserPermissionRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 import ru.pixelmongo.pixelmongo.services.UserService;

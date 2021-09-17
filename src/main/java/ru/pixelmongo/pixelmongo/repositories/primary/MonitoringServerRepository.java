@@ -1,14 +1,12 @@
-package ru.pixelmongo.pixelmongo.repositories;
+package ru.pixelmongo.pixelmongo.repositories.primary;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
-import ru.pixelmongo.pixelmongo.model.dao.MonitoringServer;
+import ru.pixelmongo.pixelmongo.model.dao.primary.MonitoringServer;
 
-@Repository
 public interface MonitoringServerRepository extends CrudRepository<MonitoringServer, Integer>{
 
     public Optional<MonitoringServer> findByTag(String serverTag);

@@ -11,8 +11,8 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
 
 import ru.pixelmongo.pixelmongo.model.UserDetails;
-import ru.pixelmongo.pixelmongo.model.dao.User;
-import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
 import ru.pixelmongo.pixelmongo.services.SessionService;
 
 @Service("sessionService")

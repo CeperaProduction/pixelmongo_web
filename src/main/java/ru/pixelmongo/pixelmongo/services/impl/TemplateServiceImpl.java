@@ -11,8 +11,8 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import ru.pixelmongo.pixelmongo.model.dao.User;
-import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement.Step;
 import ru.pixelmongo.pixelmongo.services.TemplateService;

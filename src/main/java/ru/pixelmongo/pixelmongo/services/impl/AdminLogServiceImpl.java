@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import ru.pixelmongo.pixelmongo.model.dao.AdminLogRecord;
-import ru.pixelmongo.pixelmongo.model.dao.User;
-import ru.pixelmongo.pixelmongo.repositories.AdminLogRecordRepositiory;
+import ru.pixelmongo.pixelmongo.model.dao.primary.AdminLogRecord;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.repositories.primary.AdminLogRecordRepositiory;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 
 @Service("adminLogService")

@@ -1,13 +1,11 @@
-package ru.pixelmongo.pixelmongo.repositories;
+package ru.pixelmongo.pixelmongo.repositories.primary;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import ru.pixelmongo.pixelmongo.model.dao.AdminLogRecord;
+import ru.pixelmongo.pixelmongo.model.dao.primary.AdminLogRecord;
 
-@Repository
 public interface AdminLogRecordRepositiory extends JpaRepository<AdminLogRecord, Integer>{
 
     public Page<AdminLogRecord> findAllByUserIdOrderByDateDesc(int userId, Pageable limits);

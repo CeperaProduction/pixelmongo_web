@@ -3,8 +3,8 @@ package ru.pixelmongo.pixelmongo.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import ru.pixelmongo.pixelmongo.model.dao.AdminLogRecord;
-import ru.pixelmongo.pixelmongo.model.dao.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.AdminLogRecord;
+import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 
 public interface AdminLogService {
 

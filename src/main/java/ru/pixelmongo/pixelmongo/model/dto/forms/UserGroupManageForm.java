@@ -6,9 +6,9 @@ import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 
-import ru.pixelmongo.pixelmongo.model.dao.UserGroup;
-import ru.pixelmongo.pixelmongo.model.dao.UserPermission;
-import ru.pixelmongo.pixelmongo.repositories.UserGroupRepository;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
+import ru.pixelmongo.pixelmongo.repositories.primary.UserGroupRepository;
 
 public class UserGroupManageForm {
 
