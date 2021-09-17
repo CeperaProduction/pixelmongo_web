@@ -166,7 +166,7 @@ public abstract class UserServiceImpl implements UserService{
          * Check for service user details valid flags
          */
         public boolean isInvalid() {
-            if(super.isInvalid() || invalidUserIds.remove(this.getUserId())) {
+            if(super.isInvalid() | invalidUserIds.remove(this.getUserId())) {
                 return true;
             }
             long gt = invalidGroupIdsAndTimes.getOrDefault(this.getGroupId(), 0L);

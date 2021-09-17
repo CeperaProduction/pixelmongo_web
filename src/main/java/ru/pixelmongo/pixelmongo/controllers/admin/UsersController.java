@@ -108,10 +108,7 @@ public class UsersController {
         User user = findUser(userName, loc);
         checkPerms(user);
 
-        if(!userForm.getPassword().equals(userForm.getPasswordRepeat())) {
-            binding.addError(new FieldError("userForm", "passwordRepeat",
-                    msg.getMessage("auth.password.not_same", null, loc)));
-        }
+        checkForm(userForm, user, binding, loc);
 
         if(!binding.hasErrors()) {
             boolean changed = false;
@@ -187,6 +184,20 @@ public class UsersController {
         return users.findByName(userName).orElseThrow(()->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         msg.getMessage("error.status.404.user", null, loc)));
+    }
+
+    private void checkForm(UserManageForm form,
+            User user,
+            BindingResult binding,
+            Locale loc) {
+        if(!form.getPassword().equals(form.getPasswordRepeat())) {
+            binding.addError(new FieldError("userForm", "passwordRepeat",
+                    msg.getMessage("auth.password.not_same", null, loc)));
+        }else if(users.findByEmail(form.getEmail())
+                .filter(u->u.getId() != user.getId()).isPresent()) {
+            binding.addError(new FieldError("userForm", "email",
+                    msg.getMessage("admin.user.email.busy", null, loc)));
+        }
     }
 
     private void checkPerms(User targetUser) {
