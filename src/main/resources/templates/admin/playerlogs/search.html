@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Логи игроков</title>
+
+	<link rel="stylesheet" type="text/css"
+		th:href="|@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css}|" />
+	<script type="text/javascript" charset="UTF-8"
+		th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js}|"></script>
+	<script type="text/javascript" charset="UTF-8"
+		th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ru.min.js}|"></script>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Поиск в логах игроков
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/playerlogs}">
+					<i class="fa fa-file-alt"></i>
+					Просмотр
+				</a>
+		    </div>
+		    <div class="card-body">
+	        	<form th:method="GET" th:action="''">
+		        	<div class="input-group mb-2">
+		        		<input id="searchInput" type="text"
+        					name="search"
+		        			class="form-control"
+		        			placeholder="Строка для поиска"
+		        			th:value="${search}"
+							required>
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="fa fa-search"></i>
+								Искать
+							</button>
+						</div>
+					</div>
+					<div class="form-row mb-0">
+		        		<div class="col-md-6">
+	        				<div class="input-group mb-2">
+	        					<div class="input-group-prepend">
+									<label class="input-group-text" for="startTime">Начало</label>
+								</div>
+				        		<input id="startTime" type="text"
+				        			class="form-control date-picker"
+				        			placeholder="Начальная дата поиска"
+									required>
+								<input id="startTimeVal" type="hidden"
+									name="start"
+									th:value="${start}">
+							</div>
+	        			</div>
+	        			<div class="col-md-6">
+	        				<div class="input-group mb-2">
+	        					<div class="input-group-prepend">
+									<label class="input-group-text" for="endTime">Конец</label>
+								</div>
+				        		<input id="endTime" type="text"
+				        			class="form-control date-picker"
+				        			placeholder="Конечная дата поиска"
+									required>
+								<input id="endTimeVal" type="hidden"
+									name="end"
+									th:value="${end}">
+							</div>
+	        			</div>
+					</div>
+	        	</form>
+		    </div>
+		</div>
+		<div class="card mb-4">
+			<div class="card-body" th:if="${search == null}">
+	        	<div class="row align-items-center" style="min-height: 20vh">
+	        		<div class="col text-center text-muted">
+	        			Введите строку для поиска в логах и выберите временной промежуток.
+	        		</div>
+	        	</div>
+        	</div>
+        	<th:block th:if="${search != null}">
+				<div class="card-body" th:if="${logs.empty}">
+		        	<div class="row align-items-center" style="min-height: 20vh">
+		        		<div class="col text-center text-muted">
+		        			Поиск не дал результатов. Попробуйте изменить строку.
+		        		</div>
+		        	</div>
+	        	</div>
+        		<div class="card-body table-responsive p-0" th:if="${!logs.empty}">
+					<table class="table table-hover m-0">
+						<thead>
+							<tr class="text-center">
+								<th scope="col">Игрок</th>
+								<th scope="col">Время</th>
+								<th scope="col">Тип</th>
+								<th scope="col">Информация</th>
+								<th scope="col">Место</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="log : ${logs}">
+								<tr th:if="${serverContext.serverChanged(log)}">
+									<th colspan="5" class="table-info">
+										Сервер: <span th:text="${log.server}"></span>
+									</th>
+								</tr>
+								<tr>
+									<td th:text="${log.player}"></td>
+									<td th:text="${@templateService.printDate(log.date)}"></td>
+									<td th:text="${log.type}"></td>
+									<td th:text="${log.data}"></td>
+									<td th:text="${log.x + ' ' + log.y + ' ' +  log.z + ' ' +  log.world}"></td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+			    </div>
+			    <div class="card-footer p-1" th:if="${!logs.empty}">
+					<div th:replace="~{admin/fragments/pagination :: pagination}"></div>
+			    </div>
+        	</th:block>
+		</div>
+		<script type="text/javascript">
+			let pickers = $('.date-picker');
+			pickers.datepicker({
+				format : 'dd-mm-yyyy',
+				autoclose : true,
+				endDate : new Date(),
+				language : 'ru'
+			});
+			pickers.each(function(){
+				let p = $(this);
+				let isEnd = p.attr('id').includes('end');
+				let valIn = $('#'+p.attr('id')+'Val');
+				if(valIn) {
+					let val = valIn.val();
+					if(val){
+						if(isEnd) val -= 86400;
+						p.datepicker('setDate', new Date(val * 1000));
+					}
+				}
+				p.datepicker().on('changeDate', function(){
+					let date = p.datepicker('getDate');
+					let val = Math.round(date.getTime()/1000);
+					if(isEnd) val += 86400;
+					valIn.val(val);
+				});
+			});
+		</script>
+	</div>
+</body>
+</html>

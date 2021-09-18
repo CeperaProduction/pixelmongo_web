@@ -1,5 +1,7 @@
 package ru.pixelmongo.pixelmongo.services.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,7 +127,11 @@ public class TemplateServiceImpl implements TemplateService{
     @Override
     public String addParameterToCurrentUrl(String parameter, String value) {
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
-        return builder.replaceQueryParam(parameter, value).toUriString();
+        String r = builder.replaceQueryParam(parameter, value).toUriString();
+        try {
+            r = URLDecoder.decode(r, "UTF-8");
+        } catch (UnsupportedEncodingException e) {}
+        return r;
     }
 
     @Override

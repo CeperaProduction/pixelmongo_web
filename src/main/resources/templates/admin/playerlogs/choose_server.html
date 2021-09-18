@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Логи игроков</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Просмотр логов игроков
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/playerlogs?search}">
+					<i class="fa fa-search"></i>
+					Поиск
+				</a>
+		    </div>
+		    <div class="card-body">
+	        	<form th:method="GET">
+		        	<div class="input-group mb-2">
+		        		<select class="custom-select" id="severSelect" name="server" required>
+							<option value="" selected disabled>
+								Выберите сервер
+							</option>
+							<option th:each="serv : ${servers}"
+								th:value="${serv}"
+								th:text="${serv}"></option>
+						</select>
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="fa fa-forward"></i>
+								Далее
+							</button>
+						</div>
+					</div>
+	        	</form>
+		    </div>
+		</div>
+		<div class="card mb-4">
+		    <div class="card-body">
+	        	<div class="row align-items-center" style="min-height: 30vh">
+	        		<div class="col text-center text-muted">
+	        			Выберите сервер
+	        		</div>
+	        	</div>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>
