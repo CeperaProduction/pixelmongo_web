@@ -27,6 +27,9 @@ public abstract class DonatePackToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
+    private String token;
+
     @ManyToOne
     @JoinColumn(name = "pack_id", nullable = false)
     private DonatePack pack;
@@ -37,12 +40,21 @@ public abstract class DonatePackToken {
 
     public DonatePackToken() {}
 
-    public DonatePackToken(DonatePack pack) {
+    public DonatePackToken(String token, DonatePack pack) {
+        this.token = token;
         this.pack = pack;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public DonatePack getPack() {

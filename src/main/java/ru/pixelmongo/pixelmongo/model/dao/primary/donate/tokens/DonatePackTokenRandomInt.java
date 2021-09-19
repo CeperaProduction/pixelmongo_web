@@ -15,8 +15,8 @@ public class DonatePackTokenRandomInt extends DonatePackToken{
 
     public DonatePackTokenRandomInt() {}
 
-    public DonatePackTokenRandomInt(DonatePack pack, int min, int max) {
-        super(pack);
+    public DonatePackTokenRandomInt(String token, DonatePack pack, int min, int max) {
+        super(token, pack);
         this.min = min;
         this.max = max;
     }

@@ -23,8 +23,8 @@ public class DonatePackTokenSelectValue extends DonatePackToken{
     @Convert(converter = IntegerListConverter.class)
     private List<Integer> costValues;
 
-    public DonatePackTokenSelectValue(DonatePack pack, List<String> values, List<Integer> costValues) {
-        super(pack);
+    public DonatePackTokenSelectValue(String token, DonatePack pack, List<String> values, List<Integer> costValues) {
+        super(token, pack);
         if(values.size() != costValues.size())
             throw new IllegalArgumentException("Values and costs lists must be same size");
         this.values = values;
