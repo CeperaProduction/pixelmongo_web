@@ -11,11 +11,12 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ru.pixelmongo.pixelmongo.model.dao.OrderedData;
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
 
 @Entity
 @Table(name = "monitoring_servers")
-public class MonitoringServer {
+public class MonitoringServer implements OrderedData<Integer>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +53,8 @@ public class MonitoringServer {
         this.port = port;
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
@@ -96,10 +98,12 @@ public class MonitoringServer {
         this.port = port;
     }
 
+    @Override
     public int getOrdinary() {
         return ordinary;
     }
 
+    @Override
     public void setOrdinary(int priority) {
         this.ordinary = priority;
     }

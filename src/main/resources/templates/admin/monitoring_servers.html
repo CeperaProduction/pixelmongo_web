@@ -35,7 +35,7 @@
 							<td th:text="${server.name}"
 								th:classappend="${!server.enabled}?text-muted"></td>
 							<td>
-								<a class="btn btn-secondary"
+								<a class="btn btn-sm btn-outline-secondary"
 									style="cursor: pointer"
 									th:href="@{/admin/monitoring/{tag}(tag=${server.tag})}">
 									<i class="fa fa-cog"></i>

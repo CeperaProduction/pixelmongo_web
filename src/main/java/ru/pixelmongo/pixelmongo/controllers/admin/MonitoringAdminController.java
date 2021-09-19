@@ -97,7 +97,7 @@ public class MonitoringAdminController {
         checkTag(serverForm, server, binding, loc);
         if(!binding.hasErrors()) {
             serverForm.apply(server);
-            int maxOrdinary = servers.getMaxServerOrdinary();
+            int maxOrdinary = servers.getMaxOrdinary();
             server.setOrdinary(maxOrdinary+1);
             server = servers.save(server);
             this.lastUpdate = System.currentTimeMillis();

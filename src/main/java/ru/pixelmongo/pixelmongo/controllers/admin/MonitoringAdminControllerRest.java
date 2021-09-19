@@ -1,11 +1,8 @@
 package ru.pixelmongo.pixelmongo.controllers.admin;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +23,9 @@ import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
 import ru.pixelmongo.pixelmongo.repositories.primary.MonitoringServerRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
-import ru.pixelmongo.pixelmongo.services.UserService;
 import ru.pixelmongo.pixelmongo.services.MonitoringService.MonitoringResult;
+import ru.pixelmongo.pixelmongo.services.OrdinaryUtilsService;
+import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
 @RequestMapping("/admin/monitoring/ajax")
@@ -48,6 +46,9 @@ public class MonitoringAdminControllerRest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private OrdinaryUtilsService ordinary;
+
     @PostMapping("/reorder")
     public ResultMessage reorder(@RequestParam("ids") String idsStr,
             HttpServletRequest request,
@@ -58,18 +59,8 @@ public class MonitoringAdminControllerRest {
                     .map(Integer::parseInt).collect(Collectors.toList());
         }catch(Exception ex) {}
         if(ids != null && ids.size() > 1) {
-            Map<Integer, MonitoringServer> servers = new HashMap<>();
-            this.servers.findAllByOrderByOrdinaryAsc().forEach(s->servers.put(s.getId(), s));
-            List<MonitoringServer> changed = new ArrayList<>();
-            for(int i = 0; i < ids.size(); i++) {
-                MonitoringServer server = servers.get(ids.get(i));
-                if(server != null && server.getOrdinary() != i+1) {
-                    server.setOrdinary(i+1);
-                    changed.add(server);
-                }
-            }
-            if(changed.size() > 0) {
-                this.servers.saveAll(changed);
+            int changed = ordinary.reorder(this.servers, this.servers.findAllOrdinaries(), ids);
+            if(changed > 0) {
                 monitoring.markServersChanged();
                 logs.log("admin.log.monitoring.reorder", null,
                         userService.getCurrentUser(), request.getRemoteAddr());
@@ -94,6 +85,7 @@ public class MonitoringAdminControllerRest {
 
     @ExceptionHandler
     public ResultMessage exceptionHandler(Exception ex) {
+        MonitoringService.LOGGER.catching(ex);
         return new ResultMessage(DefaultResult.ERROR, ex.toString());
     }
 
