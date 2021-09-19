@@ -3,6 +3,7 @@ package ru.pixelmongo.pixelmongo.model.dao.primary.donate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -14,8 +15,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackToken;
 import ru.pixelmongo.pixelmongo.utils.StringListConverter;
 
 @Entity
@@ -70,6 +73,9 @@ public class DonatePack {
             joinColumns = @JoinColumn(name="pack_id"),
             inverseJoinColumns = @JoinColumn(name="server_id"))
     private List<DonateServer> servers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pack", cascade = CascadeType.REMOVE)
+    private List<DonatePackToken> tokens;
 
     public DonatePack() {}
 
@@ -196,6 +202,10 @@ public class DonatePack {
 
     public List<DonateServer> getServers() {
         return servers;
+    }
+
+    public List<DonatePackToken> getTokens() {
+        return tokens;
     }
 
 }
