@@ -15,9 +15,19 @@ public interface OrderedDataRepository<T extends OrderedData<ID>, ID> extends Re
 
     public static final String OD_IMPL = "ru.pixelmongo.pixelmongo.model.dao.OrderedDataImpl";
 
+    /**
+     * Current entity table is mapped as <b>e</b>
+     */
+    public static final String QUERY_FIND_ALL_ORDINARIES = "SELECT new "+OD_IMPL+"(e.id, e.ordinary) FROM #{#entityName} e";
+
+    /**
+     * Current entity table is mapped as <b>e</b>
+     */
+    public static final String QUERY_GET_MAX_ORDINARY = "SELECT max(e.ordinary) FROM #{#entityName} e";
+
     public Iterable<T> findAllByOrderByOrdinaryAsc();
 
-    @Query("SELECT new "+OD_IMPL+"(e.id, e.ordinary) FROM #{#entityName} e")
+    @Query(QUERY_FIND_ALL_ORDINARIES)
     public List<OrderedData<ID>> findAllOrdinaries();
 
     @Transactional
@@ -25,7 +35,7 @@ public interface OrderedDataRepository<T extends OrderedData<ID>, ID> extends Re
     @Query("UPDATE #{#entityName} e SET e.ordinary = :#{#n.ordinary} WHERE e.id = :#{#n.id}")
     public void updateOrdinary(@Param("n") OrderedData<ID> data);
 
-    @Query("SELECT max(e.ordinary) FROM #{#entityName} e")
+    @Query(QUERY_GET_MAX_ORDINARY)
     public int getMaxOrdinary();
 
 }

@@ -5,13 +5,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.MonitoringServer;
-import ru.pixelmongo.pixelmongo.utils.DefaulPatterns;
+import ru.pixelmongo.pixelmongo.utils.DefaultPatterns;
 
 public class MonitoringServerForm {
 
     private int id;
 
-    @Pattern(regexp = DefaulPatterns.SIMPLE_TAG_PATTERN, message = "{admin.tag.invalid}")
+    @Pattern(regexp = DefaultPatterns.SIMPLE_TAG_PATTERN, message = "{admin.tag.invalid}")
     private String tag;
 
     @NotBlank
@@ -20,7 +20,7 @@ public class MonitoringServerForm {
     @NotNull
     private String description = "";
 
-    @Pattern(regexp = DefaulPatterns.IPV4_PATTERN, message = "{admin.ip.invalid}")
+    @Pattern(regexp = DefaultPatterns.IPV4_PATTERN, message = "{admin.ip.invalid}")
     private String ip;
 
     @NotNull

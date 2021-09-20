@@ -1,6 +1,6 @@
 package ru.pixelmongo.pixelmongo.utils;
 
-public class DefaulPatterns {
+public class DefaultPatterns {
 
     public static final String USERNAME_PATTERN = "[a-zA-Z0-9_-]{3,16}";
     public static final String SIMPLE_TAG_PATTERN = "[a-z0-9_-]+";

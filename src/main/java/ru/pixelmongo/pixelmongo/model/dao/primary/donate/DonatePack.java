@@ -18,12 +18,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import ru.pixelmongo.pixelmongo.model.dao.OrderedData;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackToken;
 import ru.pixelmongo.pixelmongo.utils.StringListConverter;
 
 @Entity
 @Table(name = "donate_packs")
-public class DonatePack {
+public class DonatePack implements OrderedData<Integer>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,6 +69,8 @@ public class DonatePack {
     @Column(name = "offline")
     private boolean giveOffline = false;
 
+    private byte discount = 0;
+
     @ManyToMany
     @JoinTable(name = "donate_packs_servers",
             joinColumns = @JoinColumn(name="pack_id"),
@@ -84,7 +87,8 @@ public class DonatePack {
         this.category = category;
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
@@ -128,10 +132,12 @@ public class DonatePack {
         this.commands = commands;
     }
 
+    @Override
     public int getOrdinary() {
         return ordinary;
     }
 
+    @Override
     public void setOrdinary(int ordinary) {
         this.ordinary = ordinary;
     }
@@ -206,6 +212,14 @@ public class DonatePack {
 
     public List<DonatePackToken> getTokens() {
         return tokens;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = (byte) (Math.max(Math.min(discount, 100), 0) / 100f);
     }
 
 }

@@ -16,9 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import ru.pixelmongo.pixelmongo.model.dao.OrderedData;
+
 @Entity
 @Table(name = "donate_pages")
-public class DonatePage {
+public class DonatePage implements OrderedData<Integer>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +55,8 @@ public class DonatePage {
         this.title = title;
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
@@ -73,10 +76,12 @@ public class DonatePage {
         this.title = title;
     }
 
+    @Override
     public int getOrdinary() {
         return ordinary;
     }
 
+    @Override
     public void setOrdinary(int ordinary) {
         this.ordinary = ordinary;
     }
