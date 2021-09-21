@@ -54,7 +54,7 @@
 							<small class="form-text text-muted p-1" th:if="${group.id == 1}">
 								Группа главного администратора. Всегда имеет все полномочия.
 							</small>
-							<div th:if="${group.id != 1}">
+							<th:block th:if="${group.id != 1}">
 								<div class="custom-control custom-checkbox"
 									th:each="perm : ${permissions}"
 									th:with="checkbox_id = 'perm_'+${perm.id},
@@ -71,7 +71,7 @@
 										th:for="${checkbox_id}"
 										th:text="${@templateService.printPerm(perm)}"></label>
 								</div>
-							</div>
+							</th:block>
 						</div>
 					</div>
 	        	</form>

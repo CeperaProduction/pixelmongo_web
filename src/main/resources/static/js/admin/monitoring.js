@@ -26,7 +26,7 @@ $(function(){
 			let ordinary = '';
             $(this).find('.monitoring-row').each(function (index) {
 				if(index != 0) ordinary += ',';
-				ordinary += $(this).attr('mon-id');
+				ordinary += $(this).attr('data-mon-id');
             });
 			if(ordinary) {
 				sendOrdinary(ordinary);

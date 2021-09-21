@@ -27,7 +27,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class PrimaryDatabaseConfig {
 
     public static final String REPO_PACKAGE = "ru.pixelmongo.pixelmongo.repositories.primary";
-    public static final String MODEL_PACKAGE = "ru.pixelmongo.pixelmongo.model.dao.primary";
+    public static final String[] MODEL_PACKAGES = {
+            "ru.pixelmongo.pixelmongo.model.dao.primary",
+            "ru.pixelmongo.pixelmongo.model.dao.primary.donate"
+            };
     public static final String PROP_PREFIX = "spring.datasource";
 
     @Autowired
@@ -45,7 +48,7 @@ public class PrimaryDatabaseConfig {
     public LocalContainerEntityManagerFactoryBean primaryEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(primaryDataSource());
-        em.setPackagesToScan(MODEL_PACKAGE);
+        em.setPackagesToScan(MODEL_PACKAGES);
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<String, Object>();

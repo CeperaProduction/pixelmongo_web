@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement;
 
 public interface TemplateService {
@@ -60,5 +61,14 @@ public interface TemplateService {
         Locale loc = LocaleContextHolder.getLocale();
         return printPerm(perm, loc);
     }
+
+    public String printTokenType(DonatePackTokenType tokenType, Locale loc);
+
+    public default String printTokenType(DonatePackTokenType tokenType) {
+        Locale loc = LocaleContextHolder.getLocale();
+        return printTokenType(tokenType, loc);
+    }
+
+    public <T> List<List<T>> splitList(List<T> list, int count);
 
 }

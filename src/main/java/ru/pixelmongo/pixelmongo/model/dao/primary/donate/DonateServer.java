@@ -21,6 +21,7 @@ public class DonateServer {
     @Column(name = "config_name", unique = true, nullable = false)
     private String configName;
 
+    @Column(name = "server_key")
     private String key = "";
 
     public DonateServer() {}

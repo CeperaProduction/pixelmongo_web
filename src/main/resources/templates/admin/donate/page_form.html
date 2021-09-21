@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Настройка донат-страницы</title>
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        <span th:if="${page.id == 0}">Создание донат-страницы</span>
+		        <div th:if="${page.id != 0}">
+		        	<span>Изменение донат-страницы</span>
+		        	<span class="text-secondary float-right"
+		        		th:text="|#${page.id}|"></span>
+		        </div>
+		    </div>
+		    <div class="card-body">
+	        	<form id="pageForm" th:action="@{''}" th:method="${method}" th:object="${pageForm}">
+					<div class="form-group row">
+						<label for="inputTag" class="col-sm-3 col-form-label text-truncate">Тэг</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputTag" placeholder="page_tag"
+								th:field="*{tag}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{tag}"></div>
+							<small class="text-muted">
+								Уникален для каждой страницы
+							</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputTitle" class="col-sm-3 col-form-label text-truncate">Название</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputTitle" placeholder="Заголовок страницы"
+								th:field="*{title}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{title}"></div>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxEnabled"
+								th:field="*{enabled}">
+							<label class="custom-control-label"
+								for="checkboxEnabled">Страница активна</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxHidden"
+								th:field="*{hidden}">
+							<label class="custom-control-label"
+								for="checkboxHidden">Страница скрыта</label>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group row">
+						<div class="col-sm-3 col-form-label text-truncate">Доступные сервера</div>
+						<div class="col-sm-9">
+							<div class="custom-control custom-checkbox"
+									th:each="server : ${servers}"
+									th:with="checkbox_id = 'server_'+${server.id}">
+									<input type="checkbox"
+										class="custom-control-input"
+										th:id="${checkbox_id}"
+										th:name="servers"
+										th:value="${server.id}"
+										th:checked="${pageForm.servers.contains(server.id)}">
+									<label class="custom-control-label"
+										th:for="${checkbox_id}"
+										th:text="${server.displayName}"></label>
+								</div>
+						</div>
+					</div>
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="pageForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Применить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${page.id != 0}">
+					<button type="submit" class="btn btn-danger">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
+				</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

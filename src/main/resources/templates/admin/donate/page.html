@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление содержимым донат-системы</title>
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Содержимое страницы <span th:text="${page.title}"></span>
+		    </div>
+		    <div class="card-body p-0">
+		    	<div class="donate-page-content">
+		    		<div class="donate-category-block"
+			    		th:each="category : ${page.categories}"
+			    		th:attrappend="data-category-id='${category.id}'">
+			    		<div class="row donate-category-header">
+			    			<div class="col-8">
+			    				<del th:if="${!category.enabled}" class="text-muted" th:text="${category.title}"></del>
+								<span th:if="${category.enabled}"
+									th:text="${category.title}"></span>
+			    			</div>
+			    			<div class="col-4">
+			    				<a class="btn btn-sm btn-outline-secondary"
+									style="cursor: pointer"
+									th:href="@{/admin/donate/pages/{page}/category/{category}(page=${page.tag},category=${category.id})}">
+									<i class="fa fa-cog"></i>
+									Изменить
+								</a>
+			    			</div>
+			    		</div>
+
+			    		<div class="table-responsive">
+			    			<table id="donate-pack-list" class="table table-striped m-0">
+								<tbody>
+									<tr class="donate-page-row"
+										th:each="pack : ${category.packs}"
+										th:attrappend="data-pack-id=${pack.id}">
+										<td>
+											<del th:if="${!pack.enabled}" class="text-muted" th:text="${pack.title}"></del>
+											<span th:if="${pack.enabled}"
+												th:text="${pack.title}"
+												th:classappend="${!category.enabled}?text-muted"></span>
+										</td>
+										<td>
+											<a class="btn btn-sm btn-outline-secondary"
+												style="cursor: pointer"
+												th:href="@{/admin/donate/pages/{page}/pack/{pack}(page=${page.tag},pack=${pack.id})}">
+												<i class="fa fa-cog"></i>
+												Изменить
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+			    		</div>
+			    	</div>
+		    	</div>
+		    </div>
+		    <div class="card-footer">
+		    	<a th:href="@{/admin/donate/pages/{page}/pack/new(page=${page.tag})}" class="btn btn-primary">
+		    		<i class="fa fa-plus"></i> Добавить Набор
+		    	</a>
+		    	<a th:href="@{/admin/donate/pages/{page}/category/new(page=${page.tag})}" class="btn btn-primary">
+		    		<i class="fa fa-plus"></i> Добавить категорию
+		    	</a>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

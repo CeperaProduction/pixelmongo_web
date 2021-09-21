@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Настройка категории на донат-странице</title>
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        <span th:if="${category.id == 0}">Создание категории</span>
+		        <div th:if="${category.id != 0}">
+		        	<span>Изменение категории</span>
+		        	<span class="text-secondary float-right"
+		        		th:text="|#${category.id}|"></span>
+		        </div>
+		    </div>
+		    <div class="card-body">
+	        	<form id="categoryForm" th:action="@{''}" th:method="${method}" th:object="${categoryForm}">
+					<div class="form-group row">
+						<label for="inputTitle" class="col-sm-3 col-form-label text-truncate">Название</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputTitle" placeholder="Название категории"
+								th:field="*{title}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{title}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputPage" class="col-sm-3 col-form-label text-truncate">Страница</label>
+						<div class="col-sm-9">
+							<select class="custom-select form-control" id="inputPage"
+								th:field="*{page}"
+								th:attr="disabled=${category.id == 0}?'disabled'">
+								<option th:each="page : ${pages}"
+									th:value="${page.id}"
+									th:text="${page.title}"></option>
+							</select>
+							<th:block th:if="${category.id == 0}">
+								<input type="hidden" th:field="*{page}" />
+							</th:block>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxEnabled"
+								th:field="*{enabled}">
+							<label class="custom-control-label"
+								for="checkboxEnabled">Категория активна</label>
+						</div>
+					</div>
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="categoryForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Применить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${category.id != 0}">
+					<button type="submit" class="btn btn-danger">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
+				</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

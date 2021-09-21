@@ -254,3 +254,14 @@ form.link button:active{
 	border-color: var(--danger);
 	color: var(--danger) !important;
 }
+
+.donate-category-header{
+	margin: 0;
+	padding: 10px 15px;
+	box-shadow: 0 0 3px rgba(0.3, 0.3, 0.3, 0.5);
+}
+
+.donate-command{
+	margin-bottom: 10px;
+}
+

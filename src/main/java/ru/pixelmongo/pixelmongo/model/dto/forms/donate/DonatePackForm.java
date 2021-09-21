@@ -1,15 +1,17 @@
 package ru.pixelmongo.pixelmongo.model.dto.forms.donate;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotBlank;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateCategory;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
-import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackToken;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateCategoryRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerRepository;
+import ru.pixelmongo.pixelmongo.services.DonateService;
 
 public class DonatePackForm {
 
@@ -42,8 +44,7 @@ public class DonatePackForm {
 
     private List<Integer> servers = new ArrayList<>();
 
-    //TODO DTO for tokens
-    private List<DonatePackToken> tokens = new ArrayList<>();
+    private Map<String, DonatePackTokenData> tokens = new LinkedHashMap<>();
 
     public DonatePackForm() {}
 
@@ -51,7 +52,7 @@ public class DonatePackForm {
         this.category = category.getId();
     }
 
-    public DonatePackForm(DonatePack pack) {
+    public DonatePackForm(DonatePack pack, DonateService donateService) {
         this.title = pack.getTitle();
         this.content = pack.getContent();
         this.commands = pack.getCommands();
@@ -66,27 +67,31 @@ public class DonatePackForm {
         this.invSpace = pack.getInvSpace();
         this.giveOffline = pack.isGiveOffline();
         pack.getServers().forEach(s->this.servers.add(s.getId()));
-        //TODO make token DTOs
+        pack.getTokens().stream().map(donateService::makeTokenData)
+            .forEach(td->tokens.put(td.getName(), td));
     }
 
-    public void apply(DonatePack pack, DonateCategoryRepository categoryRepo,
+    public void apply(DonatePack pack, DonateService donateService,
+            DonateCategoryRepository categoryRepo,
             DonateServerRepository serverRepo) {
         pack.setTitle(this.title);
         pack.setContent(this.content);
         pack.setCommands(this.commands);
-        pack.setCountable(this.countable);
-        pack.setCost(this.cost);
+        pack.setCountable(this.countable && !this.timed);
+        pack.setCost(Math.max(this.cost, 0));
         categoryRepo.findById(this.category).ifPresent(pack::setCategory);
         pack.setTimed(this.timed);
-        pack.setExistTime(this.existTime);
+        pack.setExistTime(Math.max(this.existTime, 0));
         pack.setBackCommands(this.backCommands);
         pack.setHiddenGive(this.hiddenGive);
         pack.setEnabled(this.enabled);
-        pack.setInvSpace(this.invSpace);
+        pack.setInvSpace(Math.max(this.invSpace, 0));
         pack.setGiveOffline(this.giveOffline);
         pack.getServers().clear();
         this.servers.forEach(sid->serverRepo.findById(sid).ifPresent(pack.getServers()::add));
-        //TODO set tokens
+        pack.getTokens().clear();
+        this.tokens.values().stream().map(td->donateService.makeToken(td, pack))
+            .forEach(pack.getTokens()::add);
     }
 
     public String getTitle() {
@@ -201,12 +206,16 @@ public class DonatePackForm {
         this.servers = servers;
     }
 
-    public List<DonatePackToken> getTokens() {
+    public Map<String, DonatePackTokenData> getTokens() {
         return tokens;
     }
 
-    public void setTokens(List<DonatePackToken> tokens) {
+    public void setTokens(Map<String, DonatePackTokenData> tokens) {
         this.tokens = tokens;
+    }
+
+    public List<DonatePackTokenData> getTokenList(){
+        return new ArrayList<>(this.tokens.values());
     }
 
 }

@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateCategory;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePage;
+import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.donate.DonateCategoryForm;
 import ru.pixelmongo.pixelmongo.model.dto.forms.donate.DonatePackForm;
@@ -35,6 +36,7 @@ import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonatePackRepository
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonatePageRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
+import ru.pixelmongo.pixelmongo.services.DonateService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
@@ -53,6 +55,9 @@ public class DonateContentController {
 
     @Autowired
     private DonateServerRepository servers;
+
+    @Autowired
+    private DonateService donateService;
 
     @Autowired
     private UserService userService;
@@ -123,6 +128,8 @@ public class DonateContentController {
 
             pageForm.apply(page, servers);
 
+            page.setOrdinary(pages.getMaxOrdinary()+1);
+
             page = pages.save(page);
 
             log("admin.log.donate.page.create", request, page.getTitle()+" #"+page.getId());
@@ -188,8 +195,8 @@ public class DonateContentController {
         return "admin/donate/page_form";
     }
 
-    @DeleteMapping("/{page}")
-    public String deletePage(@PathVariable("page") String pageTag, Model model,
+    @DeleteMapping("/{page}/edit")
+    public String deletePage(@PathVariable("page") String pageTag,
             Locale loc, HttpServletRequest request, HttpServletResponse response) {
 
         DonatePage page = find(pages.findByTag(pageTag), loc);
@@ -211,6 +218,7 @@ public class DonateContentController {
 
         model.addAttribute("method", "put");
         model.addAttribute("page", page);
+        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
         model.addAttribute("category", new DonateCategory("", page));
         model.addAttribute("categoryForm", new DonateCategoryForm(page));
 
@@ -233,16 +241,19 @@ public class DonateContentController {
 
             categoryForm.apply(category, pages);
 
+            category.setOrdinary(categories.getMaxOrdinary(category.getPage())+1);
+
             category = categories.save(category);
 
             log("admin.log.donate.category.create", request, category.getTitle()+" #"+category.getId());
             popup("admin.donate.category.created", loc, PopupMessage.Type.OK, request, response);
 
-            return "redirect:/admin/donate/pages/"+page.getTag();
+            return "redirect:/admin/donate/pages/"+category.getPage().getTag();
         }
 
         model.addAttribute("method", "put");
         model.addAttribute("page", page);
+        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
         model.addAttribute("category", category);
 
         return "admin/donate/category_form";
@@ -260,6 +271,7 @@ public class DonateContentController {
 
         model.addAttribute("method", "post");
         model.addAttribute("page", page);
+        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
         model.addAttribute("category", category);
         model.addAttribute("categoryForm", new DonateCategoryForm(category));
 
@@ -291,10 +303,13 @@ public class DonateContentController {
             log("admin.log.donate.category.edit", request, category.getTitle()+" #"+category.getId());
             popup("admin.donate.category.edited", loc, PopupMessage.Type.OK, request, response);
 
+            if(category.getPage().getId() != page.getId())
+                return "redirect:/admin/donate/pages/"+category.getPage().getTag()+"/category/"+category.getId();
         }
 
         model.addAttribute("method", "post");
         model.addAttribute("page", page);
+        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
         model.addAttribute("category", category);
 
         return "admin/donate/category_form";
@@ -303,7 +318,6 @@ public class DonateContentController {
     @DeleteMapping("/{page}/category/{category}")
     public String deleteCategory(@PathVariable("page") String pageTag,
             @PathVariable("category") int categoryId,
-            Model model,
             Locale loc,
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -333,6 +347,7 @@ public class DonateContentController {
         model.addAttribute("page", page);
         model.addAttribute("pack", new DonatePack());
         model.addAttribute("packForm", new DonatePackForm());
+        model.addAttribute("token_types", DonatePackTokenType.values());
 
         return "admin/donate/pack_form";
     }
@@ -351,7 +366,9 @@ public class DonateContentController {
 
         if(!binding.hasErrors()) {
 
-            packForm.apply(pack, categories, servers);
+            packForm.apply(pack, donateService, categories, servers);
+
+            pack.setOrdinary(packs.getMaxOrdinary(pack.getCategory())+1);
 
             pack = packs.save(pack);
 
@@ -364,6 +381,7 @@ public class DonateContentController {
         model.addAttribute("method", "put");
         model.addAttribute("page", page);
         model.addAttribute("pack", pack);
+        model.addAttribute("token_types", DonatePackTokenType.values());
 
         return "admin/donate/pack_form";
     }
@@ -381,7 +399,8 @@ public class DonateContentController {
         model.addAttribute("method", "post");
         model.addAttribute("page", page);
         model.addAttribute("pack", pack);
-        model.addAttribute("packForm", new DonatePackForm(pack));
+        model.addAttribute("packForm", new DonatePackForm(pack, donateService));
+        model.addAttribute("token_types", DonatePackTokenType.values());
 
         return "admin/donate/pack_form";
     }
@@ -404,7 +423,7 @@ public class DonateContentController {
 
         if(!binding.hasErrors()) {
 
-            packForm.apply(pack, categories, servers);
+            packForm.apply(pack, donateService, categories, servers);
 
             pack = packs.save(pack);
 
@@ -415,6 +434,7 @@ public class DonateContentController {
         model.addAttribute("method", "post");
         model.addAttribute("page", page);
         model.addAttribute("pack", pack);
+        model.addAttribute("token_types", DonatePackTokenType.values());
 
         return "admin/donate/pack_form";
     }
@@ -422,7 +442,6 @@ public class DonateContentController {
     @DeleteMapping("/{page}/pack/{pack}")
     public String deletePack(@PathVariable("page") String pageTag,
             @PathVariable("pack") int packId,
-            Model model,
             Locale loc,
             HttpServletRequest request,
             HttpServletResponse response) {

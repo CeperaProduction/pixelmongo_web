@@ -23,7 +23,7 @@ public interface OrderedDataRepository<T extends OrderedData<ID>, ID> extends Re
     /**
      * Current entity table is mapped as <b>e</b>
      */
-    public static final String QUERY_GET_MAX_ORDINARY = "SELECT max(e.ordinary) FROM #{#entityName} e";
+    public static final String QUERY_GET_MAX_ORDINARY = "SELECT coalesce(max(e.ordinary), 0) FROM #{#entityName} e";
 
     public Iterable<T> findAllByOrderByOrdinaryAsc();
 

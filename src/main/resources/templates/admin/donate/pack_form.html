@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Настройка набора на донат-странице</title>
+	<th:block th:include="admin/fragments/tinymce :: headers"></th:block>
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        <span th:if="${pack.id == 0}">Создание набора</span>
+		        <div th:if="${pack.id != 0}">
+		        	<span>Изменение набора</span>
+		        	<span class="text-secondary float-right"
+		        		th:text="|#${pack.id}|"></span>
+		        </div>
+		    </div>
+		    <div class="card-body">
+	        	<form id="packForm" th:action="@{''}" th:method="${method}" th:object="${packForm}">
+					<div class="form-group row">
+						<label for="inputTitle" class="col-sm-3 col-form-label text-truncate">Название</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputTitle" placeholder="Название страницы"
+								th:field="*{title}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{title}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputPack" class="col-sm-3 col-form-label text-truncate">Категория</label>
+						<div class="col-sm-9">
+							<select class="custom-select form-control" id="inputCategory"
+								th:field="*{category}">
+								<option th:each="category : ${page.categories}"
+									th:value="${category.id}"
+									th:text="${category.title}"></option>
+							</select>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxEnabled"
+								th:field="*{enabled}">
+							<label class="custom-control-label"
+								for="checkboxEnabled">Набор активен</label>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group">
+						<label for="packContent">Описание содержимого</label>
+						<textarea id="packContent" th:field="*{content}"></textarea>
+						<script th:include="admin/fragments/tinymce :: script_settings"></script>
+						<script>
+							var settings = {...default_settings,
+									...{selector: '#packContent'}}
+							tinymce.init(settings);
+						</script>
+					</div>
+
+					<hr class="separator">
+					<div class="form-group row">
+						<div class="col-sm-3">
+							<span class="text-truncate">Команды выдачи</span>
+							<p>
+								<small class="text-muted">
+									Перечень команд, которые будут выполнены на сервере для осуществления выдачи набора.
+									Для указания ника игрока используется токен $player.
+								</small>
+							</p>
+						</div>
+						<div class="col-sm-9">
+							<div id="donate-give" class="donate-command-list">
+								<div class="input-group donate-command"
+									th:each="cmd : *{commands}">
+									<div class="input-group-prepend">
+										<span class="input-group-text">/</span>
+									</div>
+					        		<input type="text" class="form-control"
+					        			name="commands"
+										th:value="${cmd}">
+									<div class="input-group-append">
+										<a href="#" class="btn btn-outline-secondary donate-cmd-remove"
+											title="Убрать команду">
+											<i class="fa fa-times"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+							<div>
+								<a id="donate-cmd-add" href="#" class="btn btn-outline-secondary">
+									<i class="fa fa-plus"></i>
+									Добавить команду
+								</a>
+							</div>
+						</div>
+					</div>
+
+					<!-- TOKENS WILL BE HERE -->
+
+					<div class="form-group row">
+						<div class="col-sm-3">
+							<span class="text-truncate">Токены</span>
+							<p>
+								<small class="text-muted">
+									Токены позволяют вставлять в команды изменяющиеся элементы. Имена всех токенов начинаются со знака $.
+									Во время приобретения набора на их места в командах будут установлены соответствующие значения
+								</small>
+							</p>
+						</div>
+						<div class="col-sm-9">
+							<div class="donate-token-list">
+								<div class="input-group donate-token-block"
+									th:each="token : ${packForm.tokenList}">
+									<div class="donate-token-header">
+										$<span th:text="${token.name}"></span>
+										<a href="#" class="btn btn-outline-secondary donate-token-remove float-right"
+											title="Убрать токен">
+											<i class="fa fa-times"></i>
+										</a>
+									</div>
+									<div class="donate-token-content">
+										<th:block th:switch="${token.type.name()}">
+											<div th:case="'RANDOM_INT'" class="row">
+												<div class="col input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text">Min</span>
+													</div>
+									        		<input type="number" class="form-control"
+									        			th:name="|tokens[${token.name}].options|"
+														th:value="${token.get(0)}">
+												</div>
+												<div class="col input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text">Max</span>
+													</div>
+									        		<input type="number" class="form-control"
+									        			th:name="|tokens[${token.name}].options|"
+														th:value="${token.get(1)}">
+												</div>
+											</div>
+										</th:block>
+									</div>
+								</div>
+							</div>
+							<div id="donate-token-add-block" class="row">
+								<div class="col">
+									<select id="selectTokenType" class="form-control custom-select">
+										<option th:each="token_type : ${token_types}"
+											th:value="${token_type}"
+											th:text="${@templateService.printTokenType(token_type)}"></option>
+									</select>
+								</div>
+								<div class="col">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<span class="input-group-text">$</span>
+										</div>
+						        		<input id="inputTokenName" type="text" class="form-control">
+									</div>
+								</div>
+								<div class="col">
+									<a id="donate-token-add"
+										href="#" class="btn btn-outline-secondary">
+										<i class="fa fa-plus"></i>
+										Добавить
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<hr class="separator">
+
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxTimed"
+								th:field="*{timed}">
+							<label class="custom-control-label"
+								for="checkboxTimed">Временный набор</label>
+						</div>
+					</div>
+
+					<div id="donate-timed-settings">
+
+						<div class="form-group row">
+							<div class="col-sm-3">
+								<span class="text-truncate">Команды возврата</span>
+								<p>
+									<small class="text-muted">
+										Перечень команд, которые будут выполнены на сервере в конце действия набора.
+										Используются все токены и их значения, которые были использованы в командах выдачи.
+									</small>
+								</p>
+							</div>
+							<div class="col-sm-9">
+								<div id="donate-back" class="donate-command-list">
+									<div class="input-group donate-command"
+										th:each="cmd : *{backCommands}">
+										<div class="input-group-prepend">
+											<span class="input-group-text">/</span>
+										</div>
+						        		<input type="text" class="form-control"
+						        			name="backCommands"
+											th:value="${cmd}">
+										<div class="input-group-append">
+											<a href="#" class="btn btn-outline-secondary donate-cmd-remove"
+												title="Убрать команду">
+												<i class="fa fa-times"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+								<div>
+									<a id="donate-back-cmd-add" href="#" class="btn btn-outline-secondary">
+										<i class="fa fa-plus"></i>
+										Добавить команду
+									</a>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<div class="col-sm-3">
+								<label for="inputExistTime" class="col-form-label text-truncate">Время действия</label>
+								<p>
+									<small class="text-muted">
+										Указывается количеством часов.
+									</small>
+								</p>
+							</div>
+							<div class="col-sm-9">
+								<input type="number" class="form-control"
+									id="inputExistTime" placeholder="720"
+									min="0"
+									th:field="*{existTime}">
+								<div class="alert alert-danger px-3 my-1"
+									role="alert"
+									th:errors="*{existTime}"></div>
+							</div>
+						</div>
+
+					</div>
+
+					<hr class="separator">
+
+					<div class="form-group row">
+						<div class="col-sm-3">
+							<label for="inputInvSpace" class="col-form-label text-truncate">Место в инвентаре</label>
+							<p>
+								<small class="text-muted">
+									Набор не будет выдан, пока у игрока не будет необходимого
+									количества свободных слотов в инвентаре.
+								</small>
+							</p>
+						</div>
+						<div class="col-sm-9">
+							<input type="number" class="form-control"
+								id="inputInvSpace" placeholder="0"
+								min="0"
+								th:field="*{invSpace}">
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{invSpace}"></div>
+						</div>
+					</div>
+
+					<hr class="separator">
+
+					<div class="form-group row">
+						<div class="col-sm-3">
+							<span class="text-truncate">Доступные сервера</span>
+						</div>
+						<div class="col-sm-9">
+							<div class="custom-control custom-checkbox"
+								th:each="server : ${page.servers}"
+								th:with="checkbox_id = 'server_'+${server.id}">
+								<input type="checkbox"
+									class="custom-control-input"
+									th:id="${checkbox_id}"
+									th:name="servers"
+									th:value="${server.id}"
+									th:checked="${packForm.servers.contains(server.id)}">
+								<label class="custom-control-label"
+									th:for="${checkbox_id}"
+									th:text="${server.displayName}"></label>
+							</div>
+						</div>
+					</div>
+
+					<hr class="separator">
+
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxHiddenGive"
+								th:field="*{hiddenGive}">
+							<label class="custom-control-label"
+								for="checkboxHiddenGive">Скрытая выдача</label>
+							<p>
+								<small class="text-muted">
+									Пользователь не получит оповещения в игре, когда ему будет выдаваться набор.
+								</small>
+							</p>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxGiveOffline"
+								th:field="*{giveOffline}">
+							<label class="custom-control-label"
+								for="checkboxGiveOffline">Офлайн выдача</label>
+							<p>
+								<small class="text-muted">
+									Набор может быть выдан, пока игрок не в сети.
+									<br />
+									ОСТОРОЖНО! Многие команды требуют нахождения игрока в сети.
+								</small>
+							</p>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox"
+								class="custom-control-input"
+								id="checkboxCountable"
+								th:field="*{countable}">
+							<label class="custom-control-label"
+								for="checkboxCountable">Многократная покупка</label>
+							<p>
+								<small class="text-muted">
+									Позволяет указывать количество при покупке.
+									<br />
+									Недоступно для временных наборов.
+								</small>
+							</p>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="inputCost" class="col-sm-3 col-form-label text-truncate">Цена</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputCost" placeholder="100"
+								min="0"
+								th:field="*{cost}"
+								required>
+						</div>
+					</div>
+
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="packForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Применить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${pack.id != 0}">
+					<button type="submit" class="btn btn-danger">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
+				</form>
+		    </div>
+		</div>
+
+		<!-- Templates start -->
+		<div id="donate-templates" style="display: none" hidden="hidden">
+
+			<div data-tpl="command">
+				<div class="input-group donate-command">
+					<div class="input-group-prepend">
+						<span class="input-group-text">/</span>
+					</div>
+	        		<input type="text" class="form-control" name="commands">
+					<div class="input-group-append">
+						<a href="#" class="btn btn-outline-secondary donate-cmd-remove"
+							title="Убрать команду">
+							<i class="fa fa-times"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div data-tpl="backCommand">
+				<div class="input-group donate-command">
+					<div class="input-group-prepend">
+						<span class="input-group-text">/</span>
+					</div>
+	        		<input type="text" class="form-control" name="backCommands">
+					<div class="input-group-append">
+						<a href="#" class="btn btn-outline-secondary donate-cmd-remove"
+							title="Убрать команду">
+							<i class="fa fa-times"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div data-tpl="tokenRandomInt">
+				<div class="input-group donate-token-block">
+					<div class="donate-token-header">
+						$<span>{{token-name}}</span>
+						<a href="#" class="btn btn-outline-secondary donate-token-remove float-right"
+							title="Убрать токен">
+							<i class="fa fa-times"></i>
+						</a>
+					</div>
+					<div class="donate-token-content">
+						<div class="row">
+							<div class="col input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Min</span>
+								</div>
+				        		<input type="number" class="form-control"
+				        			name="tokens[{{token-name}}].options">
+							</div>
+							<div class="col input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Max</span>
+								</div>
+				        		<input type="number" class="form-control"
+				        			name="tokens[{{token-name}}].options">
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<!-- Templates end -->
+
+	</div>
+</body>
+</html>

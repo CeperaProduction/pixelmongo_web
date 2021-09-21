@@ -102,6 +102,10 @@ public class DonatePage implements OrderedData<Integer>{
         this.hidden = hidden;
     }
 
+    public List<DonateCategory> getCategories() {
+        return categories;
+    }
+
     public List<DonateServer> getServers() {
         return servers;
     }

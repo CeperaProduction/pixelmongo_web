@@ -85,4 +85,8 @@ public class DonateCategory implements OrderedData<Integer>{
         this.enabled = enabled;
     }
 
+    public List<DonatePack> getPacks() {
+        return packs;
+    }
+
 }

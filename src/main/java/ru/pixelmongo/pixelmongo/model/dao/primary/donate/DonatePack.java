@@ -78,7 +78,7 @@ public class DonatePack implements OrderedData<Integer>{
     private List<DonateServer> servers = new ArrayList<>();
 
     @OneToMany(mappedBy = "pack", cascade = CascadeType.REMOVE)
-    private List<DonatePackToken> tokens;
+    private List<DonatePackToken> tokens = new ArrayList<>();
 
     public DonatePack() {}
 

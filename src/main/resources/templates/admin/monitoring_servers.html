@@ -27,7 +27,7 @@
 						</tr>
 						<tr class="monitoring-row"
 							th:each="server : ${servers}"
-							th:attrappend="mon-id=${server.id}">
+							th:attrappend="data-mon-id=${server.id}">
 							<td>
 								<div class="monitoring-label"
 									th:classappend="${server.online}?online"></div>

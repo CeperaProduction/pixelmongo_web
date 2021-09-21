@@ -14,6 +14,8 @@ public class DonateServerForm {
 
     private String key = "";
 
+    public DonateServerForm() {}
+
     public DonateServerForm(DonateServer server) {
         this.displayName = server.getDisplayName();
         this.configName = server.getConfigName();

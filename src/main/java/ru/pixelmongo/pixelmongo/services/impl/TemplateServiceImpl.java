@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement.Step;
 import ru.pixelmongo.pixelmongo.services.TemplateService;
@@ -137,6 +138,25 @@ public class TemplateServiceImpl implements TemplateService{
     @Override
     public String printPerm(UserPermission perm, Locale loc) {
         return msg.getMessage("permission."+perm.getValue(), null, perm.getValue(), loc);
+    }
+
+    @Override
+    public String printTokenType(DonatePackTokenType tokenType, Locale loc) {
+        return msg.getMessage("donate.token."+tokenType.name().toLowerCase(), null, tokenType.name(), loc);
+    }
+
+    @Override
+    public <T> List<List<T>> splitList(List<T> list, int count){
+        List<List<T>> result = new ArrayList<>();
+        int size = list.size();
+        size -= size % count;
+        for(int i = 0; i < size; i+=count) {
+            List<T> spl = new ArrayList<>();
+            for(int j = 0; j < count; j++)
+                spl.add(list.get(i+j));
+            result.add(spl);
+        }
+        return result;
     }
 
 }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление содержимым донат-системы</title>
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Страницы донат-системы
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table id="donate-page-list" class="table table-striped m-0">
+					<thead>
+						<tr>
+							<th>Страница</th>
+							<th>Действия</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="donate-page-row"
+							th:each="page : ${pages}"
+							th:attrappend="data-page-id=${page.id}">
+							<td>
+								<del th:if="${!page.enabled}" class="text-muted" th:text="${page.title}"></del>
+								<span th:if="${page.enabled}"
+									th:text="${page.title}"
+									th:classappend="${page.hidden}?text-muted"></span>
+							</td>
+							<td>
+								<a class="btn btn-sm btn-outline-secondary"
+									style="cursor: pointer"
+									th:href="@{/admin/donate/pages/{tag}(tag=${page.tag})}">
+									<i class="fa fa-file-alt"></i>
+									Содержимое
+								</a>
+								<a class="btn btn-sm btn-outline-secondary"
+									style="cursor: pointer"
+									th:href="@{/admin/donate/pages/{tag}/edit(tag=${page.tag})}">
+									<i class="fa fa-cog"></i>
+									Изменить
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="card-footer">
+		    	<a th:href="@{/admin/donate/pages/new}" class="btn btn-primary">
+		    		<i class="fa fa-plus"></i> Добавить страницу
+		    	</a>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

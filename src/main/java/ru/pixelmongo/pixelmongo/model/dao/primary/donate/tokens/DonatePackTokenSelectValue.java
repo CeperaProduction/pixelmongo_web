@@ -23,12 +23,18 @@ public class DonatePackTokenSelectValue extends DonatePackToken{
     @Convert(converter = IntegerListConverter.class)
     private List<Integer> costValues;
 
-    public DonatePackTokenSelectValue(String token, DonatePack pack, List<String> values, List<Integer> costValues) {
+    @Column(name = "display")
+    @Convert(converter = StringListConverter.class)
+    private List<String> valuesDisplay;
+
+    public DonatePackTokenSelectValue(String token, DonatePack pack,
+            List<String> values, List<Integer> costValues, List<String> valuesDisplay) {
         super(token, pack);
         if(values.size() != costValues.size())
             throw new IllegalArgumentException("Values and costs lists must be same size");
         this.values = values;
         this.costValues = costValues;
+        this.valuesDisplay = valuesDisplay;
     }
 
     public List<String> getValues() {
@@ -45,6 +51,14 @@ public class DonatePackTokenSelectValue extends DonatePackToken{
 
     public void setCostValues(List<Integer> costValues) {
         this.costValues = costValues;
+    }
+
+    public List<String> getValuesDisplay() {
+        return valuesDisplay;
+    }
+
+    public void setValuesDisplay(List<String> valuesDisplay) {
+        this.valuesDisplay = valuesDisplay;
     }
 
 }

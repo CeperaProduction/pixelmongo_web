@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE"></title>
+
+	<link rel="stylesheet" type="text/css"
+		th:href="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css}|" />
+	<script type="text/javascript" charset="UTF-8"
+		th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}|"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/donate.js}"></script>
+
+</head>
+<body>
+	<th:block layout:fragment="content">
+
+    	<th:block layout:fragment="donate_content"></th:block>
+
+	</th:block>
+</body>
+</html>
