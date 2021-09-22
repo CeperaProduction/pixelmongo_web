@@ -3,6 +3,10 @@ $(function(){
 
 	let loading = true;
 
+
+	/*
+		scripts for donate packs editor
+	*/
 	if($('#donate-templates').length) {
 
 		let token_name_pattern = /^[a-z0-9_-]+$/;
@@ -130,7 +134,7 @@ $(function(){
 				mult.prop('disabled', true);
 				$('#donate-timed-settings input').prop('disabled', false);
 			}else{
-				$('#donate-timed-settings').fadeOut(500);
+				$('#donate-timed-settings').fadeOut(loading ? 0 : 500);
 				mult.prop('disabled', false);
 				$('#donate-timed-settings input').prop('disabled', true);
 			}

@@ -130,8 +130,8 @@
 										th:name="|tokens[${token.name}].name|"
 										th:value="${token.name}"/>
 									<div class="donate-token-header">
-										$<span th:text="${token.name}"></span>
-										<span class="text-muted" th:text="|[${@templateService.printTokenType(token.type)}]|"></span>
+										<span class="badge badge-info">$<span th:text="${token.name}"></span></span>
+										<span class="badge badge-secondary" th:text="${@templateService.printTokenType(token.type)}"></span>
 										<a href="#" class="btn btn-sm btn-outline-secondary donate-token-remove float-right"
 											title="Убрать токен">
 											<i class="fa fa-times"></i>
@@ -513,7 +513,10 @@
 						name="tokens[{{token-name}}].name"
 						value="{{token-name}}"/>
 					<div class="donate-token-header">
-						$<span>{{token-name}}</span> <span class="text-muted">[{{token-type-text}}]</span>
+						<span class="badge badge-info">
+							$<span>{{token-name}}</span>
+						</span>
+						<span class="badge badge-secondary">{{token-type-text}}</span>
 						<a href="#" class="btn btn-sm btn-outline-secondary donate-token-remove float-right"
 							title="Убрать токен">
 							<i class="fa fa-times"></i>
@@ -610,6 +613,7 @@
 						</div>
 		        		<input type="number" class="form-control"
 		        			name="tokens[{{token-name}}].options"
+		        			value="0"
 							required="required">
 						<div class="input-group-prepend input-group-append" title="Отображаемое значение">
 							<span class="input-group-text">

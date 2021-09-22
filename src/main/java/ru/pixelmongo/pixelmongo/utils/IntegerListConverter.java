@@ -17,7 +17,7 @@ public class IntegerListConverter implements AttributeConverter<List<Integer>, S
 
     @Override
     public String convertToDatabaseColumn(List<Integer> attribute) {
-        if(attribute == null) return "";
+        if(attribute == null || attribute.isEmpty()) return "";
         List<String> attr = new ArrayList<>();
         attribute.forEach(s->attr.add(s.toString()));
         return String.join(SPLIT, attr);
@@ -25,7 +25,7 @@ public class IntegerListConverter implements AttributeConverter<List<Integer>, S
 
     @Override
     public List<Integer> convertToEntityAttribute(String dbData) {
-        if(dbData == null) return new ArrayList<>();
+        if(dbData == null || dbData.isEmpty()) return new ArrayList<>();
         List<String> vals = Arrays.asList(dbData.split(SPLIT));
         List<Integer> vals2 = new ArrayList<>();
         vals.forEach(s->vals2.add(parseInt(s)));

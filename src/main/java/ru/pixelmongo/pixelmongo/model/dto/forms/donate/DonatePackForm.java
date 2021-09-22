@@ -60,7 +60,7 @@ public class DonatePackForm {
         this.cost = pack.getCost();
         this.category = pack.getCategory().getId();
         this.timed = pack.isTimed();
-        this.existTime = pack.getExistTime();
+        this.existTime = pack.getExistTime() / 3600;
         this.backCommands = pack.getBackCommands();
         this.hiddenGive = pack.isHiddenGive();
         this.enabled = pack.isEnabled();
@@ -81,7 +81,7 @@ public class DonatePackForm {
         pack.setCost(Math.max(this.cost, 0));
         categoryRepo.findById(this.category).ifPresent(pack::setCategory);
         pack.setTimed(this.timed);
-        pack.setExistTime(Math.max(this.existTime, 0));
+        pack.setExistTime(Math.max(this.existTime, 0) * 3600);
         pack.setBackCommands(this.backCommands);
         pack.setHiddenGive(this.hiddenGive);
         pack.setEnabled(this.enabled);

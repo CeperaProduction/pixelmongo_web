@@ -14,7 +14,7 @@ public class StringListConverter implements AttributeConverter<List<String>, Str
 
     @Override
     public String convertToDatabaseColumn(List<String> attribute) {
-        if(attribute == null) return "";
+        if(attribute == null || attribute.isEmpty()) return "";
         List<String> attr = new ArrayList<>();
         attribute.forEach(s->attr.add(s.replace(SPLIT, SPLIT_REPLACE)));
         return String.join(SPLIT, attr);
@@ -22,7 +22,7 @@ public class StringListConverter implements AttributeConverter<List<String>, Str
 
     @Override
     public List<String> convertToEntityAttribute(String dbData) {
-        if(dbData == null) return new ArrayList<>();
+        if(dbData == null || dbData.isEmpty()) return new ArrayList<>();
         List<String> vals = Arrays.asList(dbData.split(SPLIT));
         List<String> vals2 = new ArrayList<>();
         vals.forEach(s->vals2.add(s.replace(SPLIT_REPLACE, SPLIT)));
