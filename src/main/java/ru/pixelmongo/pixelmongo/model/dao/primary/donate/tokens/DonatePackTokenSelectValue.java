@@ -27,6 +27,8 @@ public class DonatePackTokenSelectValue extends DonatePackToken{
     @Convert(converter = StringListConverter.class)
     private List<String> valuesDisplay;
 
+    public DonatePackTokenSelectValue() {}
+
     public DonatePackTokenSelectValue(String token, DonatePack pack,
             List<String> values, List<Integer> costValues, List<String> valuesDisplay) {
         super(token, pack);

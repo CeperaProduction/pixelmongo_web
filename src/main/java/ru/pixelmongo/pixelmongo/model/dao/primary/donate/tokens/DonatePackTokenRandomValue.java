@@ -18,6 +18,8 @@ public class DonatePackTokenRandomValue extends DonatePackToken{
     @Convert(converter = StringListConverter.class)
     private List<String> values;
 
+    public DonatePackTokenRandomValue() {}
+
     public DonatePackTokenRandomValue(String token, DonatePack pack, List<String> values) {
         super(token, pack);
         this.values = values;

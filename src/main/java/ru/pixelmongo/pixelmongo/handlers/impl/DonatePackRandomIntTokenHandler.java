@@ -34,8 +34,8 @@ public class DonatePackRandomIntTokenHandler implements DonatePackTokenHandler<D
     public DonatePackTokenRandomInt makeToken(DonatePackTokenData data, DonatePack pack) throws Exception {
         if(data.getType() != getTokenType())
             throw new IllegalArgumentException("Wrong token type");
-        int min = Integer.parseInt(data.getOptions().get(0));
-        int max = Integer.parseInt(data.getOptions().get(1));
+        int min = Integer.parseInt(data.getOption(0));
+        int max = Integer.parseInt(data.getOption(1));
         return new DonatePackTokenRandomInt(data.getName(), pack, min, max);
     }
 

@@ -265,3 +265,22 @@ form.link button:active{
 	margin-bottom: 10px;
 }
 
+.donate-token-block{
+	box-shadow: 0 0 3px rgba(0.3, 0.3, 0.3, 0.5);
+	margin-bottom: 10px;
+}
+
+.donate-token-header{
+	border-bottom: 1px solid rgba(0,0,0,.125);
+	padding: 10px
+}
+
+.donate-token-content {
+	padding-bottom: 10px;
+}
+
+.donate-token-content .donate-token-variant{
+	margin: 0;
+	padding-top: 10px;
+}
+

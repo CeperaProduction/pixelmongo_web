@@ -77,7 +77,7 @@ public class DonatePack implements OrderedData<Integer>{
             inverseJoinColumns = @JoinColumn(name="server_id"))
     private List<DonateServer> servers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pack", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DonatePackToken> tokens = new ArrayList<>();
 
     public DonatePack() {}

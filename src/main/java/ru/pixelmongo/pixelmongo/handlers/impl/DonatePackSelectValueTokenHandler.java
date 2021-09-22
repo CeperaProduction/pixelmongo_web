@@ -45,9 +45,9 @@ public class DonatePackSelectValueTokenHandler implements DonatePackTokenHandler
         List<Integer> costValues = new ArrayList<Integer>();
         List<String> valuesDisplay = new ArrayList<String>();
         for(int i = 0; i < data.getOptions().size(); i+=3) {
-            values.add(data.getOptions().get(i));
-            costValues.add(Integer.parseInt(data.getOptions().get(i+1)));
-            valuesDisplay.add(data.getOptions().get(i+2));
+            values.add(data.getOption(i));
+            costValues.add(Integer.parseInt(data.getOption(i+1)));
+            valuesDisplay.add(data.getOption(i+2));
         }
         return new DonatePackTokenSelectValue(data.getName(), pack, values, costValues, valuesDisplay);
     }
