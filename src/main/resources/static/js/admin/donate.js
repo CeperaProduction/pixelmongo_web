@@ -331,6 +331,21 @@ $(function(){
 		helper: sortableHelper
     });
 
+	$('#donate-key-gen').on('click', function(){
+		ajax.securedAjax({
+			type: 'GET',
+			url: '/admin/donate/servers/keygen',
+			dataType: 'json',
+			success : function(res){
+				if(res.result == 'ok'){
+					$('input#inputKey').val(res.message);
+				}
+			}
+		});
+		e.preventDefault();
+		return false;
+	});
+
 	loading = false;
 
 });

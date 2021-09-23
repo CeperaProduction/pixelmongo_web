@@ -22,7 +22,7 @@ public class RandomUtils {
     }
 
     public static String generateRandomKey() {
-        return generateRandomKey(20);
+        return generateRandomKey(32);
     }
 
     public static String generateRandomKey(int length) {
