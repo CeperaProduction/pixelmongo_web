@@ -12,7 +12,7 @@
 		        <span th:if="${page.id == 0}">Создание донат-страницы</span>
 		        <div th:if="${page.id != 0}">
 		        	<span>Изменение донат-страницы</span>
-		        	<span class="text-secondary float-right"
+		        	<span class="text-secondary"
 		        		th:text="|#${page.id}|"></span>
 			        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/donate/pages}">
 						<i class="fa fa-backward"></i>

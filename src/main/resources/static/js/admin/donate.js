@@ -266,6 +266,7 @@ $(function(){
 	$('#donate-page-list>tbody').sortable({
         items: 'tr',
         cursor: 'move',
+		handle: '.donate-page-move',
         axis: 'y',
         dropOnEmpty: false,
         start: sortableStart,

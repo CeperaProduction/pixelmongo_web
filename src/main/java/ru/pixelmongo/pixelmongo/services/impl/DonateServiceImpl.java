@@ -123,7 +123,7 @@ public class DonateServiceImpl implements DonateService{
 
         if(makeBackIfTimed && pack.isTimed()) {
             DonateQuery backQuery = query.duplicate();
-            List<String> backCmds = pack.getCommands().stream().map(cmd->applyTokens(cmd, tokenValues))
+            List<String> backCmds = pack.getBackCommands().stream().map(cmd->applyTokens(cmd, tokenValues))
                     .collect(Collectors.toList());
             backQuery.setCommands(backCmds);
             backQuery.setDate(query.getDate());

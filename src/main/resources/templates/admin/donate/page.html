@@ -81,11 +81,26 @@
 								</tbody>
 							</table>
 			    		</div>
+			    		<div th:if="${category.packs.empty}">
+				    		<div class="row align-items-center" style="min-height: 80px">
+				        		<div class="col text-center text-muted">
+				        			Категория пуста
+				        		</div>
+				        	</div>
+				    	</div>
 			    	</div>
+		    	</div>
+		    	<div th:if="${page.categories.empty}">
+		    		<div class="row align-items-center" style="min-height: 30vh">
+		        		<div class="col text-center text-muted">
+		        			Донат-страница пуста
+		        		</div>
+		        	</div>
 		    	</div>
 		    </div>
 		    <div class="card-footer">
-		    	<a th:href="@{/admin/donate/pages/{page}/pack/new(page=${page.tag})}" class="btn btn-primary">
+		    	<a th:href="@{/admin/donate/pages/{page}/pack/new(page=${page.tag})}" class="btn btn-primary"
+		    		th:if="${!page.categories.empty}">
 		    		<i class="fa fa-plus"></i> Добавить Набор
 		    	</a>
 		    	<a th:href="@{/admin/donate/pages/{page}/category/new(page=${page.tag})}" class="btn btn-primary">

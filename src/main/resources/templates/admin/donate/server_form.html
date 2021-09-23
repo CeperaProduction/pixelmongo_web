@@ -12,8 +12,14 @@
 		        <span th:if="${server.id == 0}">Добавление сервера в донат-систему</span>
 		        <div th:if="${server.id != 0}">
 		        	<span>Изменение сервера в донат-системе</span>
-		        	<span class="text-secondary float-right"
+		        	<span class="text-secondary"
 		        		th:text="|#${server.id}|"></span>
+		        	<div class="float-right">
+				        <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/donate/servers}">
+							<i class="fa fa-backward"></i>
+							Назад
+						</a>
+		        	</div>
 		        </div>
 		    </div>
 		    <div class="card-body">
