@@ -12,8 +12,14 @@
 		        <span th:if="${category.id == 0}">Создание категории</span>
 		        <div th:if="${category.id != 0}">
 		        	<span>Изменение категории</span>
-		        	<span class="text-secondary float-right"
+		        	<span class="text-secondary"
 		        		th:text="|#${category.id}|"></span>
+		        	<div class="float-right">
+				        <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/donate/pages/{page}(page=${page.tag})}">
+							<i class="fa fa-backward"></i>
+							Назад
+						</a>
+		        	</div>
 		        </div>
 		    </div>
 		    <div class="card-body">

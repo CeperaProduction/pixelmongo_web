@@ -61,14 +61,18 @@ public class DonatePackTokenData {
     }
 
     public List<List<String>> getOptionSections(int sectionSize){
+        return getOptionSections(sectionSize, 0);
+    }
+
+    public List<List<String>> getOptionSections(int sectionSize, int offset){
         List<List<String>> result = new ArrayList<>();
-        int size = options.size();
+        int size = options.size() - offset;
         if(size % sectionSize != 0)
             size += sectionSize - (size % sectionSize);
         for(int i = 0; i < size; i+=sectionSize) {
             List<String> spl = new ArrayList<>();
             for(int j = 0; j < sectionSize; j++)
-                spl.add(getOption(i+j));
+                spl.add(getOption(offset+i+j));
             result.add(spl);
         }
         return result;

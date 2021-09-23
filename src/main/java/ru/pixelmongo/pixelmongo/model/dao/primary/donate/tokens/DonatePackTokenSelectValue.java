@@ -15,6 +15,8 @@ import ru.pixelmongo.pixelmongo.utils.StringListConverter;
 @DiscriminatorValue(DonatePackTokenType.Values.SELECT_VALUE)
 public class DonatePackTokenSelectValue extends DonatePackToken{
 
+    private String display;
+
     @Column(name = "data")
     @Convert(converter = StringListConverter.class)
     private List<String> values;
@@ -23,20 +25,29 @@ public class DonatePackTokenSelectValue extends DonatePackToken{
     @Convert(converter = IntegerListConverter.class)
     private List<Integer> costValues;
 
-    @Column(name = "display")
+    @Column(name = "data_display")
     @Convert(converter = StringListConverter.class)
     private List<String> valuesDisplay;
 
     public DonatePackTokenSelectValue() {}
 
-    public DonatePackTokenSelectValue(String token, DonatePack pack,
+    public DonatePackTokenSelectValue(String token, DonatePack pack, String display,
             List<String> values, List<Integer> costValues, List<String> valuesDisplay) {
         super(token, pack);
         if(values.size() != costValues.size())
             throw new IllegalArgumentException("Values and costs lists must be same size");
+        this.display = display;
         this.values = values;
         this.costValues = costValues;
         this.valuesDisplay = valuesDisplay;
+    }
+
+    public String getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
     }
 
     public List<String> getValues() {

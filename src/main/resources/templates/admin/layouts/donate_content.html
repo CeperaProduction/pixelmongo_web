@@ -6,10 +6,8 @@
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE"></title>
 
-	<link rel="stylesheet" type="text/css"
-		th:href="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css}|" />
-	<script type="text/javascript" charset="UTF-8"
-		th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}|"></script>
+	<th:block th:replace="/fragments/jquery :: ui"></th:block>
+
 	<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/donate.js}"></script>
 
 </head>

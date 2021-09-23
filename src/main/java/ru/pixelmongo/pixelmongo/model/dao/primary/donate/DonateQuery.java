@@ -74,6 +74,9 @@ public class DonateQuery {
     @JoinColumn(name = "back_of")
     private DonateQuery backOf;
 
+    @OneToOne(mappedBy = "backOf")
+    private DonateQuery back;
+
     public DonateQuery() {}
 
     public DonateQuery(String title, String server, String player) {
@@ -82,6 +85,27 @@ public class DonateQuery {
         this.player = player;
         this.date = (int) (System.currentTimeMillis()/1000);
         this.executeAfter = this.date;
+    }
+
+    /**
+     * Make duplication of this query.
+     * Id, time points, status, query sequence relations (back queries) won't copy.
+     * @return
+     */
+    public DonateQuery duplicate() {
+        DonateQuery newQuery = new DonateQuery();
+        newQuery.title = this.title;
+        newQuery.player = this.player;
+        newQuery.server = this.server;
+        newQuery.date = (int) (System.currentTimeMillis()/1000);
+        newQuery.executeAfter = newQuery.date;
+        newQuery.commands = new ArrayList<>(this.commands);
+        newQuery.offline = this.offline;
+        newQuery.hidden = this.hidden;
+        newQuery.invSpace = this.invSpace;
+        newQuery.packId = this.packId;
+        newQuery.spentMoney = this.spentMoney;
+        return newQuery;
     }
 
     public int getId() {
@@ -192,12 +216,34 @@ public class DonateQuery {
         this.packId = pack_id;
     }
 
+    /**
+     * @return Query this query is back of. Null if this query is not back query
+     */
     public DonateQuery getBackOf() {
         return backOf;
     }
 
     public void setBackOf(DonateQuery backOf) {
         this.backOf = backOf;
+    }
+
+    /**
+     * @return Back query of this query. Null if it has no back query
+     */
+    public DonateQuery getBack() {
+        return back;
+    }
+
+    public void setBack(DonateQuery back) {
+        this.back = back;
+    }
+
+    public boolean isBackQuery() {
+        return this.backOf != null;
+    }
+
+    public boolean hasBackQuery() {
+        return this.back != null;
     }
 
 }

@@ -114,7 +114,7 @@ public class DonateContentController {
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        if("new".equals(pageForm.getTag())) {
+        if("new".equals(pageForm.getTag()) || "reorder".equals(pageForm.getTag())) {
             binding.addError(new FieldError("pageForm", "tag",
                     msg.getMessage("value.denied", null, loc)));
         }else if(pages.findByTag(pageForm.getTag()).isPresent()) {
@@ -170,7 +170,7 @@ public class DonateContentController {
         DonatePage page = find(pages.findByTag(pageTag), loc);
 
         final int pageId = page.getId();
-        if("new".equals(pageForm.getTag())) {
+        if("new".equals(pageForm.getTag()) || "reorder".equals(pageForm.getTag())) {
             binding.addError(new FieldError("pageForm", "tag",
                     msg.getMessage("value.denied", null, loc)));
         }else if(pages.findByTag(pageForm.getTag()).filter(p->p.getId() != pageId).isPresent()) {

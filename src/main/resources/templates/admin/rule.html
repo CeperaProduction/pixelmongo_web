@@ -4,7 +4,7 @@
 	layout:decorate="~{admin/layouts/content}">
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Редактирование правил</title>
-	<th:block th:include="admin/fragments/tinymce :: headers"></th:block>
+	<th:block th:include="/fragments/tinymce :: headers"></th:block>
 </head>
 <body>
 	<div class="container" layout:fragment="content">
@@ -30,7 +30,7 @@
 					<hr class="separator">
 					<div class="form-group">
 						<textarea id="ruleContent" th:field="*{content}"></textarea>
-						<script th:include="admin/fragments/tinymce :: script_settings"></script>
+						<script th:include="/fragments/tinymce :: script_settings"></script>
 						<script>
 							var settings = {...default_settings,
 									...{selector: '#ruleContent'}}

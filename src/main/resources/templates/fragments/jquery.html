@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+	<th:block th:fragment="jquery">
+		<script type="text/javascript"
+			th:src="|@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js}|"></script>
+		<script type="text/javascript"
+			th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js}|"></script>
+	</th:block>
+
+	<th:block th:fragment="ui">
+		<link rel="stylesheet" type="text/css"
+			th:href="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css}|" />
+		<script type="text/javascript" charset="UTF-8"
+			th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js}|"></script>
+		<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/monitoring.js}"></script>
+	</th:block>
+
+</head>
+<body>
+
+</body>
+</html>

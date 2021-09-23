@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Выдача наборов</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Выдача наборов игрокам
+		    </div>
+		    <div class="card-body">
+	        	<div class="input-group mb-2">
+	        		<input type="text" class="form-control"
+						th:value="${pack.title}"
+						disabled>
+					<div class="input-group-append">
+						<a class="btn btn-outline-secondary" th:href="@{/admin/donate/give}">
+							<i class="fa fa-backward"></i>
+							Назад
+						</a>
+					</div>
+				</div>
+		    </div>
+		</div>
+		<div class="card mb-4">
+		    <div class="card-body">
+	        	<form id="giveForm" th:action="@{''}" th:method="POST" th:object="${giveForm}">
+					<div class="form-group row">
+						<label for="inputUser" class="col-sm-3 col-form-label text-truncate">Логин пользователя</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputUser" placeholder="Кому выдать набор"
+								th:field="*{user}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{user}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputServer" class="col-sm-3 col-form-label text-truncate">Сервер</label>
+						<div class="col-sm-9">
+							<select class="custom-select form-control" id="inputServer"
+								th:field="*{server}"
+								required="required">
+								<option th:each="server : ${servers}"
+									th:value="${server.id}"
+									th:text="${server.displayName}"></option>
+							</select>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{server}"></div>
+						</div>
+					</div>
+					<div class="form-group row" th:if="${pack.countable}">
+						<label for="inputCount" class="col-sm-3 col-form-label text-truncate">Количество</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control"
+								id="inputCount" placeholder="Количество наборов"
+								min="1"
+								max="64"
+								th:field="*{count}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{count}"></div>
+						</div>
+					</div>
+					<th:block th:each="token : ${pack.tokens}">
+						<th:block th:switch="${token.type.name()}">
+
+							<div th:case="'SELECT_VALUE'"
+								class="form-group row">
+								<label for="inputServer" class="col-sm-3 col-form-label text-truncate"
+									th:text="${token.display}"></label>
+								<div class="col-sm-9">
+									<select class="custom-select form-control" id="inputServer"
+										th:field="*{tokens['__${token.token}__']}"
+										required="required">
+										<option th:each="value,i : ${token.valuesDisplay}"
+											th:value="${i.index}"
+											th:text="${value}"></option>
+									</select>
+								</div>
+							</div>
+
+						</th:block>
+					</th:block>
+					<div class="alert alert-danger px-3 my-1"
+						role="alert"
+						th:errors="*{tokens}"></div>
+
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="giveForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-gift"></i>
+					Выдать набор
+				</button>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

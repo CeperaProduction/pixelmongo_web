@@ -7,6 +7,7 @@ import java.util.Random;
 import org.springframework.stereotype.Component;
 
 import ru.pixelmongo.pixelmongo.handlers.DonatePackTokenHandler;
+import ru.pixelmongo.pixelmongo.handlers.DonatePackTokenProcessResult;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenRandomInt;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
@@ -23,11 +24,11 @@ public class DonatePackRandomIntTokenHandler implements DonatePackTokenHandler<D
     }
 
     @Override
-    public ProcessResult processToken(DonatePackTokenRandomInt token, Object... data) {
+    public DonatePackTokenProcessResult processToken(DonatePackTokenRandomInt token, List<String> data) throws Exception {
         int result = 0;
         if(token.getMax() >= token.getMin())
             result = token.getMin() + random.nextInt(token.getMax() - token.getMin() + 1);
-        return new ProcessResult(result+"", 0);
+        return new DonatePackTokenProcessResultImpl(result+"", 0);
     }
 
     @Override

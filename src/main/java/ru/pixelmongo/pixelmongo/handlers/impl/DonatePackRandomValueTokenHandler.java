@@ -1,20 +1,19 @@
 package ru.pixelmongo.pixelmongo.handlers.impl;
 
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.stereotype.Component;
 
 import ru.pixelmongo.pixelmongo.handlers.DonatePackTokenHandler;
+import ru.pixelmongo.pixelmongo.handlers.DonatePackTokenProcessResult;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenRandomValue;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
 import ru.pixelmongo.pixelmongo.model.dto.forms.donate.DonatePackTokenData;
+import ru.pixelmongo.pixelmongo.utils.RandomUtils;
 
 @Component
 public class DonatePackRandomValueTokenHandler implements DonatePackTokenHandler<DonatePackTokenRandomValue>{
-
-    private Random random = new Random();
 
     @Override
     public DonatePackTokenType getTokenType() {
@@ -22,12 +21,9 @@ public class DonatePackRandomValueTokenHandler implements DonatePackTokenHandler
     }
 
     @Override
-    public ProcessResult processToken(DonatePackTokenRandomValue token, Object... data) {
-        String result = "";
-        int size = token.getValues().size();
-        if(size > 0)
-            result = token.getValues().get(random.nextInt(size));
-        return new ProcessResult(result, 0);
+    public DonatePackTokenProcessResult processToken(DonatePackTokenRandomValue token, List<String> data) throws Exception {
+        String result = RandomUtils.randomElement(token.getValues(), "");
+        return new DonatePackTokenProcessResultImpl(result, 0);
     }
 
     @Override

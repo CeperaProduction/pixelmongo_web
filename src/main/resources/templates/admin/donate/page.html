@@ -9,18 +9,30 @@
 	<div class="container" layout:fragment="donate_content">
 		<div class="card mb-3">
 		    <div class="card-header">
-		        Содержимое страницы <span th:text="${page.title}"></span>
+		        Содержимое страницы
+		        <span th:text="${page.title}"></span>
+	        	<span class="text-secondary"
+	        		th:text="|#${page.id}|"></span>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/donate/pages}">
+					<i class="fa fa-backward"></i>
+					Назад
+				</a>
 		    </div>
 		    <div class="card-body p-0">
-		    	<div class="donate-page-content">
+		    	<div class="donate-page-content" th:attrappend="data-page-tag=${page.tag}">
 		    		<div class="donate-category-block"
 			    		th:each="category : ${page.categories}"
-			    		th:attrappend="data-category-id='${category.id}'">
+			    		th:attrappend="data-category-id=${category.id}">
 			    		<div class="row donate-category-header">
 			    			<div class="col-8">
-			    				<del th:if="${!category.enabled}" class="text-muted" th:text="${category.title}"></del>
-								<span th:if="${category.enabled}"
-									th:text="${category.title}"></span>
+			    				<del th:if="${!category.enabled}" class="text-muted">
+			    					<i class="fa fa-folder"></i>
+			    					<span th:text="${category.title}"></span>
+			    				</del>
+								<span th:if="${category.enabled}">
+			    					<i class="fa fa-folder-open"></i>
+			    					<span th:text="${category.title}"></span>
+			    				</span>
 			    			</div>
 			    			<div class="col-4">
 			    				<a class="btn btn-sm btn-outline-secondary"
@@ -29,27 +41,40 @@
 									<i class="fa fa-cog"></i>
 									Изменить
 								</a>
+								<a class="btn btn-sm btn-outline-secondary donate-category-move"
+									style="cursor: move">
+									<i class="fa fa-sort"></i>
+								</a>
 			    			</div>
 			    		</div>
 
 			    		<div class="table-responsive">
 			    			<table id="donate-pack-list" class="table table-striped m-0">
 								<tbody>
-									<tr class="donate-page-row"
+									<tr class="donate-pack-row"
 										th:each="pack : ${category.packs}"
 										th:attrappend="data-pack-id=${pack.id}">
-										<td>
-											<del th:if="${!pack.enabled}" class="text-muted" th:text="${pack.title}"></del>
+										<td class="col-8">
+											<del th:if="${!pack.enabled}" class="text-muted">
+						    					<i class="fa fa-box"></i>
+						    					<span th:text="${pack.title}"></span>
+											</del>
 											<span th:if="${pack.enabled}"
-												th:text="${pack.title}"
-												th:classappend="${!category.enabled}?text-muted"></span>
+												th:classappend="${!category.enabled}?text-muted">
+						    					<i class="fa fa-box"></i>
+						    					<span th:text="${pack.title}"></span>
+											</span>
 										</td>
-										<td>
+										<td class="col-4">
 											<a class="btn btn-sm btn-outline-secondary"
 												style="cursor: pointer"
 												th:href="@{/admin/donate/pages/{page}/pack/{pack}(page=${page.tag},pack=${pack.id})}">
 												<i class="fa fa-cog"></i>
 												Изменить
+											</a>
+											<a class="btn btn-sm btn-outline-secondary donate-pack-move"
+												style="cursor: move">
+												<i class="fa fa-sort"></i>
 											</a>
 										</td>
 									</tr>

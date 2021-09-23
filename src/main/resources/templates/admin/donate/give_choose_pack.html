@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Выдача наборов</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Выдача наборов игрокам
+		    </div>
+		    <div class="card-body">
+	        	<form th:method="GET" th:action="''">
+		        	<div class="input-group mb-2">
+		        		<select class="custom-select" id="packSelect" name="pack" required>
+							<option value="" selected disabled>
+								Выберите набор
+							</option>
+							<option th:each="pack : ${packs}"
+								th:value="${pack.id}"
+								th:text="${pack.title}"></option>
+						</select>
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="fa fa-forward"></i>
+								Далее
+							</button>
+						</div>
+					</div>
+	        	</form>
+		    </div>
+		</div>
+		<div class="card mb-4">
+		    <div class="card-body">
+	        	<div class="row align-items-center" style="min-height: 30vh">
+	        		<div class="col text-center text-muted">
+	        			Выберите набор для выдачи
+	        		</div>
+	        	</div>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

@@ -4,7 +4,9 @@
 	layout:decorate="~{admin/layouts/donate_content}">
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Настройка набора на донат-странице</title>
-	<th:block th:include="admin/fragments/tinymce :: headers"></th:block>
+
+	<th:block th:include="/fragments/tinymce :: headers"></th:block>
+
 </head>
 <body>
 	<div class="container" layout:fragment="donate_content">
@@ -13,8 +15,14 @@
 		        <span th:if="${pack.id == 0}">Создание набора</span>
 		        <div th:if="${pack.id != 0}">
 		        	<span>Изменение набора</span>
-		        	<span class="text-secondary float-right"
+		        	<span class="text-secondary"
 		        		th:text="|#${pack.id}|"></span>
+		        	<div class="float-right">
+				        <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/donate/pages/{page}(page=${page.tag})}">
+							<i class="fa fa-backward"></i>
+							Назад
+						</a>
+		        	</div>
 		        </div>
 		    </div>
 		    <div class="card-body">
@@ -57,7 +65,7 @@
 					<div class="form-group">
 						<label for="packContent">Описание содержимого</label>
 						<textarea id="packContent" th:field="*{content}"></textarea>
-						<script th:include="admin/fragments/tinymce :: script_settings"></script>
+						<script th:include="/fragments/tinymce :: script_settings"></script>
 						<script>
 							var settings = {...default_settings,
 									...{selector: '#packContent'}}
@@ -190,9 +198,20 @@
 												</div>
 											</div>
 											<div th:case="'SELECT_VALUE'">
+												<div class="input-group pt-2 px-3">
+													<div class="input-group-prepend" title="Отображаемое название токена">
+														<span class="input-group-text">
+															<i class="fa fa-eye"></i>
+														</span>
+													</div>
+									        		<input type="text" class="form-control"
+										        			th:name="|tokens[${token.name}].options|"
+															th:value="${token.getOption(0)}"
+															required="required">
+												</div>
 												<div  class="donate-token-variants">
 													<div class="row donate-token-variant"
-														th:each="section : ${token.getOptionSections(3)}">
+														th:each="section : ${token.getOptionSections(3, 1)}">
 														<div class="col input-group">
 															<div class="input-group-prepend" title="Значение">
 																<span class="input-group-text">
@@ -563,6 +582,16 @@
 			</div>
 
 			<div data-tpl="tokenSelectValue">
+				<div class="input-group pt-2 px-3">
+					<div class="input-group-prepend" title="Отображаемое название токена">
+						<span class="input-group-text">
+							<i class="fa fa-eye"></i>
+						</span>
+					</div>
+	        		<input type="text" class="form-control"
+		        			name="tokens[{{token-name}}].options"
+							required="required">
+				</div>
 				<div  class="donate-token-variants">
 
 				</div>

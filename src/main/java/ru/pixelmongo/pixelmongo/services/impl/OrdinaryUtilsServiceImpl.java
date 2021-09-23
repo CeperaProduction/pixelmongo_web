@@ -16,6 +16,7 @@ public class OrdinaryUtilsServiceImpl implements OrdinaryUtilsService{
 
     public <ID> int reorder(OrderedDataRepository<? extends OrderedData<ID>, ID> repo,
             Iterable<? extends OrderedData<ID>> data, List<ID> orderedIds) {
+        if(orderedIds.isEmpty()) return 0;
         Map<ID, OrderedData<ID>> dataMap = new HashMap<>();
         data.forEach(od->dataMap.put(od.getId(), od));
         List<OrderedData<ID>> changed = new ArrayList<>();

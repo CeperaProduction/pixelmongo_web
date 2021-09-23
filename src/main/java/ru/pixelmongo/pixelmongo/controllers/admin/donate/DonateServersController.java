@@ -2,7 +2,6 @@ package ru.pixelmongo.pixelmongo.controllers.admin.donate;
 
 import java.util.Locale;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +30,7 @@ import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerReposito
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 import ru.pixelmongo.pixelmongo.services.UserService;
+import ru.pixelmongo.pixelmongo.utils.RandomUtils;
 
 @Controller
 @RequestMapping("/admin/donate/servers")
@@ -65,7 +65,7 @@ public class DonateServersController {
         model.addAttribute("method", "put");
         model.addAttribute("server", new DonateServer());
         DonateServerForm form = new DonateServerForm();
-        form.setKey(generateKey());
+        form.setKey(RandomUtils.generateRandomKey());
         model.addAttribute("serverForm", form);
 
         return "admin/donate/server_form";
@@ -182,10 +182,6 @@ public class DonateServersController {
 
     private void log(String langKey, HttpServletRequest request, Object... langValues) {
         logs.log(langKey, langValues, userService.getCurrentUser(), request.getRemoteAddr());
-    }
-
-    public static String generateKey() {
-        return UUID.randomUUID().toString();
     }
 
 }
