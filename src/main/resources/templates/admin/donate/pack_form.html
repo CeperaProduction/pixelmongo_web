@@ -171,7 +171,7 @@
 												<div  class="donate-token-variants">
 													<div class="row donate-token-variant"
 														th:each="option : ${token.options}">
-														<div class="col input-group">
+														<div class="col input-group  input-group-sm">
 															<div class="input-group-prepend" title="Значение">
 																<span class="input-group-text">
 																	<i class="fa fa-terminal"></i>
@@ -212,7 +212,7 @@
 												<div  class="donate-token-variants">
 													<div class="row donate-token-variant"
 														th:each="section : ${token.getOptionSections(3, 1)}">
-														<div class="col input-group">
+														<div class="col input-group input-group-sm">
 															<div class="input-group-prepend" title="Значение">
 																<span class="input-group-text">
 																	<i class="fa fa-terminal"></i>
@@ -261,14 +261,14 @@
 								</div>
 							</div>
 							<div id="donate-token-add-block" class="row">
-								<div class="col">
+								<div class="col-6 col-sm-4">
 									<select id="selectTokenType" class="form-control custom-select">
 										<option th:each="token_type : ${token_types}"
 											th:value="${token_type}"
 											th:text="${@templateService.printTokenType(token_type)}"></option>
 									</select>
 								</div>
-								<div class="col">
+								<div class="col-6 col-sm-4">
 									<div class="input-group">
 										<div class="input-group-prepend">
 											<span class="input-group-text">$</span>
@@ -277,7 +277,7 @@
 						        			placeholder="token_name">
 									</div>
 								</div>
-								<div class="col">
+								<div class="col-6 col-sm-4">
 									<a id="donate-token-add"
 										href="#" class="btn btn-outline-secondary text-truncate">
 										<i class="fa fa-plus"></i>
@@ -605,7 +605,7 @@
 
 			<div data-tpl="tokenRandomValueVariant">
 				<div class="row donate-token-variant">
-					<div class="col input-group">
+					<div class="col input-group input-group-sm">
 						<div class="input-group-prepend" title="Значение">
 							<span class="input-group-text">
 								<i class="fa fa-terminal"></i>
@@ -626,7 +626,7 @@
 
 			<div data-tpl="tokenSelectValueVariant">
 				<div class="row donate-token-variant">
-					<div class="col input-group">
+					<div class="col input-group input-group-sm">
 						<div class="input-group-prepend" title="Значение">
 							<span class="input-group-text">
 								<i class="fa fa-terminal"></i>

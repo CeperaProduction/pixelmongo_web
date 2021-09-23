@@ -13,6 +13,7 @@ $(function(){
 	$('#monitoring-list>tbody').sortable({
         items: 'tr:not(tr:first-child)',
         cursor: 'move',
+		handle: '.monitoring-move',
         axis: 'y',
         dropOnEmpty: false,
         start: function (e, ui) {

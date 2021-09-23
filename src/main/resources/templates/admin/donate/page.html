@@ -23,8 +23,8 @@
 		    		<div class="donate-category-block"
 			    		th:each="category : ${page.categories}"
 			    		th:attrappend="data-category-id=${category.id}">
-			    		<div class="row donate-category-header">
-			    			<div class="col-8">
+			    		<div class="row align-items-center donate-category-header">
+			    			<div class="col-6 col-md-8">
 			    				<del th:if="${!category.enabled}" class="text-muted">
 			    					<i class="fa fa-folder"></i>
 			    					<span th:text="${category.title}"></span>
@@ -34,7 +34,7 @@
 			    					<span th:text="${category.title}"></span>
 			    				</span>
 			    			</div>
-			    			<div class="col-4">
+			    			<div class="col-6 col-md-4">
 			    				<a class="btn btn-sm btn-outline-secondary"
 									style="cursor: pointer"
 									th:href="@{/admin/donate/pages/{page}/category/{category}(page=${page.tag},category=${category.id})}">
@@ -54,7 +54,7 @@
 									<tr class="donate-pack-row"
 										th:each="pack : ${category.packs}"
 										th:attrappend="data-pack-id=${pack.id}">
-										<td class="col-8">
+										<td class="col-6 col-md-8 align-middle">
 											<del th:if="${!pack.enabled}" class="text-muted">
 						    					<i class="fa fa-box"></i>
 						    					<span th:text="${pack.title}"></span>
@@ -65,7 +65,7 @@
 						    					<span th:text="${pack.title}"></span>
 											</span>
 										</td>
-										<td class="col-4">
+										<td class="col-6 col-md-4 align-middle">
 											<a class="btn btn-sm btn-outline-secondary"
 												style="cursor: pointer"
 												th:href="@{/admin/donate/pages/{page}/pack/{pack}(page=${page.tag},pack=${pack.id})}">

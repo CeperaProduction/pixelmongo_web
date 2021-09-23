@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -70,11 +71,11 @@ public class DonateQuery {
     @Column(name="pack_id", nullable = false)
     private int packId = 0;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "back_of")
     private DonateQuery backOf;
 
-    @OneToOne(mappedBy = "backOf")
+    @OneToOne(mappedBy = "backOf", fetch = FetchType.LAZY)
     private DonateQuery back;
 
     public DonateQuery() {}
