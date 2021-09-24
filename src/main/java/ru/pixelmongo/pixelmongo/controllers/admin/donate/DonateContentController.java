@@ -488,4 +488,11 @@ public class DonateContentController {
         logs.log(langKey, langValues, userService.getCurrentUser(), request.getRemoteAddr());
     }
 
+    //OTHER
+
+    @ModelAttribute
+    public void applyMode(Model model) {
+        model.addAttribute("mode", "donate");
+    }
+
 }

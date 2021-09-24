@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление балансами пользователей</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Управление балансами пользователей
+		    </div>
+		    <div class="card-body">
+			    <form th:method="GET" th:action="''" th:if="${user == null}">
+		        	<div class="input-group mb-2">
+		        		<input type="text" class="form-control"
+		        			name="user"
+							placeholder="Логин пользователя">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="fa fa-forward"></i>
+								Далее
+							</button>
+						</div>
+					</div>
+	        	</form>
+	        	<div class="input-group mb-2" th:if="${user != null}">
+	        		<input type="text" class="form-control"
+						th:value="${user.name}"
+						disabled>
+					<div class="input-group-append">
+						<a class="btn btn-outline-secondary" th:href="@{/admin/donate/balance}">
+							<i class="fa fa-backward"></i>
+							Назад
+						</a>
+					</div>
+				</div>
+		    </div>
+		</div>
+		<div class="card mb-4">
+			<th:block th:if="${user != null}">
+				<div class="card-body">
+		        	<form id="giveForm" th:action="@{''}" th:method="POST">
+		        		<input type="hidden" name="user" th:value="${user.name}">
+						<div class="form-group row">
+							<label for="currentBalance" class="col-sm-3 col-form-label text-truncate">Текущий баланс</label>
+							<div class="col-sm-9">
+								<input id="currentBalance" type="text" class="form-control"
+									th:value="${user.balance}"
+									disabled>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="inputCount" class="col-sm-3 col-form-label text-truncate">Изменить</label>
+							<div class="col-sm-9">
+								<input id="inputCount" type="number" class="form-control"
+									name="count" min="0"
+									placeholder="Введите значение" required="required">
+							</div>
+						</div>
+
+		        	</form>
+			    </div>
+			    <div class="card-footer">
+					<button form="giveForm" type="submit" class="btn btn-primary"
+						name="change" value="give">
+						<i class="fa fa-hand-holding-usd"></i>
+						Выдать
+					</button>
+					<button form="giveForm" type="submit" class="btn btn-secondary"
+						name="change" value="take">
+						<i class="fa fa-donate"></i>
+						Отнять
+					</button>
+			    </div>
+			</th:block>
+			<th:block th:if="${user == null}">
+				<div class="card-body">
+		        	<div class="row align-items-center" style="min-height: 30vh">
+		        		<div class="col text-center text-muted">
+		        			Введите логин пользователя
+		        		</div>
+		        	</div>
+			    </div>
+			</th:block>
+		</div>
+	</div>
+</body>
+</html>
