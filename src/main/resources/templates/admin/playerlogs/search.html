@@ -5,12 +5,7 @@
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Логи игроков</title>
 
-	<link rel="stylesheet" type="text/css"
-		th:href="|@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css}|" />
-	<script type="text/javascript" charset="UTF-8"
-		th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js}|"></script>
-	<script type="text/javascript" charset="UTF-8"
-		th:src="|@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ru.min.js}|"></script>
+	<th:block th:replace="/fragments/bootstrap :: datepicker"></th:block>
 
 </head>
 <body>

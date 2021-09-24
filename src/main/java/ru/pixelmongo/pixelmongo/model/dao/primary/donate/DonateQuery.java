@@ -1,6 +1,7 @@
 package ru.pixelmongo.pixelmongo.model.dao.primary.donate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -245,6 +246,18 @@ public class DonateQuery {
 
     public boolean hasBackQuery() {
         return this.back != null;
+    }
+
+    public Date getDateDate() {
+        return date == 0 ? null : new Date(1000L * date);
+    }
+
+    public Date getExecuteAfterDate() {
+        return executeAfter == 0 ? null : new Date(1000L * executeAfter);
+    }
+
+    public Date getDateCompletedDate() {
+        return dateCompleted == 0 ? null : new Date(1000L * dateCompleted);
     }
 
 }

@@ -14,6 +14,21 @@ body{
 	margin-top: 0.125em;
 }
 
+.tooltip-inner {
+    max-width: 500px;
+    text-align: left;
+    line-height: 1.2;
+}
+
+tr.small td {
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.tooltip-inner p{
+	margin: 5px;
+}
+
 a.page-link.disabled{
 	pointer-events: none;
 	opacity: 0.65;

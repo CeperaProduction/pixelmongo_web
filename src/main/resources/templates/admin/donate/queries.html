@@ -3,7 +3,7 @@
 	xmlns:th="http://www.thymeleaf.org"
 	layout:decorate="~{admin/layouts/content}">
 <head>
-	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Логи игроков</title>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Логи донат-системы</title>
 
 	<th:block th:replace="/fragments/bootstrap :: datepicker"></th:block>
 
@@ -12,35 +12,19 @@
 	<div class="container" layout:fragment="content">
 		<div class="card mb-4">
 		    <div class="card-header">
-		        Просмотр логов игроков
-		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/playerlogs?search}">
-					<i class="fa fa-search"></i>
-					Поиск
-				</a>
+		        Просмотр логов донат-системы
 		    </div>
 		    <div class="card-body">
 	        	<form th:method="GET" th:action="''">
-	        		<div class="input-group mb-2">
-		        		<input type="text" class="form-control"
-							name="server"
-							th:value="${server}"
-							readonly>
-						<div class="input-group-append">
-							<a class="btn btn-outline-secondary" th:href="@{/admin/playerlogs}">
-								<i class="fa fa-backward"></i>
-								Назад
-							</a>
-						</div>
-					</div>
 		        	<div class="input-group mb-2">
-		        		<select class="custom-select" id="playerSelect" name="player" required>
-							<option value="" selected disabled th:if="${player == null}">
-								Выберите игрока
+		        		<select class="custom-select" id="serverSelect" name="server" required>
+							<option value="" selected disabled th:if="${server.id == 0}">
+								Выберите сервер
 							</option>
-							<option th:each="pl : ${players}"
-								th:value="${pl}"
-								th:text="${pl}"
-								th:selected="${pl == player}"></option>
+							<option th:each="serv : ${servers}"
+								th:value="${serv.id}"
+								th:text="${serv.displayName}"
+								th:selected="${serv.id == server.id}"></option>
 						</select>
 						<div class="input-group-append">
 							<button class="btn btn-outline-secondary" type="submit">
@@ -82,33 +66,55 @@
 	        	</form>
 		    </div>
 		</div>
-		<div class="card mb-4">
-			<div class="card-body" th:if="${player == null}">
+		<div class="card mb-4" th:if="${server.id == 0}">
+			<div class="card-body">
 	        	<div class="row align-items-center" style="min-height: 20vh">
 	        		<div class="col text-center text-muted">
-	        			Выберите игрока и временной промежуток.
+	        			Выберите сервер и временной промежуток
 	        		</div>
 	        	</div>
         	</div>
-        	<th:block th:if="${player != null}">
-        		<div class="card-body table-responsive p-0">
+        </div>
+        <th:block th:if="${server.id != 0}">
+	        <div class="card mb-4">
+	        	<div class="card-body">
+	        		<div class="row align-items-center">
+		        		<div class="col text-center text-muted">
+		        			Потрачено за указанный промежуток: <span th:text="${spent_money}"></span>
+		        		</div>
+		        	</div>
+	        	</div>
+        	</div>
+        	<div class="card mb-4">
+	        	<div class="card-body table-responsive p-0">
 					<table class="table table-hover m-0">
 						<thead>
 							<tr class="text-center">
+								<th scope="col">Товар</th>
 								<th scope="col">Игрок</th>
-								<th scope="col">Время</th>
-								<th scope="col">Тип</th>
-								<th scope="col">Информация</th>
-								<th scope="col">Место</th>
+								<th scope="col">Дата</th>
+								<th scope="col">Дата выдачи</th>
+								<th class="col-1" scope="col">Потрачено</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="log : ${logs}">
-								<td th:text="${log.player}"></td>
-								<td th:text="${@templateService.printDate(log.date)}"></td>
-								<td th:text="${log.type}"></td>
-								<td th:text="${log.data}"></td>
-								<td th:text="${log.x + ' ' + log.y + ' ' +  log.z + ' ' +  log.world}"></td>
+							<tr th:each="query : ${queries}"
+								th:classappend="|${!query.done ? 'text-muted' : ''} ${query.backQuery ? 'small' : ''}|">
+								<td>
+									<span class="badge badge-info" data-toggle="tooltip"
+										th:attrappend="data-tooltip-id=${'tooltip_'+query.id}">
+										<i class="fa fa-terminal"></i>
+									</span>
+									<div th:id="${'tooltip_'+query.id}" style="display: none" hidden="hidden">
+										<p th:each="cmd : ${query.commands}"
+											th:text="|/${cmd}|"></p>
+									</div>
+									<span th:text="${query.title}"></span>
+								</td>
+								<td th:text="${query.player}"></td>
+								<td th:text="${@templateService.printDate(query.executeAfterDate)}"></td>
+								<td th:text="${@templateService.printDate(query.dateCompletedDate)}"></td>
+								<td class="col-1" th:text="${query.spentMoney}"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -116,14 +122,14 @@
 			    <div class="card-footer p-1">
 					<div th:replace="~{admin/fragments/pagination :: pagination}"></div>
 			    </div>
-        	</th:block>
-		</div>
+			</div>
+        </th:block>
+
 		<script type="text/javascript">
 			let pickers = $('.date-picker');
 			pickers.datepicker({
 				format : 'dd-mm-yyyy',
 				autoclose : true,
-				endDate : new Date(),
 				language : 'ru'
 			});
 			pickers.each(function(){
@@ -142,6 +148,18 @@
 					let val = Math.round(date.getTime()/1000);
 					if(isEnd) val += 86400;
 					valIn.val(val);
+				});
+			});
+
+			$(function(){
+				$('*[data-toggle=tooltip]').tooltip({
+					placement: 'right',
+					html: true,
+					title: function(){
+						let tid = $(this).attr('data-tooltip-id');
+						return $('#'+tid).html();
+					}
+
 				});
 			});
 		</script>
