@@ -1,8 +1,6 @@
 package ru.pixelmongo.pixelmongo.controllers;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,22 +19,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
-import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
 import ru.pixelmongo.pixelmongo.model.dto.results.ValidationErrorMessage;
 import ru.pixelmongo.pixelmongo.services.CaptchaService;
@@ -45,7 +36,7 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthController extends RestControllerExceptionHandler{
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -61,8 +52,13 @@ public class AuthController {
     @Autowired
     private CaptchaService captchaService;
 
-    @Autowired
     private MessageSource msg;
+
+    @Autowired
+    public AuthController(MessageSource msg) {
+        super(msg);
+        this.msg = msg;
+    }
 
     //mappings
 
@@ -126,38 +122,6 @@ public class AuthController {
     @ExceptionHandler
     public ResultMessage handleUserAlreadyExistsException(UserAlreadyExistsException ex, Locale loc){
         return new ResultMessage(DefaultResult.ERROR, msg.getMessage("auth.register.already_exists", null, loc));
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ResultMessage handleMissingParametersException(MissingServletRequestParameterException ex){
-        return new ResultMessage(DefaultResult.ERROR, ex.getLocalizedMessage());
-    }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ResultMessage handleUnexpectedException(Exception ex){
-        LOGGER.catching(ex);
-        return new ResultMessage(DefaultResult.ERROR, ex.toString());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ResultDataMessage<Map<String, String>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((err) -> {
-            String field = ((FieldError) err).getField();
-            String msg = err.getDefaultMessage();
-            errors.put(field, msg);
-        });
-        return new ValidationErrorMessage("Validation error", errors);
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ResultMessage handleCaptchaException(InvalidCaptchaEcxeption ex, Locale loc){
-        return new ResultMessage(DefaultResult.ERROR, msg.getMessage("captcha.fail", null, loc));
     }
 
 }

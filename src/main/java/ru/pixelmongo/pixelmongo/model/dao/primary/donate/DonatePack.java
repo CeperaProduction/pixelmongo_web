@@ -219,7 +219,7 @@ public class DonatePack implements OrderedData<Integer>{
     }
 
     public void setDiscount(int discount) {
-        this.discount = (byte) (Math.max(Math.min(discount, 100), 0) / 100f);
+        this.discount = (byte) Math.max(Math.min(discount, 100), 0);
     }
 
 }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/donate_content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление скидками</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="donate_content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Управление скидками
+		    </div>
+		    <div class="card-body">
+	        	<form id="discountForm" th:action="@{''}" th:method="POST">
+					<div class="form-group row">
+						<label for="inputPage" class="col-sm-3 col-form-label text-truncate">Страница</label>
+						<div class="col-sm-9">
+							<select class="custom-select form-control" id="inputPage" name="page">
+								<option value="0">
+									Все страницы
+								</option>
+								<option th:each="page : ${pages}"
+									th:value="${page.id}"
+									th:text="${page.title}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputCategory" class="col-sm-3 col-form-label text-truncate">Категория</label>
+						<div class="col-sm-9">
+							<select class="custom-select form-control" id="inputCategory" name="category" disabled>
+								<option value="0">
+									Все категории
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputPack" class="col-sm-3 col-form-label text-truncate">Набор</label>
+						<div class="col-sm-9">
+							<select class="custom-select form-control" id="inputPack" name="pack" disabled>
+								<option value="0">
+									Все наборы
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputValue" class="col-sm-3 col-form-label text-truncate">Скидка</label>
+						<div class="col-sm-9">
+							<div class="input-group">
+				        		<input type="number" class="form-control" id="inputValue"
+									min="0" max="100" name="value" value="0" required="required">
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-percent"></i>
+									</span>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="discountForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Установить
+				</button>
+		    </div>
+		</div>
+
+		<script type="text/javascript">donate.initDiscountEditor();</script>
+
+	</div>
+</body>
+</html>

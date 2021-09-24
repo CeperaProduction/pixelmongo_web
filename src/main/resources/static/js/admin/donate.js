@@ -1,13 +1,11 @@
 
-$(function(){
+const donate = new Donate();
 
-	let loading = true;
+function Donate(){
 
+	function initPackEditor(){
 
-	/*
-		scripts for donate packs editor
-	*/
-	if($('#donate-templates').length) {
+		let loading = true;
 
 		let token_name_pattern = /^[a-z0-9_-]+$/;
 
@@ -229,124 +227,211 @@ $(function(){
 			let typeText = tokenBlock.attr('data-token-info-type-text');
 
 			handler.call(tokenBlock, name, type, typeText);
-		})
-
-
-
-	}
-
-	/*
-		Other pages
-	*/
-
-	function sendOrdinary(url, ordinary){
-		ajax.securedAjax({
-			type: 'POST',
-			url: url,
-			data: 'ids='+encodeURIComponent(ordinary),
-			dataType: 'json'
 		});
+
+		loading = false;
 	}
 
-	function sortableStart(e, ui){
-        ui.item.addClass('moving');
-		ui.item.css({'min-width' : ui.item.width()+'px',
-					'min-height' : ui.item.height()+'px'});
-    }
+	function initSortables() {
 
-	function sortableHelper(e, ui){
-		let os = ui.children();
-		let h = ui.clone();
-		h.children().each(function(index){
-			$(this).width(os.eq(index).width());
+		function sendOrdinary(url, ordinary){
+			ajax.securedAjax({
+				type: 'POST',
+				url: url,
+				data: 'ids='+encodeURIComponent(ordinary),
+				dataType: 'json'
+			});
+		}
+
+		function sortableStart(e, ui){
+	        ui.item.addClass('moving');
+			ui.item.css({'min-width' : ui.item.width()+'px',
+						'min-height' : ui.item.height()+'px'});
+	    }
+
+		function sortableHelper(e, ui){
+			let os = ui.children();
+			let h = ui.clone();
+			h.children().each(function(index){
+				$(this).width(os.eq(index).width());
+			});
+			return h;
+		}
+
+		$('#donate-page-list>tbody').sortable({
+	        items: 'tr',
+	        cursor: 'move',
+			handle: '.donate-page-move',
+	        axis: 'y',
+	        dropOnEmpty: false,
+	        start: sortableStart,
+	        stop: function (e, ui) {
+	            ui.item.removeClass('moving');
+				ui.item.css({'min-width' : '', 'min-height' : ''});
+				let ordinary = '';
+	            $(this).find('.donate-page-row').each(function (index) {
+					if(index != 0) ordinary += ',';
+					ordinary += $(this).attr('data-page-id');
+	            });
+				if(ordinary) {
+					sendOrdinary('/admin/donate/pages/reorder', ordinary);
+				}
+	        },
+			helper: sortableHelper
+	    });
+
+		$('.donate-page-content').sortable({
+	        items: 'div.donate-category-block',
+	        cursor: 'move',
+			handle: '.donate-category-move',
+	        axis: 'y',
+	        dropOnEmpty: false,
+	        start: sortableStart,
+	        stop: function (e, ui) {
+	            ui.item.removeClass('moving');
+				ui.item.css({'min-width' : '', 'min-height' : ''});
+				let ordinary = '';
+	            $(this).find('.donate-category-block').each(function (index) {
+					if(index != 0) ordinary += ',';
+					ordinary += $(this).attr('data-category-id');
+	            });
+				if(ordinary) {
+					let pageTag = $('.donate-page-content').attr('data-page-tag');
+					sendOrdinary('/admin/donate/pages/'+pageTag+'/category/reorder', ordinary);
+				}
+	        },
+			helper: sortableHelper
+	    });
+
+		$('#donate-pack-list>tbody').sortable({
+	        items: 'tr',
+	        cursor: 'move',
+			handle: '.donate-pack-move',
+	        axis: 'y',
+	        dropOnEmpty: false,
+	        start: sortableStart,
+	        stop: function (e, ui) {
+	            ui.item.removeClass('moving');
+				ui.item.css({'min-width' : '', 'min-height' : ''});
+				let ordinary = '';
+	            $(this).find('.donate-pack-row').each(function (index) {
+					if(index != 0) ordinary += ',';
+					ordinary += $(this).attr('data-pack-id');
+	            });
+				if(ordinary) {
+					let pageTag = $('.donate-page-content').attr('data-page-tag');
+					let category = $(this).closest('.donate-category-block').attr('data-category-id');
+					sendOrdinary('/admin/donate/pages/'+pageTag+'/category/'+category+'/reorder', ordinary);
+				}
+	        },
+			helper: sortableHelper
+	    });
+
+	}
+
+	function initServerEditor() {
+
+		$('#donate-key-gen').on('click', function(e){
+			ajax.securedAjax({
+				type: 'GET',
+				url: '/admin/donate/servers/keygen',
+				dataType: 'json',
+				success : function(res){
+					if(res.result == 'ok'){
+						$('input#inputKey').val(res.message);
+					}
+				}
+			});
+			e.preventDefault();
+			return false;
 		});
-		return h;
+
 	}
 
-	$('#donate-page-list>tbody').sortable({
-        items: 'tr',
-        cursor: 'move',
-		handle: '.donate-page-move',
-        axis: 'y',
-        dropOnEmpty: false,
-        start: sortableStart,
-        stop: function (e, ui) {
-            ui.item.removeClass('moving');
-			ui.item.css({'min-width' : '', 'min-height' : ''});
-			let ordinary = '';
-            $(this).find('.donate-page-row').each(function (index) {
-				if(index != 0) ordinary += ',';
-				ordinary += $(this).attr('data-page-id');
-            });
-			if(ordinary) {
-				sendOrdinary('/admin/donate/pages/reorder', ordinary);
-			}
-        },
-		helper: sortableHelper
-    });
+	function initDiscountEditor() {
 
-	$('.donate-page-content').sortable({
-        items: 'div.donate-category-block',
-        cursor: 'move',
-		handle: '.donate-category-move',
-        axis: 'y',
-        dropOnEmpty: false,
-        start: sortableStart,
-        stop: function (e, ui) {
-            ui.item.removeClass('moving');
-			ui.item.css({'min-width' : '', 'min-height' : ''});
-			let ordinary = '';
-            $(this).find('.donate-category-block').each(function (index) {
-				if(index != 0) ordinary += ',';
-				ordinary += $(this).attr('data-category-id');
-            });
-			if(ordinary) {
-				let pageTag = $('.donate-page-content').attr('data-page-tag');
-				sendOrdinary('/admin/donate/pages/'+pageTag+'/category/reorder', ordinary);
-			}
-        },
-		helper: sortableHelper
-    });
+		let inputPage = $('#inputPage');
+		let inputCategory = $('#inputCategory');
+		let inputPack = $('#inputPack');
 
-	$('#donate-pack-list>tbody').sortable({
-        items: 'tr',
-        cursor: 'move',
-		handle: '.donate-pack-move',
-        axis: 'y',
-        dropOnEmpty: false,
-        start: sortableStart,
-        stop: function (e, ui) {
-            ui.item.removeClass('moving');
-			ui.item.css({'min-width' : '', 'min-height' : ''});
-			let ordinary = '';
-            $(this).find('.donate-pack-row').each(function (index) {
-				if(index != 0) ordinary += ',';
-				ordinary += $(this).attr('data-pack-id');
-            });
-			if(ordinary) {
-				let pageTag = $('.donate-page-content').attr('data-page-tag');
-				let category = $(this).closest('.donate-category-block').attr('data-category-id');
-				sendOrdinary('/admin/donate/pages/'+pageTag+'/category/'+category+'/reorder', ordinary);
-			}
-        },
-		helper: sortableHelper
-    });
+		function getData(url, callback) {
 
-	$('#donate-key-gen').on('click', function(){
-		ajax.securedAjax({
-			type: 'GET',
-			url: '/admin/donate/servers/keygen',
-			dataType: 'json',
-			success : function(res){
-				if(res.result == 'ok'){
-					$('input#inputKey').val(res.message);
+			function handle(res) {
+				if(res.result == 'ok') {
+					callback(res.data);
+				}else{
+					messages.showMessage(res.message, 'error');
 				}
 			}
+
+			$.ajax({
+				type : 'GET',
+				url : url,
+				dataType : 'json',
+				success : handle,
+				error : function(xhr){
+					try{
+						let res = JSON.parse(xhr.responseText);
+						handle(res);
+					}catch(ex){
+						console.log(ex);
+					}
+				}
+			});
+
+		}
+
+		function dropSelect(select) {
+			select.prop('disabled', true);
+			select.find('option[value!=0]').remove();
+		}
+
+		inputPage.on('change', function(){
+			dropSelect(inputCategory);
+			dropSelect(inputPack);
+			let val = parseInt($(this).val())
+
+			if(val){
+				getData('/admin/donate/discount/categories?page='+val, function(data){
+					data.forEach(function(e){
+						inputCategory.append('<option value="'+e.id+'">'+e.title+"</option>");
+					});
+					inputCategory.prop('disabled', false);
+				});
+			}
 		});
-		e.preventDefault();
-		return false;
-	});
 
-	loading = false;
+		inputCategory.on('change', function(){
+			dropSelect(inputPack);
+			let val = parseInt($(this).val());
 
-});
+			if(val){
+				getData('/admin/donate/discount/packs?category='+val, function(data){
+					data.forEach(function(e){
+						inputPack.append('<option value="'+e.id+'">'+e.title+"</option>");
+					});
+					inputPack.prop('disabled', false);
+				});
+			}
+		});
+
+		ajax.forms.bind($('#discountForm'),
+			function(res){
+				messages.showMessage(res.message, 'ok');
+			},
+			function(res){
+				messages.showMessage(res.message, 'error');
+			}
+		);
+
+	}
+
+	return {
+		initPackEditor,
+		initSortables,
+		initServerEditor,
+		initDiscountEditor
+	};
+
+}
+

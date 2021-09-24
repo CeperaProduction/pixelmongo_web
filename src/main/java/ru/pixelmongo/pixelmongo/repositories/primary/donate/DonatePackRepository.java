@@ -27,11 +27,16 @@ public interface DonatePackRepository extends CrudRepository<DonatePack, Integer
     @Transactional
     @Modifying
     @Query("UPDATE DonatePack p SET p.discount = :discount WHERE p.category = :category")
-    public void setDiscount(@Param("category") DonateCategory category, @Param("discount") int discount);
+    public void setDiscount(@Param("category") DonateCategory category, @Param("discount") byte discount);
 
     @Transactional
     @Modifying
-    @Query("UPDATE DonatePack p SET p.discount = :discount WHERE p.category.page = :page")
-    public void setDiscount(@Param("page") DonatePage page, @Param("discount") int discount);
+    @Query("UPDATE DonatePack p SET p.discount = :discount WHERE p.category IN (SELECT c.id FROM DonateCategory c WHERE c.page = :page)")
+    public void setDiscount(@Param("page") DonatePage page, @Param("discount") byte discount);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE DonatePack p SET p.discount = :discount")
+    public void setDiscount(@Param("discount") byte discount);
 
 }
