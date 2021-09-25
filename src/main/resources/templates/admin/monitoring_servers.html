@@ -7,7 +7,7 @@
 
 	<th:block th:replace="/fragments/jquery :: ui"></th:block>
 
-	<script type="text/javascript" charset="UTF-8" th:src="@{~/js/admin/monitoring.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/monitoring.js}"></script>
 
 </head>
 <body>
@@ -36,7 +36,7 @@
 							<td>
 								<a class="btn btn-sm btn-outline-secondary"
 									style="cursor: pointer"
-									th:href="@{~/admin/monitoring/{tag}(tag=${server.tag})}">
+									th:href="@{/admin/monitoring/{tag}(tag=${server.tag})}">
 									<i class="fa fa-cog"></i>
 									Настроить
 								</a>
@@ -50,7 +50,7 @@
 				</table>
 		    </div>
 		    <div class="card-footer">
-		    	<a th:href="@{~/admin/monitoring/new}" class="btn btn-primary">
+		    	<a th:href="@{/admin/monitoring/new}" class="btn btn-primary">
 		    		<i class="fa fa-plus"></i> Добавить сервер
 		    	</a>
 		    </div>

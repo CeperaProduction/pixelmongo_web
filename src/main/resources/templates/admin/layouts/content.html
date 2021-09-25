@@ -26,11 +26,11 @@
 									<span th:text="${@user.name}"></span>
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
-									<a class="dropdown-item" th:href="@{~/admin/users/{name}(name=${@user.name})}">
+									<a class="dropdown-item" th:href="@{/admin/users/{name}(name=${@user.name})}">
 										<i class="fa fa-user fa-fw"></i> Профиль
 									</a>
 									<div class="dropdown-divider"></div>
-									<form id="logout" th:method="POST" th:action="@{~/auth/logout}" class="link">
+									<form id="logout" th:method="POST" th:action="@{/auth/logout}" class="link">
 										<button type="submit" class="dropdown-item">
 											<i class="fa fa-sign-out-alt fa-fw"></i>
 											Выйти
@@ -55,13 +55,13 @@
 			                </a>
 							<ul class="collapse list-unstyled" id="menuProfile">
 			                    <li>
-			                        <a th:href="@{~/admin/users/{name}(name=${@user.name})}">
+			                        <a th:href="@{/admin/users/{name}(name=${@user.name})}">
 			                        	<i class="fa fa-user fa-sm fa-fw"></i>
 			                        	Профиль
 			                        </a>
 			                    </li>
 			                    <li>
-			                        <form id="logout" th:method="POST" th:action="@{~/auth/logout}" class="link">
+			                        <form id="logout" th:method="POST" th:action="@{/auth/logout}" class="link">
 										<button type="submit">
 											<i class="fa fa-sign-out-alt fa-fw"></i>
 											Выйти
@@ -71,7 +71,7 @@
 			                </ul>
 			            </li>
 			            <li th:classappend="${mode == 'main'} ? active">
-			                <a th:href="@{~/admin}"><i class="fa fa-home fa-fw"></i> Главная</a>
+			                <a th:href="@{/admin}"><i class="fa fa-home fa-fw"></i> Главная</a>
 			            </li>
 			            <li th:classappend="${mode == 'users'} ? active"
 			            	sec:authorize="hasAnyAuthority('admin.panel.users', 'admin.panel.groups')">
@@ -81,13 +81,13 @@
 			                </a>
 			                <ul class="collapse list-unstyled" id="menuUsers">
 			                    <li sec:authorize="hasAuthority('admin.panel.users')">
-			                        <a th:href="@{~/admin/users}">
+			                        <a th:href="@{/admin/users}">
 			                        	<i class="fa fa-user fa-fw"></i>
 			                        	Управление пользователями
 			                        </a>
 			                    </li>
 			                    <li sec:authorize="hasAuthority('admin.panel.groups')">
-			                        <a th:href="@{~/admin/groups}">
+			                        <a th:href="@{/admin/groups}">
 			                        	<i class="fa fa-users fa-fw"></i>
 			                        	Управление группами
 			                        </a>
@@ -96,11 +96,11 @@
 			            </li>
 			            <li th:classappend="${mode == 'rules'} ? active"
 			            	sec:authorize="hasAuthority('admin.panel.rules')">
-			                <a th:href="@{~/admin/rules}"><i class="fa fa-book fa-fw"></i> Правила</a>
+			                <a th:href="@{/admin/rules}"><i class="fa fa-book fa-fw"></i> Правила</a>
 			            </li>
 			            <li th:classappend="${mode == 'player_logs'} ? active"
 			            	sec:authorize="hasAuthority('admin.panel.playerlogs')">
-			                <a th:href="@{~/admin/playerlogs}"><i class="fa fa-file fa-fw"></i> Логи игроков</a>
+			                <a th:href="@{/admin/playerlogs}"><i class="fa fa-file fa-fw"></i> Логи игроков</a>
 			            </li>
 			            <li th:classappend="${mode == 'donate'} ? active"
 			            	sec:authorize="hasAuthority('admin.panel.donate')">
@@ -110,35 +110,35 @@
 			                </a>
 			                <ul class="collapse list-unstyled" id="menuDonate">
 			                    <li>
-			                        <a th:href="@{~/admin/donate/pages}"><i class="fa fa-edit fa-fw"></i> Управление страницами</a>
+			                        <a th:href="@{/admin/donate/pages}"><i class="fa fa-edit fa-fw"></i> Управление страницами</a>
 			                    </li>
 			                    <li>
-			                        <a th:href="@{~/admin/donate/servers}"><i class="fa fa-server fa-fw"></i> Управление серверами</a>
+			                        <a th:href="@{/admin/donate/servers}"><i class="fa fa-server fa-fw"></i> Управление серверами</a>
 			                    </li>
 			                    <li>
-			                        <a th:href="@{~/admin/donate/discount}"><i class="fa fa-percent fa-fw"></i> Управление скидками</a>
+			                        <a th:href="@{/admin/donate/discount}"><i class="fa fa-percent fa-fw"></i> Управление скидками</a>
 			                    </li>
 			                    <li>
-			                        <a th:href="@{~/admin/donate/balance}"><i class="fa fa-money-bill-alt fa-fw"></i> Управление балансами</a>
+			                        <a th:href="@{/admin/donate/balance}"><i class="fa fa-money-bill-alt fa-fw"></i> Управление балансами</a>
 			                    </li>
 			                    <li>
-			                        <a th:href="@{~/admin/donate/give}"><i class="fa fa-gift fa-fw"></i> Выдача наборов</a>
+			                        <a th:href="@{/admin/donate/give}"><i class="fa fa-gift fa-fw"></i> Выдача наборов</a>
 			                    </li>
 			                    <li>
-			                        <a th:href="@{~/admin/donate/query}"><i class="fa fa-file fa-fw"></i> Лог донат-системы</a>
+			                        <a th:href="@{/admin/donate/query}"><i class="fa fa-file fa-fw"></i> Лог донат-системы</a>
 			                    </li>
 			                </ul>
 			            </li>
 			            <li th:classappend="${mode == 'monitoring'} ? active"
 			            	sec:authorize="hasAuthority('admin.panel.monitoring')">
-			                <a th:href="@{~/admin/monitoring}"><i class="fa fa-server fa-fw"></i> Мониторинг серверов</a>
+			                <a th:href="@{/admin/monitoring}"><i class="fa fa-server fa-fw"></i> Мониторинг серверов</a>
 			            </li>
 			            <li th:classappend="${mode == 'logs'} ? active"
 			            	sec:authorize="hasAuthority('admin.panel.logs')">
-			                <a th:href="@{~/admin/logs}"><i class="fa fa-file fa-fw"></i> Логи админ-панели</a>
+			                <a th:href="@{/admin/logs}"><i class="fa fa-file fa-fw"></i> Логи админ-панели</a>
 			            </li>
 			            <li>
-			                <a th:href="@{~/}"><i class="fa fa-backward fa-fw"></i> Вернуться на сайт</a>
+			                <a th:href="@{/}"><i class="fa fa-backward fa-fw"></i> Вернуться на сайт</a>
 			            </li>
 			        </ul>
        			</div>

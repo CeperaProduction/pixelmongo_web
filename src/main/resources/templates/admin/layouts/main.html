@@ -6,26 +6,26 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link rel="icon" type="image/png" th:href="@{~/img/icons/favicon.png}" sizes="16x16">
-	<link rel="icon" type="image/png" th:href="@{~/img/icons/favicon.png}" sizes="32x32">
-	<link rel="icon" type="image/png" th:href="@{~/img/icons/favicon.png}" sizes="96x96">
-	<link rel="apple-touch-icon" sizes="120x120" th:href="@{~/img/icons/favicon.png}">
-	<link rel="apple-touch-icon" sizes="180x180" th:href="@{~/img/icons/favicon.png}">
-	<link rel="apple-touch-icon" sizes="152x152" th:href="@{~/img/icons/favicon.png}">
-	<link rel="apple-touch-icon" sizes="167x167" th:href="@{~/img/icons/favicon.png}">
+	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="16x16">
+	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="32x32">
+	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="96x96">
+	<link rel="apple-touch-icon" sizes="120x120" th:href="@{/img/icons/favicon.png}">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/img/icons/favicon.png}">
+	<link rel="apple-touch-icon" sizes="152x152" th:href="@{/img/icons/favicon.png}">
+	<link rel="apple-touch-icon" sizes="167x167" th:href="@{/img/icons/favicon.png}">
 
 	<meta http-equiv="cleartype" content="on">
 
-	<script>const baseUrl = "[[@{~/}]]";</script>
+	<script>const baseUrl = "[[@{/}]]";</script>
 
 	<th:block th:replace="/fragments/jquery :: jquery"></th:block>
 	<th:block th:replace="/fragments/bootstrap :: bootstrap"></th:block>
 	<th:block th:replace="/fragments/fontawesome :: fa"></th:block>
 
-	<link rel="stylesheet" type="text/css" th:href="@{~/css/admin.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}" />
 
-	<script type="text/javascript" charset="UTF-8" th:src="@{~/js/ajax.js}"></script>
-	<script type="text/javascript" charset="UTF-8" th:src="@{~/js/admin/admin.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/ajax.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/admin.js}"></script>
 
 	<meta name="_csrf" th:content="${_csrf.token}" />
 	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
