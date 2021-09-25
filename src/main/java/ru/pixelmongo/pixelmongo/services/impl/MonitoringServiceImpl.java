@@ -27,8 +27,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,22 +35,18 @@ import ru.pixelmongo.pixelmongo.model.dao.primary.MonitoringServer;
 import ru.pixelmongo.pixelmongo.repositories.primary.MonitoringServerRepository;
 import ru.pixelmongo.pixelmongo.services.MonitoringService;
 
-@Service
-class MonitoringServiceImpl implements MonitoringService{
+public class MonitoringServiceImpl implements MonitoringService{
+
+    private final boolean debug;
+
+    private final int timeout;
+
+    private final int nextPingDelay;
+
+    private final int serverCacheUpdatePeriod;
 
     @Autowired
     private MonitoringServerRepository serverData;
-
-    @Autowired
-    private Environment env;
-
-    private boolean debug;
-
-    private int timeout;
-
-    private int nextPingDelay;
-
-    private int serverCacheUpdatePeriod;
 
     private List<MonitoringServer> serverCache = Collections.emptyList();
     private Map<String, MonitoringResult> monitoringCache = new ConcurrentHashMap<>();
@@ -63,13 +57,16 @@ class MonitoringServiceImpl implements MonitoringService{
     private Timer updateTimer;
     private ExecutorService threadPool;
 
+    public MonitoringServiceImpl(int timeout, int nextPingDelay, int serverCacheUpdatePeriod, boolean debug) {
+        this.debug = debug;
+        this.timeout = timeout;
+        this.nextPingDelay = nextPingDelay;
+        this.serverCacheUpdatePeriod = serverCacheUpdatePeriod;
+    }
+
     @PostConstruct
     private void init() {
-        debug = env.getProperty("monitoring.debug_mode", boolean.class);
         if(debug) LOGGER.debug("Monitoring debug mode enabled.");
-        timeout = env.getProperty("monitoring.connection_timeout_ms", int.class);
-        nextPingDelay = env.getProperty("monitoring.next_ping_delay", int.class);
-        serverCacheUpdatePeriod = env.getProperty("monitoring.server_cache_time", int.class);
         startMonitoring();
     }
 

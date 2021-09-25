@@ -1,5 +1,0 @@
-{"properties": [{
-  "name": "spring.security.rememberme.key",
-  "type": "java.lang.String",
-  "description": "Key for generation RememberMe tokens"
-}]}

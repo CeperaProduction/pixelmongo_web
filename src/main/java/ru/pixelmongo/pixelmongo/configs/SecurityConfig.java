@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -41,10 +42,20 @@ import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@PropertySource("classpath:security.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Value( "${spring.security.rememberme.key}" )
     private String rememberMeKey;
+
+    @Value( "${spring.security.rememberme.cookie}" )
+    private String rememberMeCookie;
+
+    @Value( "${spring.security.rememberme.param}" )
+    private String rememberMeParam;
+
+    @Value( "${spring.security.rememberme.secured}" )
+    private boolean rememberMeSecure;
 
     @Autowired
     private DataSource dataSource;
@@ -97,11 +108,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             = new PersistentTokenBasedRememberMeServices(
                     rememberMeKey, userDetailsService(), tokenRepository());
         services.setAlwaysRemember(true);
-        services.setCookieName("remember-me");
-        services.setParameter("remember-me");
+        services.setCookieName(rememberMeCookie);
+        services.setParameter(rememberMeParam);
         services.setSeriesLength(16);
         services.setTokenLength(16);
-        //services.setUseSecureCookie(true);
+        services.setUseSecureCookie(rememberMeSecure);
         return services;
     }
 
@@ -173,7 +184,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .logout()
                 .logoutUrl("/auth/logout")
                 .logoutSuccessHandler(authHandler())
-                .deleteCookies("remember-me")
+                .deleteCookies(rememberMeCookie)
         .and()
             .rememberMe().rememberMeServices(rememberMeServices())
         .and()
