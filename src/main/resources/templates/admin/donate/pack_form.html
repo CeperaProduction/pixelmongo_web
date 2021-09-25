@@ -26,7 +26,7 @@
 		        </div>
 		    </div>
 		    <div class="card-body">
-	        	<form id="packForm" th:action="@{''}" th:method="${method}" th:object="${packForm}">
+	        	<form id="packForm" th:action="@{''}" th:method="${method}" th:object="${packForm}" enctype="multipart/form-data">
 					<div class="form-group row">
 						<label for="inputTitle" class="col-sm-3 col-form-label text-truncate">Название</label>
 						<div class="col-sm-9">
@@ -50,6 +50,28 @@
 							</select>
 						</div>
 					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-3">
+						<span class="text-truncate">Изображение</span>
+							<p>
+								<small class="text-muted">
+									Доступные форматы: PNG, JPG, JPEG.<br>
+									Рекомендованный размер: 400x400
+								</small>
+							</p>
+						</div>
+						<div class="col-sm-9">
+							<div class="custom-file">
+							    <input type="file" class="custom-file-input" id="imageInput" name="image">
+							    <label class="custom-file-label" for="imageInput" data-browse="Выбрать">Выберите файл</label>
+							</div>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{image}"></div>
+						</div>
+					</div>
+
 					<hr class="separator">
 					<div class="form-group">
 						<div class="custom-control custom-checkbox">

@@ -38,6 +38,7 @@ import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerReposito
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.DonateService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
+import ru.pixelmongo.pixelmongo.services.UploadService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
 @Controller
@@ -70,6 +71,9 @@ public class DonateContentController {
 
     @Autowired
     private PopupMessageService popup;
+
+    @Autowired
+    private UploadService upload;
 
     //ALL PAGES
 
@@ -135,6 +139,15 @@ public class DonateContentController {
             log("admin.log.donate.page.create", request, page.getTitle()+" #"+page.getId());
             popup("admin.donate.page.created", loc, PopupMessage.Type.OK, request, response);
 
+            if(!pageForm.getImage().isEmpty()) {
+                try {
+                    upload.uploadImageResized(pageForm.getImage(), 400, 400, false, page.getId()+".jpg", "donate", "pages");
+                }catch(Exception ex) {
+                    popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
+                    UploadService.LOGGER.catching(ex);
+                }
+            }
+
             return "redirect:/admin/donate/pages/"+page.getTag();
         }
 
@@ -186,6 +199,17 @@ public class DonateContentController {
 
             log("admin.log.donate.page.edit", request, page.getTitle()+" #"+page.getId());
             popup("admin.donate.page.edited", loc, PopupMessage.Type.OK, request, response);
+
+            if(!pageForm.getImage().isEmpty()) {
+                try {
+                    upload.uploadImageResized(pageForm.getImage(), 400, 400, false, page.getId()+".jpg", "donate", "pages");
+                }catch(Exception ex) {
+                    popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
+                    UploadService.LOGGER.catching(ex);
+                }
+            }
+
+            return "redirect:/admin/donate/pages/"+page.getTag();
         }
 
         model.addAttribute("method", "post");
@@ -205,6 +229,8 @@ public class DonateContentController {
 
         log("admin.log.donate.page.delete", request, page.getTitle()+" #"+page.getId());
         popup("admin.donate.page.deleted", loc, PopupMessage.Type.WARN, request, response);
+
+        upload.deleteUploaded(page.getId()+".jpg", "donate", "pages");
 
         return "redirect:/admin/donate/pages";
     }
@@ -303,8 +329,7 @@ public class DonateContentController {
             log("admin.log.donate.category.edit", request, category.getTitle()+" #"+category.getId());
             popup("admin.donate.category.edited", loc, PopupMessage.Type.OK, request, response);
 
-            if(category.getPage().getId() != page.getId())
-                return "redirect:/admin/donate/pages/"+category.getPage().getTag()+"/category/"+category.getId();
+            return "redirect:/admin/donate/pages/"+category.getPage().getTag()+"/category/"+category.getId();
         }
 
         model.addAttribute("method", "post");
@@ -375,6 +400,15 @@ public class DonateContentController {
             log("admin.log.donate.pack.create", request, pack.getTitle()+" #"+pack.getId());
             popup("admin.donate.pack.created", loc, PopupMessage.Type.OK, request, response);
 
+            if(!packForm.getImage().isEmpty()) {
+                try {
+                    upload.uploadImageResized(packForm.getImage(), 400, 400, false, pack.getId()+".jpg", "donate", "packs");
+                }catch(Exception ex) {
+                    popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
+                    UploadService.LOGGER.catching(ex);
+                }
+            }
+
             return "redirect:/admin/donate/pages/"+page.getTag();
         }
 
@@ -429,6 +463,17 @@ public class DonateContentController {
 
             log("admin.log.donate.pack.edit", request, pack.getTitle()+" #"+pack.getId());
             popup("admin.donate.pack.edited", loc, PopupMessage.Type.OK, request, response);
+
+            if(!packForm.getImage().isEmpty()) {
+                try {
+                    upload.uploadImageResized(packForm.getImage(), 400, 400, false, pack.getId()+".jpg", "donate", "packs");
+                }catch(Exception ex) {
+                    popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
+                    UploadService.LOGGER.catching(ex);
+                }
+            }
+
+            return "redirect:/admin/donate/pages/"+page.getTag()+"/pack/"+pack.getId();
         }
 
         model.addAttribute("method", "post");
@@ -456,6 +501,8 @@ public class DonateContentController {
 
         log("admin.log.donate.pack.delete", request, pack.getTitle()+" #"+pack.getId());
         popup("admin.donate.pack.deleted", loc, PopupMessage.Type.WARN, request, response);
+
+        upload.deleteUploaded(page.getId()+".jpg", "donate", "packs");
 
         return "redirect:/admin/donate/pages/"+page.getTag();
     }

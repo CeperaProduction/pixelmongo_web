@@ -6,9 +6,13 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePage;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerRepository;
 import ru.pixelmongo.pixelmongo.utils.DefaultPatterns;
+import ru.pixelmongo.pixelmongo.validation.FileSize;
+import ru.pixelmongo.pixelmongo.validation.FileType;
 
 public class DonatePageForm {
 
@@ -23,6 +27,10 @@ public class DonatePageForm {
     private boolean enabled = true;
 
     private List<Integer> servers = new ArrayList<>();
+
+    @FileType({"image/png", "image/jpeg", "image/jpg"})
+    @FileSize(500*1024)
+    private MultipartFile image;
 
     public DonatePageForm() {}
 
@@ -83,6 +91,12 @@ public class DonatePageForm {
         this.servers = servers;
     }
 
+    public MultipartFile getImage() {
+        return image;
+    }
 
+    public void setImage(MultipartFile image) {
+        this.image = image;
+    }
 
 }

@@ -7,11 +7,15 @@ import java.util.Map;
 
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateCategory;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateCategoryRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerRepository;
 import ru.pixelmongo.pixelmongo.services.DonateService;
+import ru.pixelmongo.pixelmongo.validation.FileSize;
+import ru.pixelmongo.pixelmongo.validation.FileType;
 
 public class DonatePackForm {
 
@@ -45,6 +49,10 @@ public class DonatePackForm {
     private List<Integer> servers = new ArrayList<>();
 
     private Map<String, DonatePackTokenData> tokens = new LinkedHashMap<>();
+
+    @FileType({"image/png", "image/jpeg", "image/jpg"})
+    @FileSize(500*1024)
+    private MultipartFile image;
 
     public DonatePackForm() {}
 
@@ -216,6 +224,14 @@ public class DonatePackForm {
 
     public List<DonatePackTokenData> getTokenList(){
         return new ArrayList<>(this.tokens.values());
+    }
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile image) {
+        this.image = image;
     }
 
 }
