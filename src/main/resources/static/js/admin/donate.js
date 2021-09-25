@@ -1,7 +1,7 @@
 
-const donate = new Donate();
+const donate = new DonateAdmin();
 
-function Donate(){
+function DonateAdmin(){
 
 	function initPackEditor(){
 
@@ -297,7 +297,7 @@ function Donate(){
 	            });
 				if(ordinary) {
 					let pageTag = $('.donate-page-content').attr('data-page-tag');
-					sendOrdinary(baseUrl+'admin/donate/pages/'+pageTag+baseUrl+'category/reorder', ordinary);
+					sendOrdinary(baseUrl+'admin/donate/pages/'+pageTag+'/category/reorder', ordinary);
 				}
 	        },
 			helper: sortableHelper
@@ -321,7 +321,7 @@ function Donate(){
 				if(ordinary) {
 					let pageTag = $('.donate-page-content').attr('data-page-tag');
 					let category = $(this).closest('.donate-category-block').attr('data-category-id');
-					sendOrdinary(baseUrl+'admin/donate/pages/'+pageTag+baseUrl+'category/'+category+baseUrl+'reorder', ordinary);
+					sendOrdinary(baseUrl+'admin/donate/pages/'+pageTag+'/category/'+category+'/reorder', ordinary);
 				}
 	        },
 			helper: sortableHelper
