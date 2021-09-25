@@ -67,7 +67,7 @@ $(document).ready(function(){
 
 	ajax.forms.bind($('#register_form'), function(res){
 		msg(res, 'ok');
-		document.location = '/';
+		document.location = baseUrl;
 	});
 });
 

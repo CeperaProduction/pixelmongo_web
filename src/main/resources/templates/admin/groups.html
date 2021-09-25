@@ -23,7 +23,7 @@
 					<tbody>
 						<tr th:each="group : ${groups}">
 							<td>
-								<a th:href="@{/admin/groups/{id}(id=${group.id})}"
+								<a th:href="@{~/admin/groups/{id}(id=${group.id})}"
 									th:text="${group.name}"></a>
 							</td>
 							<td th:text="${group.users.size()}"></td>
@@ -32,7 +32,7 @@
 				</table>
 		    </div>
 		    <div class="card-footer">
-		    	<a th:href="@{/admin/groups/new}" class="btn btn-primary">
+		    	<a th:href="@{~/admin/groups/new}" class="btn btn-primary">
 		    		<i class="fa fa-plus"></i>
 		    		Создать
 		    	</a>

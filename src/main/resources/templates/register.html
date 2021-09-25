@@ -12,7 +12,7 @@
 		<script th:src="|//www.google.com/recaptcha/api.js|"></script>
 		<h1 style="margin-top: 0">* Регистрация *</h1>
 		<div align="center">
-			<form id="register_form" th:action="@{/auth/register}" th:method="put" th:object="${register}">
+			<form id="register_form" th:action="@{~/auth/register}" th:method="put" th:object="${register}">
 				<table>
 					<tr title="От 3 до 16 латинских букв, цифр, знаков '_' и '-'">
 						<td>Логин (Ник):</td>

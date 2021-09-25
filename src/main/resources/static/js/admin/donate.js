@@ -274,7 +274,7 @@ function Donate(){
 					ordinary += $(this).attr('data-page-id');
 	            });
 				if(ordinary) {
-					sendOrdinary('/admin/donate/pages/reorder', ordinary);
+					sendOrdinary(baseUrl+'admin/donate/pages/reorder', ordinary);
 				}
 	        },
 			helper: sortableHelper
@@ -297,7 +297,7 @@ function Donate(){
 	            });
 				if(ordinary) {
 					let pageTag = $('.donate-page-content').attr('data-page-tag');
-					sendOrdinary('/admin/donate/pages/'+pageTag+'/category/reorder', ordinary);
+					sendOrdinary(baseUrl+'admin/donate/pages/'+pageTag+baseUrl+'category/reorder', ordinary);
 				}
 	        },
 			helper: sortableHelper
@@ -321,7 +321,7 @@ function Donate(){
 				if(ordinary) {
 					let pageTag = $('.donate-page-content').attr('data-page-tag');
 					let category = $(this).closest('.donate-category-block').attr('data-category-id');
-					sendOrdinary('/admin/donate/pages/'+pageTag+'/category/'+category+'/reorder', ordinary);
+					sendOrdinary(baseUrl+'admin/donate/pages/'+pageTag+baseUrl+'category/'+category+baseUrl+'reorder', ordinary);
 				}
 	        },
 			helper: sortableHelper
@@ -334,7 +334,7 @@ function Donate(){
 		$('#donate-key-gen').on('click', function(e){
 			ajax.securedAjax({
 				type: 'GET',
-				url: '/admin/donate/servers/keygen',
+				url: baseUrl+'admin/donate/servers/keygen',
 				dataType: 'json',
 				success : function(res){
 					if(res.result == 'ok'){
@@ -392,7 +392,7 @@ function Donate(){
 			let val = parseInt($(this).val())
 
 			if(val){
-				getData('/admin/donate/discount/categories?page='+val, function(data){
+				getData(baseUrl+'admin/donate/discount/categories?page='+val, function(data){
 					data.forEach(function(e){
 						inputCategory.append('<option value="'+e.id+'">'+e.title+"</option>");
 					});
@@ -406,7 +406,7 @@ function Donate(){
 			let val = parseInt($(this).val());
 
 			if(val){
-				getData('/admin/donate/discount/packs?category='+val, function(data){
+				getData(baseUrl+'admin/donate/discount/packs?category='+val, function(data){
 					data.forEach(function(e){
 						inputPack.append('<option value="'+e.id+'">'+e.title+"</option>");
 					});

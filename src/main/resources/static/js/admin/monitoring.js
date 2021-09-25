@@ -4,7 +4,7 @@ $(function(){
 	function sendOrdinary(ordinary){
 		ajax.securedAjax({
 			type: 'POST',
-			url: '/admin/monitoring/ajax/reorder',
+			url: baseUrl+'admin/monitoring/ajax/reorder',
 			data: 'ids='+encodeURIComponent(ordinary),
 			dataType: 'json'
 		});
@@ -53,7 +53,7 @@ $(function(){
 		input.val('Проверяем сервер...');
 		ajax.securedAjax({
 			type: 'POST',
-			url: '/admin/monitoring/ajax/check',
+			url: baseUrl+'admin/monitoring/ajax/check',
 			data: 'ip='+encodeURIComponent(ip)+'&port='+port,
 			dataType: 'json',
 			success : function(res) {

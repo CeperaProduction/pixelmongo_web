@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,6 +23,9 @@ public class PopupMessageServiceImpl implements PopupMessageService{
 
     public static final String COOKIE_KEY = "message";
 
+    @Value("${server.servlet.context-path}")
+    private String baseUrl;
+
     @Override
     public void sendUsingCookies(PopupMessage message,
             HttpServletRequest request,
@@ -34,7 +38,7 @@ public class PopupMessageServiceImpl implements PopupMessageService{
         try {
             String msgCookie = mapper.writeValueAsString(messages);
             Cookie cookie = new Cookie(COOKIE_KEY, URLEncoder.encode(msgCookie, "UTF-8"));
-            cookie.setPath("/");
+            cookie.setPath(baseUrl);
             response.addCookie(cookie);
         }catch(Exception ex) {
             throw new RuntimeException(ex);

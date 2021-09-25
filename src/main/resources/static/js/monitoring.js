@@ -1,6 +1,6 @@
 var monitoring = {
 
-	url : "/open/monitoring",
+	url : baseUrl+"open/monitoring",
 
 	started : false,
 

@@ -34,13 +34,13 @@
 							<td>
 								<a class="btn btn-sm btn-outline-secondary"
 									style="cursor: pointer"
-									th:href="@{/admin/donate/pages/{tag}(tag=${page.tag})}">
+									th:href="@{~/admin/donate/pages/{tag}(tag=${page.tag})}">
 									<i class="fa fa-file-alt"></i>
 									Содержимое
 								</a>
 								<a class="btn btn-sm btn-outline-secondary"
 									style="cursor: pointer"
-									th:href="@{/admin/donate/pages/{tag}/edit(tag=${page.tag})}">
+									th:href="@{~/admin/donate/pages/{tag}/edit(tag=${page.tag})}">
 									<i class="fa fa-cog"></i>
 									Изменить
 								</a>
@@ -54,7 +54,7 @@
 				</table>
 		    </div>
 		    <div class="card-footer">
-		    	<a th:href="@{/admin/donate/pages/new}" class="btn btn-primary">
+		    	<a th:href="@{~/admin/donate/pages/new}" class="btn btn-primary">
 		    		<i class="fa fa-plus"></i> Добавить страницу
 		    	</a>
 		    </div>

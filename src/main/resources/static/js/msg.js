@@ -94,7 +94,7 @@ function MessageHandler(){
 		let msgs = JSON.parse(cookie != undefined ? cookie : '[]');
 		msgs.push(msg);
 		cookie = JSON.stringify(msgs);
-		$.cookie('message', cookie, { 'path': '/' });
+		$.cookie('message', cookie, { 'path': baseUrl });
 	}
 
 
@@ -102,7 +102,7 @@ function MessageHandler(){
 		let cookie = $.cookie('message');
 		let msgs = JSON.parse(cookie != undefined ? cookie : '[]');
 		if(msgs.length > 0) {
-			$.cookie('message', '[]', { 'path': '/' });
+			$.cookie('message', '[]', { 'path': baseUrl });
 			$(document).ready(function(){
 				for(var i = 0; i<msgs.length; i++){
 					let msg = msgs[i];
