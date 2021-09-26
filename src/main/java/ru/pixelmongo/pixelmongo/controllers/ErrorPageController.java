@@ -8,11 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -23,7 +26,7 @@ public class ErrorPageController implements ErrorController{
     private MessageSource msg;
 
     @RequestMapping("/error")
-    public String handleError(@RequestParam(required = false) String c,
+    public String handleError(@RequestParam(name = "c", required = false) String c,
             HttpServletRequest request, Model model, Locale loc) {
         Object status = c != null ? c : request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         if (status != null) {
@@ -52,6 +55,11 @@ public class ErrorPageController implements ErrorController{
             return template;
         }
         return "redirect:/";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handle(Exception e) {
+        return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

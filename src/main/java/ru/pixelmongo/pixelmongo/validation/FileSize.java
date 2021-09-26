@@ -18,7 +18,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = {FileSizeValidator.class})
 public @interface FileSize {
 
-    public String message() default "Invalid file size";
+    public String message() default "{upload.file.size.invalid}";
 
     /**
      * Max size in bytes.

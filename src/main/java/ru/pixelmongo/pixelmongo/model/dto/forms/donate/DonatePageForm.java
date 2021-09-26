@@ -29,7 +29,7 @@ public class DonatePageForm {
     private List<Integer> servers = new ArrayList<>();
 
     @FileType({"image/png", "image/jpeg", "image/jpg"})
-    @FileSize(500*1024)
+    @FileSize(value = 1024*1024, message="{upload.file.size.invalid.value}")
     private MultipartFile image;
 
     public DonatePageForm() {}

@@ -6,7 +6,6 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -19,7 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ru.pixelmongo.pixelmongo.handlers.AuthHandler;
-import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
 import ru.pixelmongo.pixelmongo.services.UserService;
@@ -41,16 +39,7 @@ public class AuthHandlerImpl implements AuthHandler{
         ResultMessage result = new ResultMessage(DefaultResult.OK,
                 msg.getMessage("auth.logged.in", null, request.getLocale()));
         response.getWriter().println(json.writeValueAsString(result));
-        saveLoginData(authentication, request.getRemoteAddr());
-    }
-
-    @Transactional
-    private void saveLoginData(Authentication auth, String ip) {
-        Object principal = auth.getPrincipal();
-        if(principal instanceof UserDetails) {
-            userService.getUser(((UserDetails) principal))
-                .ifPresent(u->userService.saveLoginData(u, ip));
-        }
+        userService.saveLoginData(authentication, request.getRemoteAddr());
     }
 
     @Override

@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.transaction.Transactional;
 
-import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -112,12 +111,19 @@ public abstract class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void saveLoginData(User user, String ip) {
+    @Transactional
+    public void saveLoginData(Authentication auth, String ip) {
+        Object principal = auth.getPrincipal();
+        if(principal instanceof UserDetails) {
+            getUser(((UserDetails) principal))
+                .ifPresent(u->saveLoginData(u, ip));
+        }
+    }
+
+    private void saveLoginData(User user, String ip) {
         UserLoginRecord record = new UserLoginRecord(user, ip);
-        try {
-            user.getLoginRecords().add(record);
-        }catch(LazyInitializationException e) {}
-        loginRecords.save(record);
+        record = loginRecords.save(record);
+        user.getLoginRecords().add(record);
     }
 
     @Override

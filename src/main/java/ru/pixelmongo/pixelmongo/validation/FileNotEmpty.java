@@ -13,7 +13,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = {FileNotEmptyValidator.class})
 public @interface FileNotEmpty {
 
-    public String message() default "File not chosen";
+    public String message() default "{upload.file.required}";
 
     public Class<?>[] groups() default {};
 

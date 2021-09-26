@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import ru.pixelmongo.pixelmongo.controllers.RestControllerExceptionHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateCategory;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePage;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
@@ -34,7 +33,7 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
 @RequestMapping("/admin/donate/pages")
-public class DonateContentControllerRest extends RestControllerExceptionHandler{
+public class DonateContentControllerRest {
 
     @Autowired
     private OrdinaryUtilsService ordinary;
@@ -54,13 +53,8 @@ public class DonateContentControllerRest extends RestControllerExceptionHandler{
     @Autowired
     private UserService userService;
 
-    private MessageSource msg;
-
     @Autowired
-    public DonateContentControllerRest(MessageSource msg) {
-        super(msg);
-        this.msg = msg;
-    }
+    private MessageSource msg;
 
     @PostMapping("/reorder")
     public ResultMessage reorderPages(@RequestParam("ids") String idsStr,

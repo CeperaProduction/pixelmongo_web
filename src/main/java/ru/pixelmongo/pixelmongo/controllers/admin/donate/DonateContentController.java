@@ -148,7 +148,7 @@ public class DonateContentController {
                 }
             }
 
-            return "redirect:/admin/donate/pages/"+page.getTag();
+            return "redirect:/admin/donate/pages/";
         }
 
         model.addAttribute("method", "put");
@@ -209,7 +209,7 @@ public class DonateContentController {
                 }
             }
 
-            return "redirect:/admin/donate/pages/"+page.getTag();
+            return "redirect:/admin/donate/pages/";
         }
 
         model.addAttribute("method", "post");

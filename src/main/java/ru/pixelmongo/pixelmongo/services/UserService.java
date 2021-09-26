@@ -3,6 +3,7 @@ package ru.pixelmongo.pixelmongo.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,7 +39,7 @@ public interface UserService extends UserDetailsService{
      * @param user
      * @param ip
      */
-    public void saveLoginData(User user, String ip);
+    public void saveLoginData(Authentication auth, String ip);
 
     /**
      * Register user. Password will be encoded using current {@link PasswordEncoder}

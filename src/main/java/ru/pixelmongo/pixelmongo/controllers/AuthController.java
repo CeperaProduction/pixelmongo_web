@@ -5,7 +5,6 @@ import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
-import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
@@ -36,7 +34,7 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController extends RestControllerExceptionHandler{
+public class AuthController {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -52,13 +50,8 @@ public class AuthController extends RestControllerExceptionHandler{
     @Autowired
     private CaptchaService captchaService;
 
-    private MessageSource msg;
-
     @Autowired
-    public AuthController(MessageSource msg) {
-        super(msg);
-        this.msg = msg;
-    }
+    private MessageSource msg;
 
     //mappings
 
@@ -104,17 +97,8 @@ public class AuthController extends RestControllerExceptionHandler{
         Authentication auth = authManager.authenticate(tocken);
         SecurityContextHolder.getContext().setAuthentication(auth);
         rememberMe.loginSuccess(request, response, auth);
-        saveLoginData(auth, request.getRemoteAddr());
+        userService.saveLoginData(auth, request.getRemoteAddr());
         return auth;
-    }
-
-    @Transactional
-    private void saveLoginData(Authentication auth, String ip) {
-        Object principal = auth.getPrincipal();
-        if(principal instanceof UserDetails) {
-            userService.getUser(((UserDetails) principal))
-                .ifPresent(u->userService.saveLoginData(u, ip));
-        }
     }
 
     //exception handlers

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ru.pixelmongo.pixelmongo.controllers.RestControllerExceptionHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.MonitoringServer;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
@@ -29,7 +28,7 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
 @RequestMapping("/admin/monitoring/ajax")
-public class MonitoringAdminControllerRest extends RestControllerExceptionHandler{
+public class MonitoringAdminControllerRest {
     @Autowired
     private MonitoringServerRepository servers;
 
@@ -45,13 +44,8 @@ public class MonitoringAdminControllerRest extends RestControllerExceptionHandle
     @Autowired
     private OrdinaryUtilsService ordinary;
 
-    private MessageSource msg;
-
     @Autowired
-    public MonitoringAdminControllerRest(MessageSource msg) {
-        super(msg);
-        this.msg = msg;
-    }
+    private MessageSource msg;
 
     @PostMapping("/reorder")
     public ResultMessage reorder(@RequestParam("ids") String idsStr,

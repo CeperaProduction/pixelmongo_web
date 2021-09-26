@@ -18,7 +18,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = {FileTypeValidator.class})
 public @interface FileType {
 
-    public String message() default "Invalid file type";
+    public String message() default "{upload.file.type.invalid}";
 
     /**
      * List of supported MIME types. Example: "image/png"

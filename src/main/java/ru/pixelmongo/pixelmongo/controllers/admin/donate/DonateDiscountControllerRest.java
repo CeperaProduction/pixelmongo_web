@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import ru.pixelmongo.pixelmongo.controllers.RestControllerExceptionHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateCategory;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePage;
@@ -32,7 +31,7 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
 @RequestMapping("/admin/donate/discount")
-public class DonateDiscountControllerRest extends RestControllerExceptionHandler{
+public class DonateDiscountControllerRest {
 
     @Autowired
     private DonatePageRepository pages;
@@ -49,13 +48,8 @@ public class DonateDiscountControllerRest extends RestControllerExceptionHandler
     @Autowired
     private UserService userService;
 
-    private MessageSource msg;
-
     @Autowired
-    public DonateDiscountControllerRest(MessageSource msg) {
-        super(msg);
-        this.msg = msg;
-    }
+    private MessageSource msg;
 
     @GetMapping("/categories")
     public ResultMessage getCategories(@RequestParam("page") int pageId) {
