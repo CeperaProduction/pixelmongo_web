@@ -10,13 +10,19 @@ public interface UploadService {
 
     public static final Logger LOGGER = LogManager.getLogger(UploadService.class);
 
-    public String getUploadUrl();
+    public String getUploadURL();
 
     public String getUploadDir();
 
     public Path upload(MultipartFile mfile, String... path);
 
-    public Path upload(MultipartFile mfile, String newFileName, String... path);
+    public Path upload(String newFileName, MultipartFile mfile, String... path);
+
+    public Path getUploadPath(String fileName, String... path);
+
+    public String getUploadPathURL(String fileName, String... path);
+
+    public String getUploadPathURLIfExists(String defautlUrl, String fileName, String... path);
 
     public boolean deleteUploaded(String fileName, String... path);
 

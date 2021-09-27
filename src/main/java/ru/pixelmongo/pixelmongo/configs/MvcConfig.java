@@ -2,6 +2,7 @@ package ru.pixelmongo.pixelmongo.configs;
 
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +18,14 @@ import nz.net.ultraq.thymeleaf.LayoutDialect;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
+    @Autowired
+    private UploadConfig uploadCfg;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-          registry.addResourceHandler("/uploads/**").addResourceLocations("classpath:/uploads/");
+        registry.addResourceHandler(uploadCfg.getUploadUrl()+"/**")
+            .setCachePeriod(0)
+            .addResourceLocations(uploadCfg.getUploadPath());
     }
 
     @Bean

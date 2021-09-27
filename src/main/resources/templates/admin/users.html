@@ -63,7 +63,9 @@
 					<tbody>
 						<tr th:each="user : ${users}">
 							<td>
-								<img class="profile-img" style="width: 1.5em; height: 1.5em">
+								<img class="profile-image"
+									th:src="${@templateService.getAvatar(user)}"
+									style="width: 1.5em; height: 1.5em">
 							</td>
 							<td >
 								<a th:href="@{/admin/users/{user}(user=${user.name})}"

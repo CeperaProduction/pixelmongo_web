@@ -14,7 +14,7 @@ public class FileNotEmptyValidator implements ConstraintValidator<FileNotEmpty, 
 
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
-        return !file.isEmpty();
+        return file != null && !file.isEmpty();
     }
 
 }

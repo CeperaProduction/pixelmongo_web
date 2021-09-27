@@ -51,7 +51,7 @@ public class DonatePackForm {
     private Map<String, DonatePackTokenData> tokens = new LinkedHashMap<>();
 
     @FileType({"image/png", "image/jpeg", "image/jpg"})
-    @FileSize(500*1024)
+    @FileSize(1024*1024)
     private MultipartFile image;
 
     public DonatePackForm() {}

@@ -27,6 +27,8 @@ public interface PopupMessageService {
             HttpServletRequest request,
             HttpServletResponse response);
 
+    public List<PopupMessage> getMessages(HttpServletRequest request);
+
     public List<PopupMessage> getMessagesFromCookies(HttpServletRequest request);
 
 }

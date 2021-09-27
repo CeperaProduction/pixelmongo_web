@@ -71,4 +71,8 @@ public interface TemplateService {
 
     public <T> List<List<T>> splitList(List<T> list, int count);
 
+    public String getAvatar(User user);
+
+    public String getAvatar();
+
 }

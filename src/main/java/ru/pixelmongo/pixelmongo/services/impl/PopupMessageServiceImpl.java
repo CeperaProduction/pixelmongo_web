@@ -22,6 +22,7 @@ import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 public class PopupMessageServiceImpl implements PopupMessageService{
 
     public static final String COOKIE_KEY = "message";
+    public static final String REQUEST_ATTR_KEY = "sent_popup_messages";
 
     @Value("${server.servlet.context-path}")
     private String baseUrl;
@@ -31,7 +32,8 @@ public class PopupMessageServiceImpl implements PopupMessageService{
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        List<PopupMessage> messages = getMessagesFromCookies(request);
+        List<PopupMessage> messages = getMessages(request);
+
         messages.add(message);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -40,10 +42,27 @@ public class PopupMessageServiceImpl implements PopupMessageService{
             Cookie cookie = new Cookie(COOKIE_KEY, URLEncoder.encode(msgCookie, "UTF-8"));
             cookie.setPath(baseUrl);
             response.addCookie(cookie);
+            request.setAttribute(REQUEST_ATTR_KEY, messages);
         }catch(Exception ex) {
             throw new RuntimeException(ex);
         }
 
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<PopupMessage> getRequestMessages(HttpServletRequest request) {
+        Object sentObj = request.getAttribute(REQUEST_ATTR_KEY);
+        if(sentObj instanceof List) {
+            return (List<PopupMessage>) sentObj;
+        }
+        return new ArrayList<PopupMessage>();
+    }
+
+    @Override
+    public List<PopupMessage> getMessages(HttpServletRequest request){
+        List<PopupMessage> messages = getMessagesFromCookies(request);
+        messages.addAll(getRequestMessages(request));
+        return messages;
     }
 
     @Override

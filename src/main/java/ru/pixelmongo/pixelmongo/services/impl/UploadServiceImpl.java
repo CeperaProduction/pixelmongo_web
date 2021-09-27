@@ -6,42 +6,32 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 
 import org.apache.groovy.util.Arrays;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import ru.pixelmongo.pixelmongo.exceptions.WrongFileTypeException;
 import ru.pixelmongo.pixelmongo.services.UploadService;
 
-@Service("uploadService")
 public class UploadServiceImpl implements UploadService{
 
-    private String uploadUrlPath;
-    private String uploadDirPath;
+    private final String uploadUrlPath;
+    private final String uploadDirPath;
 
-    @PostConstruct
-    public void init() {
-        this.uploadUrlPath = "/uploads";
-        URL r = this.getClass().getResource(this.uploadUrlPath);
-        try {
-            this.uploadDirPath = Paths.get(r.toURI()).toAbsolutePath().toString();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    public UploadServiceImpl(String uploadUrl, String uploadDir) {
+        this.uploadUrlPath = uploadUrl;
+        this.uploadDirPath = uploadDir;
         LOGGER.info("Upload root url: "+this.uploadUrlPath);
         LOGGER.info("Upload root dir: "+this.uploadDirPath);
     }
 
     @Override
-    public String getUploadUrl() {
+    public String getUploadURL() {
         return uploadUrlPath;
     }
 
@@ -52,13 +42,17 @@ public class UploadServiceImpl implements UploadService{
 
     @Override
     public Path upload(MultipartFile mfile, String... path){
-        return upload(mfile, mfile.getOriginalFilename(), path);
+        return upload(mfile.getOriginalFilename(), mfile, path);
     }
 
     @Override
-    public Path upload(MultipartFile mfile, String newFileName, String... path){
+    public Path upload(String newFileName, MultipartFile mfile, String... path){
         try {
             Path p = getUploadPath(newFileName, path);
+            if(!Files.exists(p)) {
+                p.toFile().getParentFile().mkdirs();
+                Files.createFile(p);
+            }
             mfile.transferTo(p);
             return p;
         }catch(IOException e) {
@@ -66,8 +60,28 @@ public class UploadServiceImpl implements UploadService{
         }
     }
 
-    private Path getUploadPath(String fileName, String... path) {
+    @Override
+    public Path getUploadPath(String fileName, String... path) {
         return Paths.get(uploadDirPath, Arrays.concat(path, new String[] {fileName}));
+    }
+
+    @Override
+    public String getUploadPathURL(String fileName, String... path) {
+        StringBuilder sb = new StringBuilder(this.uploadUrlPath);
+        for(String p : path) {
+            sb.append('/').append(p);
+        }
+        sb.append('/').append(fileName);
+        return sb.toString();
+    }
+
+    @Override
+    public String getUploadPathURLIfExists(String defautlUrl, String fileName, String... path) {
+        Path p = getUploadPath(fileName, "skins", "skins");
+        if(Files.exists(p)) {
+            return getUploadPathURL(fileName, path);
+        }
+        return defautlUrl;
     }
 
     @Override
@@ -89,7 +103,7 @@ public class UploadServiceImpl implements UploadService{
             if(!png
                     && !"image/jpeg".equals(mfile.getContentType())
                     && !"image/jpg".equals(mfile.getContentType())) {
-                throw new IllegalArgumentException("File must be png or jpeg image");
+                throw new WrongFileTypeException(mfile, "image/png", "image/jpg", "image/jpeg");
             }
 
             ByteArrayInputStream bin = new ByteArrayInputStream(mfile.getBytes());

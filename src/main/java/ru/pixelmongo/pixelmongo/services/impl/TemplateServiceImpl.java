@@ -18,6 +18,7 @@ import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement.Step;
+import ru.pixelmongo.pixelmongo.services.PlayerSkinService;
 import ru.pixelmongo.pixelmongo.services.TemplateService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
@@ -32,6 +33,9 @@ public class TemplateServiceImpl implements TemplateService{
 
     @Autowired
     private MessageSource msg;
+
+    @Autowired
+    private PlayerSkinService skinService;
 
     public List<PaginationElement> getPagination(int currentPage,
             int totalPages, int maxButtons) {
@@ -157,6 +161,16 @@ public class TemplateServiceImpl implements TemplateService{
             result.add(spl);
         }
         return result;
+    }
+
+    @Override
+    public String getAvatar(User user) {
+        return skinService.getSkinFaceUrlPath(user);
+    }
+
+    @Override
+    public String getAvatar() {
+        return skinService.getSkinFaceUrlPath(userService.getCurrentUser());
     }
 
 }

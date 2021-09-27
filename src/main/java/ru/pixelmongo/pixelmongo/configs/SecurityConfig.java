@@ -61,6 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     private DataSource dataSource;
 
     @Autowired
+    private UploadConfig uploadCfg;
+
+    @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService()).passwordEncoder(passwordEncoder());
     }
@@ -142,7 +145,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
                 "/css/**", "/js/**", "/fonts/**", "/img/**", "/favicon.ico",
-                "/open/**"
+                "/open/**", uploadCfg.getUploadUrl()+"/**"
                 );
     }
 

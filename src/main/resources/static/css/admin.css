@@ -170,6 +170,10 @@ form.link button:active{
 	color: inherit;
 }
 
+.profile-image{
+	box-shadow: 0 0 4px rgba(0.3, 0.3, 0.3, 0.5);
+}
+
 .error-container {
 	padding: 20px;
 	display: flex;
@@ -298,5 +302,9 @@ form.link button:active{
 .donate-token-content .donate-token-variant{
 	margin: 0;
 	padding-top: 10px;
+}
+
+.skin3d{
+	margin: 0 auto;
 }
 

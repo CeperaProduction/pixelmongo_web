@@ -1,0 +1,22 @@
+
+.skin2d{
+	width: 100%;
+	height: 100%;
+}
+
+.skin2d .skin{
+	width: 75%;
+	height: 75%;
+	margin: 12% auto;
+	background-size: 200% 100%;
+	background-position: 0 0;
+	background-repeat: no-repeat;
+}
+
+.skin2d .skin:hover{
+	background-position: 100% 0;
+}
+
+.skin3d canvas{
+	margin-left: -10%;
+}

@@ -5,6 +5,7 @@
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление [[${user.name}]]</title>
 
+	<th:block th:replace="/fragments/skin3d :: headers"></th:block>
 </head>
 <body>
 	<div class="container" layout:fragment="content">
@@ -48,6 +49,7 @@
 		    </div>
 		    <div class="card-body">
 	        	<form id="userForm" th:action="@{''}" th:method="post" th:object="${userForm}" autocomplete="off">
+	        		<input type="hidden" name="target" value="user">
 	        		<input id="email" style="display:none" type="email" name="dontrememberthis1">
 					<input id="password" style="display:none" type="password" name="dontrememberthis2">
 					<div class="form-group row">
@@ -109,16 +111,89 @@
 					Применить
 				</button>
 				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${user.id != @user.id}">
+					<input type="hidden" name="target" value="user">
 					<button type="submit" class="btn btn-danger">
 						<i class="fa fa-times"></i>
 						Удалить
 					</button>
 				</form>
 		    </div>
-		    <script th:if="${!can_manage}">
-				$("#userForm :input").prop("disabled", true);
-			</script>
 		</div>
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Управление скином
+		    </div>
+		    <div class="card-body">
+	        	<form id="skinForm" th:action="@{''}" th:method="post" th:object="${skinForm}" enctype="multipart/form-data">
+	        		<div class="row">
+	        			<div class="col-4">
+
+
+							<th:block th:replace="/fragments/skin3d :: skin3d(${user}, 120, 240)"></th:block>
+
+
+	        			</div>
+	        			<div class="col-8">
+
+	        				<div class="form-group">
+								<div>Скин</div>
+								<div>
+									<div class="custom-file">
+									    <input type="file" class="custom-file-input" id="skinInput" name="skin" accept=".png">
+									    <label class="custom-file-label" for="skinInput" data-browse="Выбрать">
+									    	Выберите файл скина
+									    </label>
+									</div>
+									<div class="alert alert-danger px-3 my-1"
+										role="alert"
+										th:errors="*{skin}"></div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div>Плащ</div>
+								<div>
+									<div class="custom-file">
+									    <input type="file" class="custom-file-input" id="capeInput" name="cape" accept=".png">
+									    <label class="custom-file-label" for="capeInput" data-browse="Выбрать">
+									    	Выберите файл плаща
+									    </label>
+									</div>
+									<div class="alert alert-danger px-3 my-1"
+										role="alert"
+										th:errors="*{cape}"></div>
+								</div>
+							</div>
+
+	        			</div>
+
+	        		</div>
+	        	</form>
+		    </div>
+		    <div class="card-footer" th:if="${can_manage}">
+				<button form="skinForm" type="submit" class="btn btn-primary"
+					name="target" value="skin">
+					<i class="fa fa-check"></i>
+					Применить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete">
+					<input type="hidden" name="edit_skin" value="1">
+					<button type="submit" class="btn btn-info"
+						name="target" value="skin">
+						<i class="fa fa-times"></i>
+						Удалить скин
+					</button>
+					<button type="submit" class="btn btn-info"
+						name="target" value="cape">
+						<i class="fa fa-times"></i>
+						Удалить плащ
+					</button>
+				</form>
+		    </div>
+		</div>
+	    <script th:if="${!can_manage}">
+			$("#userForm :input").prop("disabled", true);
+		</script>
 		<div class="card mb-3">
 		    <div class="card-header">
 		        История авторизаций
