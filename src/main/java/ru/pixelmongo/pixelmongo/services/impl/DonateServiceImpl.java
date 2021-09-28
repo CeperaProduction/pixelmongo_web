@@ -98,7 +98,10 @@ public class DonateServiceImpl implements DonateService{
         if(tokensData == null) tokensData = new HashMap<>();
 
         Set<Pair<String, String>> tokenValues = new TreeSet<>((a,b)->b.getFirst().compareTo(a.getFirst()));
-        tokenValues.add(Pair.of("player", playerName));
+
+        //Don't need to process $player token here. It will be processed by MegaQuery
+        //tokenValues.add(Pair.of("player", playerName));
+
         int tokensCostChange = 0;
         for(DonatePackToken token : pack.getTokens()) {
             DonatePackTokenProcessResult result
