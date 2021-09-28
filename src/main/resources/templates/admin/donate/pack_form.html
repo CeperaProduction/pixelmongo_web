@@ -89,9 +89,14 @@
 						<label for="packContent">Описание содержимого</label>
 						<textarea id="packContent" th:field="*{content}"></textarea>
 						<script th:include="/fragments/tinymce :: script_settings"></script>
+						<script th:with="url = @{/admin/donate/pages/{page}/upload(page=${page.tag})}"
+							th:include="/fragments/tinymce :: script_upload(${url})"></script>
 						<script>
 							var settings = {...default_settings,
+									...upload_settings,
 									...{selector: '#packContent'}}
+							settings.plugins += ' image';
+							settings.toolbar += ' image';
 							tinymce.init(settings);
 						</script>
 					</div>

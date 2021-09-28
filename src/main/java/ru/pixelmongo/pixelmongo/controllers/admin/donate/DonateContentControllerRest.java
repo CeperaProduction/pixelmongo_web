@@ -3,7 +3,6 @@ package ru.pixelmongo.pixelmongo.controllers.admin.donate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateCategory;
@@ -29,7 +28,9 @@ import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonatePackRepository
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonatePageRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.OrdinaryUtilsService;
+import ru.pixelmongo.pixelmongo.services.UploadService;
 import ru.pixelmongo.pixelmongo.services.UserService;
+import ru.pixelmongo.pixelmongo.utils.RandomUtils;
 
 @RestController
 @RequestMapping("/admin/donate/pages")
@@ -54,7 +55,11 @@ public class DonateContentControllerRest {
     private UserService userService;
 
     @Autowired
-    private MessageSource msg;
+    private UploadService upload;
+
+    /*
+     * Reordering
+     */
 
     @PostMapping("/reorder")
     public ResultMessage reorderPages(@RequestParam("ids") String idsStr,
@@ -75,11 +80,10 @@ public class DonateContentControllerRest {
     @PostMapping("/{page}/category/reorder")
     public ResultMessage reorderCategories(@PathVariable("page") String pageTag,
             @RequestParam("ids") String idsStr,
-            Locale loc,
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        DonatePage page = find(pages.findByTag(pageTag), loc);
+        DonatePage page = find(pages.findByTag(pageTag));
 
         List<Integer> ids = getIds(idsStr);
         if(!ids.isEmpty()) {
@@ -97,15 +101,14 @@ public class DonateContentControllerRest {
     public ResultMessage reorderPacks(@PathVariable("page") String pageTag,
             @PathVariable("category") int categoryId,
             @RequestParam("ids") String idsStr,
-            Locale loc,
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        DonateCategory category = find(categories.findById(categoryId), loc);
+        DonateCategory category = find(categories.findById(categoryId));
         DonatePage page = category.getPage();
 
         if(!page.getTag().equals(pageTag))
-            throw notFound(loc);
+            throw notFound();
 
         List<Integer> ids = getIds(idsStr);
         if(!ids.isEmpty()) {
@@ -119,6 +122,31 @@ public class DonateContentControllerRest {
         return new ResultMessage(DefaultResult.ERROR, "Wrong ids");
     }
 
+    /*
+     *
+     * Pack content images upload
+     *
+     */
+
+    @PostMapping("/{page}/upload")
+    public String uploadImage(@RequestParam("file") MultipartFile mfile,
+            @PathVariable("page") String pageTag) {
+        DonatePage page = find(pages.findByTag(pageTag));
+        if(!mfile.getContentType().startsWith("image/"))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must be an image");
+        int i = mfile.getOriginalFilename().lastIndexOf('.');
+        String ext = i == -1 ? "" : mfile.getOriginalFilename().substring(i);
+        String name = RandomUtils.generateRandomKey(16)+ext;
+        String[] path = new String[]{"donate", "packcontent", "page_"+page.getId()};
+        upload.upload(name, mfile, path);
+        return "{\"location\":\""+upload.getUploadPathURL(name, path)+"\"}";
+    }
+
+
+    /*
+     * Utils
+     */
+
     private List<Integer> getIds(String idsStr) {
         try {
             return Arrays.asList(idsStr.split(",")).stream()
@@ -127,13 +155,12 @@ public class DonateContentControllerRest {
         return Collections.emptyList();
     }
 
-    private <T> T find(Optional<T> searchResult, Locale loc) {
-        return searchResult.orElseThrow(()->notFound(loc));
+    private <T> T find(Optional<T> searchResult) {
+        return searchResult.orElseThrow(this::notFound);
     }
 
-    private ResponseStatusException notFound(Locale loc) {
-        return new ResponseStatusException(HttpStatus.NOT_FOUND,
-                msg.getMessage("error.status.404", null, loc));
+    private ResponseStatusException notFound() {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found");
     }
 
     private void log(String langKey, HttpServletRequest request, Object... langValues) {
