@@ -183,6 +183,16 @@ public class UsersController {
                 changed = true;
             }
 
+            if(user.hasCape() != userForm.isHasCape()) {
+                user.setHasCape(userForm.isHasCape());
+                changed = true;
+            }
+
+            if(user.hasHDSkin() != userForm.isHasHDSkin()) {
+                user.setHasHDSkin(userForm.isHasHDSkin());
+                changed = true;
+            }
+
             if(changed) {
                 user = users.save(user);
                 logs.log("admin.log.user.edit",

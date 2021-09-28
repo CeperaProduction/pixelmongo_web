@@ -114,22 +114,22 @@
 			                	Донат-система
 			                </a>
 			                <ul class="collapse list-unstyled" id="menuDonate">
-			                    <li>
+			                    <li sec:authorize="hasAuthority('admin.panel.donate.content')">
 			                        <a th:href="@{/admin/donate/pages}"><i class="fa fa-edit fa-fw"></i> Управление страницами</a>
 			                    </li>
-			                    <li>
+			                    <li sec:authorize="hasAuthority('admin.panel.donate.servers')">
 			                        <a th:href="@{/admin/donate/servers}"><i class="fa fa-server fa-fw"></i> Управление серверами</a>
 			                    </li>
-			                    <li>
+			                    <li sec:authorize="hasAuthority('admin.panel.donate.discount')">
 			                        <a th:href="@{/admin/donate/discount}"><i class="fa fa-percent fa-fw"></i> Управление скидками</a>
 			                    </li>
-			                    <li>
+			                    <li sec:authorize="hasAuthority('admin.panel.donate.balances')">
 			                        <a th:href="@{/admin/donate/balance}"><i class="fa fa-money-bill-alt fa-fw"></i> Управление балансами</a>
 			                    </li>
-			                    <li>
+			                    <li sec:authorize="hasAuthority('admin.panel.donate.give')">
 			                        <a th:href="@{/admin/donate/give}"><i class="fa fa-gift fa-fw"></i> Выдача наборов</a>
 			                    </li>
-			                    <li>
+			                    <li sec:authorize="hasAuthority('admin.panel.donate.logs')">
 			                        <a th:href="@{/admin/donate/query}"><i class="fa fa-file fa-fw"></i> Лог донат-системы</a>
 			                    </li>
 			                </ul>

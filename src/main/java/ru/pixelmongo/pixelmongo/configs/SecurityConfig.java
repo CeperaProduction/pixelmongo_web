@@ -168,6 +168,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
             .antMatchers("/admin/logs/**").hasAuthority("admin.panel.logs")
 
+            .antMatchers("/admin/playerlogs/**").hasAuthority("admin.panel.playerlogs")
+
+            .antMatchers("/admin/monitoring/**").hasAuthority("admin.panel.monitoring")
+
+            .antMatchers("/admin/donate/pages/**").hasAuthority("admin.panel.donate.content")
+            .antMatchers("/admin/donate/servers/**").hasAuthority("admin.panel.donate.servers")
+            .antMatchers("/admin/donate/discount/**").hasAuthority("admin.panel.donate.discount")
+            .antMatchers("/admin/donate/balance/**").hasAuthority("admin.panel.donate.balances")
+            .antMatchers("/admin/donate/give/**").hasAuthority("admin.panel.donate.give")
+            .antMatchers("/admin/donate/query/**").hasAuthority("admin.panel.donate.logs")
+            .antMatchers("/admin/donate/**").hasAuthority("admin.panel.donate")
+
             .antMatchers("/admin/**").hasAuthority("admin.panel.access")
 
             .anyRequest().permitAll()

@@ -51,6 +51,12 @@ public class User {
     @OrderBy("date DESC")
     private List<UserLoginRecord> loginRecords;
 
+    @Column(name = "cape")
+    private boolean hasCape = false;
+
+    @Column(name = "hd_skin")
+    private boolean hasHDSkin = false;
+
     public User() {}
 
     public User(String name, UserGroup group, String email, String passwordHash, String ip) {
@@ -91,10 +97,18 @@ public class User {
         this.email = email;
     }
 
+    /**
+     * Hashed password
+     * @return
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Password must be hashed
+     * @param passwordHash
+     */
     public void setPassword(String passwordHash) {
         this.password = passwordHash;
     }
@@ -126,5 +140,23 @@ public class User {
     public void setRegistrationIp(String registrationIp) {
         this.registrationIp = registrationIp;
     }
+
+    public boolean hasCape() {
+        return hasCape;
+    }
+
+    public boolean hasHDSkin() {
+        return hasHDSkin;
+    }
+
+    public void setHasCape(boolean hasCape) {
+        this.hasCape = hasCape;
+    }
+
+    public void setHasHDSkin(boolean hasHDSkin) {
+        this.hasHDSkin = hasHDSkin;
+    }
+
+
 
 }

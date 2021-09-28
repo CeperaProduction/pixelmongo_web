@@ -7,6 +7,18 @@ body{
 #wrapper {
 	max-width: 100%;
 	overflow-x: hidden;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.logo-full{
+	width: 40vh;
+	height: 32vh;
+	margin: auto;
+	background: url("../img/logo_full.png") no-repeat scroll center top transparent;
+	background-size: 100% 100%;
+	background-size: 100% 100%;
 }
 
 .card-footer .btn{
@@ -36,12 +48,6 @@ a.page-link.disabled{
 
 .pagination.center{
 	justify-content: center;
-}
-
-#wrapper{
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
 }
 
 #content-wrapper {

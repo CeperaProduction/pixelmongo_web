@@ -83,6 +83,36 @@
 					</div>
 					<hr class="separator">
 					<div class="form-group row">
+						<div class="col-sm-2">Прочее</div>
+						<div class="col-sm-10">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox"
+									id="inputHasHDSkin"
+									class="custom-control-input"
+									name="hasHDSkin"
+									value="1"
+									th:checked="*{hasHDSkin}">
+								<label class="custom-control-label"
+									for="inputHasHDSkin">
+									Доступ к HD скинам
+								</label>
+							</div>
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox"
+									id="inputHasCape"
+									class="custom-control-input"
+									name="hasCape"
+									value="1"
+									th:checked="*{hasCape}">
+								<label class="custom-control-label"
+									for="inputHasCape">
+									Доступ к плащам
+								</label>
+							</div>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group row">
 						<label for="inputPassword1" class="col-sm-2 col-form-label">Пароль</label>
 						<div class="col-sm-10">
 							<input type="password" class="form-control"

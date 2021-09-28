@@ -15,11 +15,17 @@ public class UserManageForm{
 
     private Integer groupId;
 
+    private boolean hasCape;
+
+    private boolean hasHDSkin;
+
     public UserManageForm() {}
 
     public UserManageForm(User user) {
         this.email = user.getEmail();
         this.groupId = user.getGroup().getId();
+        this.hasCape = user.hasCape();
+        this.hasHDSkin = user.hasHDSkin();
     }
 
     public String getEmail() {
@@ -53,5 +59,22 @@ public class UserManageForm{
     public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
+
+    public boolean isHasCape() {
+        return hasCape;
+    }
+
+    public boolean isHasHDSkin() {
+        return hasHDSkin;
+    }
+
+    public void setHasCape(boolean hasCape) {
+        this.hasCape = hasCape;
+    }
+
+    public void setHasHDSkin(boolean hasHDSkin) {
+        this.hasHDSkin = hasHDSkin;
+    }
+
 
 }
