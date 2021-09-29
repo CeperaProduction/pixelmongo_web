@@ -1,10 +1,15 @@
 package ru.pixelmongo.pixelmongo.model.dao.primary.donate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -24,11 +29,23 @@ public class DonateServer {
     @Column(name = "server_key")
     private String key = "";
 
+    @ManyToMany(mappedBy = "servers")
+    private List<DonatePack> packs = new ArrayList<DonatePack>();
+
+    @ManyToMany(mappedBy = "servers")
+    private List<DonatePage> pages = new ArrayList<DonatePage>();
+
     public DonateServer() {}
 
     public DonateServer(String displayName, String configName) {
         this.displayName = displayName;
         this.configName = configName;
+    }
+
+    @PreRemove
+    private void preRemove() {
+        packs.forEach(p->p.getServers().remove(this));
+        pages.forEach(p->p.getServers().remove(this));
     }
 
     public int getId() {
@@ -57,6 +74,14 @@ public class DonateServer {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public List<DonatePack> getPacks() {
+        return packs;
+    }
+
+    public List<DonatePage> getPages() {
+        return pages;
     }
 
 }

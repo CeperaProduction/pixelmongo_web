@@ -75,7 +75,9 @@
 					Применить
 				</button>
 				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${server.id != 0}">
-					<button type="submit" class="btn btn-danger">
+					<button type="submit" class="btn btn-danger"
+						data-confirm="Вы уверены, что хотите удалить данный сервер из донат-системы? Это так же удалит его со всех страниц и наборов. Это действие нельзя отменить."
+						data-confirm-title="Подтверждение">
 						<i class="fa fa-times"></i>
 						Удалить
 					</button>

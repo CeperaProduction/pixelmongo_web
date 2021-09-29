@@ -82,7 +82,9 @@
 					Применить
 				</button>
 				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${group.id > 2}">
-					<button type="submit" class="btn btn-danger">
+					<button type="submit" class="btn btn-danger"
+						data-confirm="Вы уверены, что хотите удалить данную группу? Все её пользователи получат стандартную группу. Это действие нельзя отменить."
+						data-confirm-title="Подтверждение">
 						<i class="fa fa-times"></i>
 						Удалить
 					</button>
