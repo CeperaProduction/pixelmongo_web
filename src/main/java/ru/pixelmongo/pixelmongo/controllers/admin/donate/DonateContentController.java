@@ -231,6 +231,7 @@ public class DonateContentController {
         popup("admin.donate.page.deleted", loc, PopupMessage.Type.WARN, request, response);
 
         upload.deleteUploaded(page.getId()+".jpg", "donate", "pages");
+        upload.deleteUploadedDirectory("page_"+page.getId(), "donate", "packcontent");
 
         return "redirect:/admin/donate/pages";
     }

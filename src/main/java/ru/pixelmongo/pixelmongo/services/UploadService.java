@@ -26,6 +26,15 @@ public interface UploadService {
 
     public boolean deleteUploaded(String fileName, String... path);
 
+    /**
+     * Delete following directory inside current upload directory.
+     * Recursively deletes all nested content.
+     * @param dirName
+     * @param path
+     * @return
+     */
+    public boolean deleteUploadedDirectory(String dirName, String... path);
+
     public Path uploadImageResized(MultipartFile mfile, int width, int height, boolean saveAsPng,
             String newFileName, String... path);
 

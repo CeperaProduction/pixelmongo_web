@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 
 import org.apache.groovy.util.Arrays;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import ru.pixelmongo.pixelmongo.exceptions.WrongFileTypeException;
@@ -77,7 +78,7 @@ public class UploadServiceImpl implements UploadService{
 
     @Override
     public String getUploadPathURLIfExists(String defautlUrl, String fileName, String... path) {
-        Path p = getUploadPath(fileName, "skins", "skins");
+        Path p = getUploadPath(fileName, path);
         if(Files.exists(p)) {
             return getUploadPathURL(fileName, path);
         }
@@ -89,6 +90,16 @@ public class UploadServiceImpl implements UploadService{
         Path p = getUploadPath(fileName, path);
         try {
             return Files.deleteIfExists(p);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean deleteUploadedDirectory(String dirName, String... path) {
+        Path p = getUploadPath(dirName, path);
+        try {
+            return FileSystemUtils.deleteRecursively(p);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
