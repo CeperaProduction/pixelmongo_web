@@ -7,12 +7,80 @@
 
 </head>
 <body>
-	<section layout:fragment="content">
-		<div id="vk_news"></div>
-		<script type="text/javascript" th:src="|//vk.com/js/api/openapi.js?121|"></script>
-		<script type="text/javascript">
-			VK.Widgets.Group("vk_news", {mode: 2, wide:1, width: "600", height: "600", color1: 'FFFFFF', color2: '24505d', color3: '#24505d'}, 59962871);
-		</script>
-	</section>
+	<th:block layout:fragment="content">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-md-4 content-block gradient-white-block">
+					<div th:replace="/fragments/monitoring :: monitoring"></div>
+				</div>
+				<div class="col-md-8 content-block gradient-white-block">
+					<div class="text-center mb-4">
+						<h1 class="text-pokemon">Pixelmon GO</h1>
+						<p class="font-weight-bold">
+							Начни свой путь тренера покемонов прямо сейчас!
+						</p>
+					</div>
+					<p>
+						Здравствуйте дорогие наши искатели приключений! Надоело однотипное выживание с покемонами?
+						Не беда, возможно наш проект сможет тебя заинтересовать.
+					</p>
+					<p>
+						Pixelnon GO - это новый проект который будет вас удивлять и радовать.
+						Давайте вместе изучать этот прекрасный мир с модификацией Pixelmon Reforged.
+					</p>
+					<p>
+						Вашему вниманию хотим представить сервер Pokemon Galaxy!
+					</p>
+					<ul>
+						<li>Интересный геймплей который не даст заскучать.</li>
+						<li>Турниры и ивенты.</li>
+						<li>Интересный сюжет.</li>
+						<li>Покеохота.</li>
+						<li>Уникальное мероприятие а именно чемпионат покемонов!</li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="background-moving-container gradient-white-center">
+			<div class="background-moving-container2">
+				<div class="background-moving"></div>
+			</div>
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-md-6 col-lg-8 p-2 text-white">
+						<div class="soc-text">
+							<h3>Присоединяйтейсь!</h3>
+							<p>
+								Чтобы всегда быть вкурсе последних событий проекта и полноценно взаимодействовать с его сообществом,
+								мы рекомендуем следить за нашими каналами в социальных сетях.
+							</p>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-4 p-2 text-white">
+						<div class="bg-dark rounded shadow mx-auto" style="max-width: 320px">
+							<iframe src="https://discord.com/widget?id=871836414772383774&theme=dark"
+								class="mx-auto" style="height: 380px; width: 100%"
+								allowtransparency="true" frameborder="0"
+								sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+							<a th:href="@{https://vk.com/pixelmongo}"
+								class="btn btn-block btn-vk" target="_blank">
+								<i class="fab fa-vk"></i>
+								Группа ВКонтакте
+							</a>
+							<a th:href="@{https://www.youtube.com/channel/UCEu0uXYP4uU68bbrJgHePYw}"
+								class="btn btn-block btn-youtube" target="_blank">
+								<i class="fab fa-youtube"></i>
+								Канал на YouTube
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</th:block>
 </body>
 </html>

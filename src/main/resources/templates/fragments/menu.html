@@ -1,11 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	<div class="menu_container" th:fragment="menu">
-		<div class="menu">
-			<a th:href="@{/}"><p2>Новости</p2></a>
-			<a th:href="@{/start}"><p2>Начать игру</p2></a>
-			<a th:href="@{/rules}"><p2>Правила</p2></a>
-			<a th:href="@{/donate}"><p2>Донат</p2></a>
+	<th:block  th:fragment="menu">
+		<div class="menu-container">
+			<nav class="navbar navbar-light navbar-expand-md shadow menu justify-content-center">
+				<div class="container-fluid">
+					<a class="navbar-brand mr-auto" href="#">
+					    <img th:src="@{/img/logo.png}" width="50" height="40" alt="">
+					    <i class="fa fa-level-up-alt"></i>
+				 	</a>
+					<button class="navbar-toggler ml-auto" data-toggle="collapse" data-target="#menuCollapse">
+						<span class="sr-only">Показать меню</span>
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div id="menuCollapse" class="collapse navbar-collapse">
+						<ul class="navbar-nav mx-auto">
+							<li class="nav-item">
+								<a class="nav-link" th:href="@{/}">
+									Главная
+								</a>
+							</li>
+							<li class="nav-item start">
+								<a class="nav-link" th:href="@{/start}">
+									Начать игру
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" th:href="@{/rules}">
+									Правила
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" th:href="@{/stuff}">
+									Персонал
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" th:href="@{/donate}">
+									Донат
+								</a>
+							</li>
+							<li class="nav-item">
+								<th:block th:replace="/fragments/profile :: profile_menu"></th:block>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
 		</div>
-	</div>
+		<th:block th:replace="/fragments/profile :: profile_modal"></th:block>
+	</th:block>
+
 </html>

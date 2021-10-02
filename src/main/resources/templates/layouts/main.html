@@ -4,6 +4,8 @@
 <head>
 	<meta charset="UTF-8">
 
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="16x16">
 	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="32x32">
 	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="96x96">
@@ -14,16 +16,17 @@
 
 	<meta http-equiv="cleartype" content="on">
 
-	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
-
 	<script>const baseUrl = "[[@{/}]]";</script>
 
 	<th:block th:replace="/fragments/jquery :: jquery"></th:block>
+	<th:block th:replace="/fragments/bootstrap :: bootstrap"></th:block>
+	<th:block th:replace="/fragments/fontawesome :: fa"></th:block>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+
 	<script type="text/javascript" charset="UTF-8" th:src="@{/js/ajax.js}"></script>
 	<script type="text/javascript" charset="UTF-8" th:src="@{/js/main.js}"></script>
 	<script type="text/javascript" charset="UTF-8" th:src="@{/js/modal.js}"></script>
-
-	<meta name="theme-color" content="#24505d" />
 
 	<th:block th:if="${_csrf != null}">
 		<meta name="_csrf" th:content="${_csrf.token}" />
@@ -33,9 +36,9 @@
 
 	<title>Pixelmon Go</title>
 </head>
-<body>
+<body class="bg-balls">
 	<div th:replace="/fragments/messages :: messages"></div>
-	<div id="main" class="main">
+	<div id="wrapper">
 		<section layout:fragment="main_content"></section>
 	</div>
 </body>

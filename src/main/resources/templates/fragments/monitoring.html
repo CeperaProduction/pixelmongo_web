@@ -1,30 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	<div class="monitor_container" th:fragment="monitoring">
-		<div class="monitor">
-			<div class="open">
-				<div class="monitor_full">
-					<div class="monitor_scale">
+	<th:block th:fragment="monitoring">
+		<div class="text-center">
+			<h4 class="text-pokemon text-shadow"
+				style="color: white">Статус серверов</h4>
+		</div>
+		<div class="monitor-container" >
+			<div class="monitor">
+				<div class="monitor-full">
+					<div class="monitor-full-content">
+						<div id="round1" class="monitoring-round monitor-shadow1">
+							<div id="round2" class="monitoring-round" style="padding: 10%">
+								<div class="monitoring-round moniroring-full-display-container row m-0 align-items-center monitor-shadow2">
+							        <div class="col-md-12 p-0 monitor-full-display text-nowrap">0 из 0</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<m2><div class="monitor_full_display">0<br> из <br>0</div></m2>
-			</div>
-			<div class="monitor_refresh" title="Обновить мониторинг"></div>
-			<div class="monitoring">
-				<div style="margin-top: 100px;"></div>
-				<m2>Загрузка...</m2>
+				<div class="monitoring"></div>
 			</div>
 		</div>
-		<div id="monitoring_template" style="display: none">
-			<div class="line"></div>
-			<p2><div style="text-align: center; width: 146px; font-size: 16px;" server_data="name">Загрузка...</div></p2>
-			<div class="monitor_back">
-				<div class="monitor_scale" server_data="fill_percent"></div>
-				<p2><div class="monitor_display" server_data="status">Загрузка...</div></p2>
+		<div id="monitoring-template" style="display: none">
+			<div class="monitor-server" data-server-info="name">Загрузка...</div>
+			<div class="monitor-scale">
+				<div class="invert" data-server-info="fill-percent-invert"></div>
+				<div class="front"></div>
+				<div class="monitor-display" data-server-info="status">Загрузка...</div>
 			</div>
-			
+
+
 			<div class="line"></div>
 		</div>
 		<script type="text/javascript" charset="UTF-8" th:src="@{js/monitoring.js}"></script>
-	</div>
+	</th:block>
+
 </html>

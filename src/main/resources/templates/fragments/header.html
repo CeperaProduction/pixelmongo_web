@@ -2,7 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 	<div th:fragment="header">
 		<div class="header">
-			<div class="logo"></div>
+			<div class="gradient">
+				<div class="header-content">
+					<div class="logo-full"></div>
+					<div class="start">
+						<a class="btn btn-start text-pokemon text-shadow" th:herf="@{/start}">
+							Начать игру
+						</a>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </html>

@@ -4,20 +4,27 @@
 	layout:decorate="~{layouts/main}">
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="${message}">Ошибка</title>
-
+	<meta name="theme-color" content="#111111" />
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/error.js}"></script>
 </head>
 <body>
 	<section layout:fragment="main_content">
-		<div class="error_container">
-			<div class="error_content">
-				<div class="error_status">
-					<m2 th:text="${status}">Error</m2>
-				</div>
-				<div class="error_message">
-					<m2 th:text="${message}">Something went wrong</m2>
-				</div>
-				<div class="menu" style="width: 160px; margin: 0 auto;">
-					<a th:href="@{/}"><p2>На главную</p2></a>
+		<canvas id="error-background"></canvas>
+		<div class="error-container">
+			<div class="error-content">
+				<div class="logo-full"></div>
+				<div class="card">
+					<div class="card-body">
+						<div class="error-status font-weight-bold">
+							<span class="" th:text="${status}">Error</span>
+						</div>
+						<div class="error-message">
+							<span th:text="${message}">Something went wrong</span>
+						</div>
+					</div>
+					<div class="card-footer">
+						<a class="btn btn-block btn-primary" th:href="@{/}">На главную</a>
+					</div>
 				</div>
 			</div>
 		</div>

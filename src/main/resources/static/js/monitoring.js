@@ -2,6 +2,11 @@ var monitoring = {
 
 	url : baseUrl+"open/monitoring",
 
+	roundColors : {
+		fill : 'rgb(80,240,80)',
+		back : 'rgb(255,255,255)'
+	},
+
 	started : false,
 
 	refreshTime : 10000,
@@ -47,7 +52,7 @@ var monitoring = {
 	},
 
 	initTemplate : function(){
-		let tpl = $('#monitoring_template');
+		let tpl = $('#monitoring-template');
 		if(tpl){
 			//monitoring.lineTemplate = tpl.prop('outerHTML')+'';
 			monitoring.lineTemplate = tpl.html()+'';
@@ -60,38 +65,61 @@ var monitoring = {
 		let html = '';
 		monitoring.printedServers = [];
 		monitoring.data.servers.forEach(function(server, index){
-			html += '<div server="'+server.tag+'">'+monitoring.lineTemplate+'</div>';
+			html += '<div data-server="'+server.tag+'">'+monitoring.lineTemplate+'</div>';
 			monitoring.printedServers.push(server.tag);
 		});
 		$('.monitoring').html(html);
 		monitoring.data.servers.forEach(function(server, index){
-			let mon = $('.monitoring [server="'+server.tag+'"]');
-			mon.find('[server_data="name"]').text(server.name);
-			mon.find('[server_data="motd"]').text(server.motd);
-			mon.find('[server_data="description"]').text(server.description);
+			let mon = $('.monitoring [data-server="'+server.tag+'"]');
+			mon.find('[data-server-info="name"]').text(server.name);
+			mon.find('[data-server-info="motd"]').text(server.motd);
+			mon.find('[data-server-info="description"]').text(server.description);
 		});
 		monitoring.updateDisplay();
 	},
 
 	updateDisplay : function(){
 		monitoring.data.servers.forEach(function(server, index){
-			let mon = $('.monitoring [server="'+server.tag+'"]');
+			let mon = $('.monitoring [data-server="'+server.tag+'"]');
 			let status = server.online ? server.currentPlayers+' из '+server.maxPlayers : 'Офлайн';
-			mon.find('[server_data="status"]').text(status);
+			mon.find('[data-server-info="status"]').text(status);
 			let fill = Math.min(Math.round(server.currentPlayers*100/server.maxPlayers), 100);
-			mon.find('[server_data="fill_percent"]').css({'width' : fill+'%'});
+			mon.find('[data-server-info="fill-percent"]').css({'width' : fill+'%'});
+			mon.find('[data-server-info="fill-percent-invert"]').css({'width' : (100-fill)+'%'});
 		});
+		let fill = 0;
 		if(monitoring.data.summary.maxPlayers>0){
 			let online = monitoring.data.summary.currentPlayers;
 			let max = monitoring.data.summary.maxPlayers;
-			$('.monitor_full_display').html(online+'<br> из <br>'+max);
-			let height = Math.round(100-(online*100/max));
-			height = Math.max(Math.min(height, 100), 0);
-			$('.monitor_full .monitor_scale').css({'height' : height+'%'});
+			$('.monitor-full-display').html(online+' из '+max);
+			fill = Math.max(Math.min(online/max, 1), 0);
 		}else{
-			$('.monitor_full .monitor_full_display').html('OFF<br><div style="font-size: 20px;">*</div>');
-			$('.monitor_full .monitor_scale').css({'height' : '100%'});
+			$('.monitor-full .monitor-full-display').html('OFF');
 		}
+		let [bg1, bg2] = monitoring.calcRoundBgs(fill, monitoring.roundColors.fill, monitoring.roundColors.back);
+		let round1 = $('.monitor-full #round1.monitoring-round');
+		let round2 = $('.monitor-full #round2.monitoring-round');
+		round1.css({'background-image' : bg1});
+		round2.css({'background-image' : bg2});
+	},
+
+	calcRoundBgs : function(fill, fillColor, backColor){
+		var bg1 = 'none';
+		var bg2 = 'none';
+		if(fill == 0){
+			bg1 = 'linear-gradient(90deg, '+backColor+' 0%, '+backColor+' 100%)';
+		}else if(fill == 0.5){
+			bg1 = 'linear-gradient(90deg, '+backColor+' 0%, '+backColor+' 50%, '+fillColor+' 50%, '+fillColor+' 100%)';
+		}else if(fill >= 1){
+			bg1 = 'linear-gradient(90deg, '+fillColor+' 0%, '+fillColor+' 100%)';
+		}else if(fill < 0.5){
+			bg1 = 'linear-gradient('+((360 * fill) - 90)+'deg, '+backColor+' 0%, '+backColor+' 50%, '+fillColor+' 50%, '+fillColor+' 100%)';
+			bg2 = 'linear-gradient(90deg, '+backColor+' 0%, '+backColor+' 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%)';
+		}else{
+			bg1 = 'linear-gradient('+((360 * fill) - 90)+'deg, '+backColor+' 0%, '+backColor+' 50%, '+fillColor+' 50%, '+fillColor+' 100%)';
+			bg2 = 'linear-gradient(270deg, '+fillColor+' 0%, '+fillColor+' 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%)';
+		}
+		return [bg1, bg2];
 	},
 
 	checkTemplates : function(){

@@ -40,7 +40,8 @@ $(function(){
 
 	function bindToButton(btn, text, title){
 		let form = btn.attr('form');
-		if(!form) form = btn.parents('form:first');
+		if(form) form = $('#'+form);
+		else form = btn.parents('form:first');
 		btn.on('click', function(e){
 			createModal(function(){
 				form.submit();

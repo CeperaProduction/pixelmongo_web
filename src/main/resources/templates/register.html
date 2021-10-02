@@ -10,43 +10,73 @@
 <body>
 	<div layout:fragment="content">
 		<script th:src="|//www.google.com/recaptcha/api.js|"></script>
-		<h1 style="margin-top: 0">* Регистрация *</h1>
-		<div align="center">
-			<form id="register_form" th:action="@{/auth/register}" th:method="put" th:object="${register}">
-				<table>
-					<tr title="От 3 до 16 латинских букв, цифр, знаков '_' и '-'">
-						<td>Логин (Ник):</td>
-						<td>
-							<input th:field="*{login}" type="text" placeholder="Логин" maxlength="16" pattern="[a-zA-Z0-9_-]{3,16}" required />
-						</td>
-					</tr>
-					<tr title="От 6 до 32 символов">
-						<td>Пароль:</td>
-						<td>
-							<input th:field="*{password}" type="password" placeholder="Пароль" maxlength="32" pattern=".{6,32}" required />
-						</td>
-					</tr>
-					<tr title="От 6 до 32 символов">
-						<td>Повторите пароль:</td>
-						<td>
-							<input th:field="*{passwordRepeat}" type="password" placeholder="Пароль" maxlength="32" pattern=".{6,32}" required />
-						</td>
-					</tr>
-					<tr>
-						<td>Ваш e-mail:</td>
-						<td>
-							<input th:field="*{email}" type="email" placeholder="e-mail" maxlength="128" required>
-						</td>
-					</tr>
-				</table>
-				<br>
-				<input type="checkbox" required />Я согласен с <a href="/rules">правилами проекта</a>
-				<br>
-				<div class="g-recaptcha" th:attr="data-sitekey=${@captchaService.getPublicKey()}"></div>
-				<br>
-				<input type="submit" value="Продолжить" />
-			</form>
+
+		<div class="container">
+			<div class="row justify-content-md-center">
+				<div class="col-12 col-md-8 content-block gradient-white-block">
+					<div class="card">
+						<div class="card-header text-center">
+							<span class="text-minecraft text-white text-shadow">Регистрация</span>
+						</div>
+						<div class="card-body">
+							<form id="register-form" th:action="@{/auth/register}" th:method="put" th:object="${register}">
+								<div class="form-group row">
+									<label for="inputLogin" class="col-4 col-form-label">Логин (Ник)</label>
+									<div class="col-8">
+										<input id="inputLogin" th:field="*{login}" type="text" class="form-control"
+											placeholder="Логин" maxlength="16" pattern="[a-zA-Z0-9_-]{3,16}" required />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="inputPassword1" class="col-4 col-form-label">Пароль</label>
+									<div class="col-8">
+										<input id="inputPassword1" th:field="*{password}" type="password" class="form-control"
+											placeholder="Пароль" maxlength="32" pattern=".{6,32}" required />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="inputPassword2" class="col-4 col-form-label">Повторите пароль</label>
+									<div class="col-8">
+										<input id="inputPassword2" th:field="*{passwordRepeat}" type="password" class="form-control"
+											placeholder="Пароль" maxlength="32" pattern=".{6,32}" required />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="inputEmail" class="col-4 col-form-label">Почта</label>
+									<div class="col-8">
+										<input id="inputEmail" th:field="*{email}" type="email" class="form-control"
+											placeholder="e-mail" maxlength="128" required>
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-4">Правила</div>
+									<div class="col-8">
+										<div class="custom-control custom-checkbox">
+											<input id="inputRuleAccept" type="checkbox" class="custom-control-input" required>
+											<label for="inputRuleAccept" class="custom-control-label">
+												Я согласен с <a th:href="@{/rules}" target="_blank">правилами проекта</a>
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-12 col-lg-4 pb-2">Проверка на робота</div>
+									<div class="col-12 col-lg-8">
+										<div class="g-recaptcha mx-auto" th:attr="data-sitekey=${@captchaService.getPublicKey()}"></div>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="card-footer">
+							<button form="register-form" class="btn btn-lg btn-primary btn-block font-weight-bold">Зарегистрироваться</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
 		</div>
+
 	</div>
 </body>
 </html>
