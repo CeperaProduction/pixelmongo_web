@@ -30,7 +30,7 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 
 @Controller
 @RequestMapping("/admin/rules")
-public class RulesController {
+public class RulesAdminController {
 
     @Autowired
     private RulesRepository rules;

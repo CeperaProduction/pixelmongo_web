@@ -5,13 +5,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
+
 @Controller
-@RequestMapping("/")
-public class MainController {
+@RequestMapping("/register")
+public class RegisterController {
 
     @GetMapping
-    public String index(Model model) {
-        return "main";
+    public String register(Model model) {
+        model.addAttribute("register", new UserRegistrationForm());
+        return "register";
     }
 
 }

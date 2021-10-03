@@ -12,7 +12,8 @@ $(document).ready(function(){
 				menu.removeClass('fixed');
 			}
 		}
-		$(document).scroll(apply);
+		$(document).on('scroll', apply);
+		$(window).on('resize', apply);
 		apply();
 	}
 });

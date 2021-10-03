@@ -4,7 +4,7 @@
 	layout:decorate="~{layouts/main}">
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="${message}">Ошибка</title>
-	<meta name="theme-color" content="#111111" />
+	<meta name="theme-color" content="#090909" />
 	<script type="text/javascript" charset="UTF-8" th:src="@{/js/error.js}"></script>
 </head>
 <body>
@@ -13,7 +13,7 @@
 		<div class="error-container">
 			<div class="error-content">
 				<div class="logo-full"></div>
-				<div class="card">
+				<div class="card mb-4">
 					<div class="card-body">
 						<div class="error-status font-weight-bold">
 							<span class="" th:text="${status}">Error</span>

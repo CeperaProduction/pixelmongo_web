@@ -26,6 +26,25 @@ body{
 	min-width: 360px;
 }
 
+.btn-primary{
+	background-color: #3e3573;
+	border-color: #3e3573;
+}
+
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active:focus{
+	background-color: #3e3573;
+	border-color: #3e3573;
+	box-shadow: 0 0 0 .2rem rgba(122, 103, 215, 0.5) !important;
+}
+
+.btn-primary:hover{
+	background-color: #594ba5;
+	border-color: #594ba5;
+}
+
 .bg-balls{
 	background-image: url("../img/background_balls.png");
 	background-repeat: repeat;
@@ -535,3 +554,39 @@ form.link button:active{
 	margin-left: auto;
 	margin-right: auto;
 }
+
+.register-anime-img{
+	width: 100%;
+	max-width: 200px;
+}
+
+@media (max-width: 768px) {
+	.register-anime-img{
+		margin-bottom: -60%;
+	}
+}
+
+@media (max-width: 500px) {
+	.register-anime-img{
+		margin-bottom: -80%;
+	}
+}
+
+.rainbow-title{
+	background-image: linear-gradient(180deg, rgba(144, 10, 227, 0.5) 0%, rgba(21, 195, 231, 0.7) 100%);
+	background-color: #fff;
+	color: #fff;
+	border-bottom: none;
+	box-shadow: 0 3px 10px #61d0ee;
+}
+
+.rainbow-title .text-minecraft{
+	font-size: 0.7em;
+}
+
+.rules-anime-img{
+	width: 100%;
+	max-width: 400px;
+	margin-bottom: -100px;
+}
+

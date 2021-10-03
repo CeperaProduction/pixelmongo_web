@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Правила</title>
+
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="container">
+			<div>
+				<div class="text-center">
+					<img th:src="@{/img/rules_anime1.png}" class="rules-anime-img gradient-white-block"/>
+				</div>
+				<div class="text-center">
+					<h1 class="text-pokemon text-white text-shadow">Правила проекта</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 col-lg-9 mx-auto">
+					<div class="card my-4"
+						th:each="rule : ${rules}">
+						<div class="card-header rainbow-title text-center">
+							<span class="text-shadow text-minecraft" th:text="${rule.title}"></span>
+						</div>
+						<div class="card-body" th:utext="${rule.content}"></div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center gradient-white-center py-4">
+				<span class="font-weight-bold">Помните, незнание правил не освобождает вас от ответственности!</span>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>
