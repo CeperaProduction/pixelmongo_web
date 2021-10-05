@@ -58,6 +58,8 @@ public interface UserService extends UserDetailsService{
      */
     public void changePassword(User user, String newPassword, boolean saveUser);
 
+    public boolean checkPassword(User user, String password);
+
     /**
      * Force update cached {@link UserDetails} on next user request.
      * @param user

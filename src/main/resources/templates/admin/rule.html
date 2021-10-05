@@ -15,6 +15,10 @@
 		        <span th:if="${rule.id != 0}">
 		        	Изменение раздела правил
 		        </span>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/rules}">
+					<i class="fa fa-backward"></i>
+					Назад
+				</a>
 		    </div>
 		    <div class="card-body">
 	        	<form id="ruleForm" th:action="@{''}" th:method="${method}" th:object="${rule}">

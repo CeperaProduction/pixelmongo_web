@@ -142,6 +142,11 @@ public abstract class UserServiceImpl implements UserService{
     }
 
     @Override
+    public boolean checkPassword(User user, String password) {
+        return user.getPassword().equals(passwordEncoder.encode(password));
+    }
+
+    @Override
     public boolean hasPerm(String permission) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth != null && auth.getAuthorities().stream()

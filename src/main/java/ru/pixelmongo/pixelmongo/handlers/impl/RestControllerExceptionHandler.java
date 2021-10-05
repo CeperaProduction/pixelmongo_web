@@ -11,8 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -57,13 +57,21 @@ public class RestControllerExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ResultDataMessage<Map<String, String>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+            BindException ex) {
         LOGGER.debug(ex);
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((err) -> {
-            String field = ((FieldError) err).getField();
             String msg = err.getDefaultMessage();
-            errors.put(field, msg);
+            if(err instanceof FieldError) {
+                String field = ((FieldError) err).getField();
+                errors.put(field, msg);
+            }else {
+                String msgLine = errors.get(err.getObjectName());
+                if(msgLine == null) msgLine = "";
+                else msgLine += " ";
+                msgLine += msg;
+                errors.put(err.getObjectName(), msgLine);
+            }
         });
         return new ValidationErrorMessage("Validation error", errors);
     }

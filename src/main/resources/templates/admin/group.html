@@ -11,11 +11,15 @@
 		<div class="card mb-4">
 		    <div class="card-header">
 		        <span th:if="${group.id == 0}">Создание группы</span>
-		        <div th:if="${group.id != 0}">
+		        <th:block th:if="${group.id != 0}">
 		        	<span>Изменение группы</span>
-		        	<span class="text-secondary float-right"
+		        	<span class="text-secondary"
 		        		th:text="|#${group.id}|"></span>
-		        </div>
+		        </th:block>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/groups}">
+					<i class="fa fa-backward"></i>
+					Назад
+				</a>
 		    </div>
 		    <div class="card-body">
 	        	<form id="groupForm" th:action="@{''}" th:method="${method}" th:object="${groupForm}">

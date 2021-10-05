@@ -33,7 +33,7 @@ import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.SkinUploadForm;
-import ru.pixelmongo.pixelmongo.model.dto.forms.UserManageForm;
+import ru.pixelmongo.pixelmongo.model.dto.forms.UserManageAdminForm;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
@@ -75,6 +75,9 @@ public class UsersController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Integer group,
             Model model) {
+
+        checkPerms(null, false);
+
         UserGroup userGroup = null;
         if(group != null)
             userGroup = groups.findById(group).orElse(null);
@@ -94,9 +97,11 @@ public class UsersController {
     public String user(@PathVariable String userName, Model model, Locale loc) {
         User user = findUser(userName, loc);
 
+        checkPerms(user, false);
+
         model.addAttribute("user", user);
-        model.addAttribute("can_manage", hasManagePerm(user) && canManage(user));
-        model.addAttribute("userForm", new UserManageForm(user));
+        model.addAttribute("can_manage", hasPerm(user, true) && canManage(user));
+        model.addAttribute("userForm", new UserManageAdminForm(user));
         model.addAttribute("skinForm", new SkinUploadForm());
         model.addAttribute("groups", getAvailableGroups(user));
 
@@ -106,7 +111,7 @@ public class UsersController {
     @PostMapping("/{userName}")
     public String handlePost(@PathVariable("userName") String userName,
             @RequestParam("target") String target,
-            @ModelAttribute("userForm") @Valid UserManageForm userForm,
+            @ModelAttribute("userForm") @Valid UserManageAdminForm userForm,
             BindingResult binding1,
             @ModelAttribute("skinForm") @Valid SkinUploadForm skinForm,
             BindingResult binding2,
@@ -145,7 +150,7 @@ public class UsersController {
     }
 
     public String userSave(String userName,
-            UserManageForm userForm,
+            UserManageAdminForm userForm,
             BindingResult binding,
             Model model,
             HttpServletRequest request,
@@ -153,7 +158,7 @@ public class UsersController {
             Locale loc) {
 
         User user = findUser(userName, loc);
-        checkPerms(user);
+        checkPerms(user, true);
 
         checkForm(userForm, user, binding, loc);
 
@@ -208,7 +213,7 @@ public class UsersController {
         }
 
         model.addAttribute("user", user);
-        model.addAttribute("can_manage", hasManagePerm(user) && canManage(user));
+        model.addAttribute("can_manage", hasPerm(user, true) && canManage(user));
         model.addAttribute("groups", getAvailableGroups(user));
         model.addAttribute("skinForm", new SkinUploadForm());
 
@@ -220,7 +225,7 @@ public class UsersController {
             HttpServletResponse response,
             Locale loc) {
         User user = findUser(userName, loc);
-        checkPerms(user);
+        checkPerms(user, true);
         if(user.getId() == userService.getCurrentUser().getId()) {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED,
                     msg.getMessage("error.status.405.user", null, loc));
@@ -248,7 +253,7 @@ public class UsersController {
             Locale loc) {
 
         User user = findUser(userName, loc);
-        checkPerms(user);
+        checkPerms(user, true);
 
         if(!binding.hasErrors()) {
 
@@ -289,9 +294,9 @@ public class UsersController {
         }
 
         model.addAttribute("user", user);
-        model.addAttribute("can_manage", hasManagePerm(user) && canManage(user));
+        model.addAttribute("can_manage", hasPerm(user, true) && canManage(user));
         model.addAttribute("groups", getAvailableGroups(user));
-        model.addAttribute("userForm", new UserManageForm(user));
+        model.addAttribute("userForm", new UserManageAdminForm(user));
 
         return "admin/user";
     }
@@ -302,7 +307,7 @@ public class UsersController {
             HttpServletResponse response,
             Locale loc) {
         User user = findUser(userName, loc);
-        checkPerms(user);
+        checkPerms(user, true);
 
         switch(target) {
         case "skin" :
@@ -340,23 +345,25 @@ public class UsersController {
                         msg.getMessage("error.status.404.user", null, loc)));
     }
 
-    private void checkForm(UserManageForm form,
+    private void checkForm(UserManageAdminForm form,
             User user,
             BindingResult binding,
             Locale loc) {
-        if(!form.getPassword().equals(form.getPasswordRepeat())) {
-            binding.addError(new FieldError("userForm", "passwordRepeat",
-                    msg.getMessage("auth.password.not_same", null, loc)));
-        }else if(users.findByEmail(form.getEmail())
-                .filter(u->u.getId() != user.getId()).isPresent()) {
+        if(StringUtils.hasText(form.getEmail())
+                &&  users.findByEmail(form.getEmail())
+                    .filter(u->u.getId() != user.getId()).isPresent()) {
             binding.addError(new FieldError("userForm", "email",
                     msg.getMessage("admin.user.email.busy", null, loc)));
         }
     }
 
-    private void checkPerms(User targetUser) {
-        checkPerm(targetUser);
-        checkPermLevel(targetUser);
+    private void checkPerms(User targetUser, boolean manage) {
+        if(manage) {
+            checkPerm(targetUser, true);
+            checkPermLevel(targetUser);
+        }else {
+            checkPerm(targetUser, false);
+        }
     }
 
     private void checkPermLevel(User targetUser) {
@@ -365,13 +372,14 @@ public class UsersController {
         }
     }
 
-    private void checkPerm(User targetUser) {
-        if(!hasManagePerm(targetUser)) {
+    private void checkPerm(User targetUser, boolean manage) {
+        if(!hasPerm(targetUser, manage)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
     private boolean canManage(User targetUser) {
+        if(targetUser == null) return true;
         User currentUser = this.userService.getCurrentUser();
         UserGroup currentGroup = currentUser.getGroup();
         return currentUser.getId() == targetUser.getId()
@@ -379,9 +387,13 @@ public class UsersController {
                 || targetUser.getGroup().getPermissionLevel() < currentGroup.getPermissionLevel();
     }
 
-    private boolean hasManagePerm(User target) {
-        return target.getId() == userService.getCurrentUser().getId()
-                || userService.hasPerm("admin.panel.users.edit");
+    private boolean hasPerm(User target, boolean manage) {
+        if(manage) {
+            return userService.hasPerm("admin.panel.users.edit");
+        }else {
+            return target != null && target.getId() == userService.getCurrentUser().getId()
+                    || userService.hasPerm("admin.panel.users");
+        }
     }
 
     private List<UserGroup> getAvailableGroups(User target){

@@ -28,7 +28,6 @@ import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
-import ru.pixelmongo.pixelmongo.model.dto.results.ValidationErrorMessage;
 import ru.pixelmongo.pixelmongo.services.CaptchaService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
@@ -60,10 +59,6 @@ public class AuthController {
             HttpServletResponse response,
             @Valid UserRegistrationForm form,
             Locale loc) throws ServletException {
-        if(!form.getPassword().equals(form.getPasswordRepeat()))
-            return new ValidationErrorMessage(msg.getMessage("auth.password.not_same", null, loc),
-                    new String[] {"passwordRepeat"},
-                    new String[] {msg.getMessage("auth.password.not_same", null, loc)});
         if(isLoggedIn())
             return new ResultMessage(DefaultResult.ERROR, msg.getMessage("auth.logged.already", null, loc));
 

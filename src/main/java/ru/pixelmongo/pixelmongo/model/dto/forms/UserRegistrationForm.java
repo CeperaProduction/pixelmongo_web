@@ -2,13 +2,16 @@ package ru.pixelmongo.pixelmongo.model.dto.forms;
 
 import javax.validation.constraints.Email;
 
-public class UserRegistrationForm extends UserLoginForm {
+import ru.pixelmongo.pixelmongo.model.dto.ConfirmedPassword;
+
+public class UserRegistrationForm extends UserLoginForm implements ConfirmedPassword {
 
     private String passwordRepeat;
 
-    @Email
+    @Email(message = "{auth.email.invalid}")
     private String email;
 
+    @Override
     public String getPasswordRepeat() {
         return passwordRepeat;
     }

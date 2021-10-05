@@ -3,8 +3,9 @@ package ru.pixelmongo.pixelmongo.model.dto.forms;
 import javax.validation.constraints.Email;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dto.ConfirmedPassword;
 
-public class UserManageForm{
+public class UserManageForm implements ConfirmedPassword{
 
     @Email(message = "{auth.email.invalid}")
     private String email;
@@ -13,35 +14,26 @@ public class UserManageForm{
 
     private String passwordRepeat = "";
 
-    private Integer groupId;
-
-    private boolean hasCape;
-
-    private boolean hasHDSkin;
+    private String currentPassword = "";
 
     public UserManageForm() {}
 
     public UserManageForm(User user) {
         this.email = user.getEmail();
-        this.groupId = user.getGroup().getId();
-        this.hasCape = user.hasCape();
-        this.hasHDSkin = user.hasHDSkin();
     }
 
     public String getEmail() {
         return email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public String getPasswordRepeat() {
         return passwordRepeat;
-    }
-
-    public Integer getGroupId() {
-        return groupId;
     }
 
     public void setEmail(String email) {
@@ -56,24 +48,12 @@ public class UserManageForm{
         this.passwordRepeat = passwordRepeat;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public String getCurrentPassword() {
+        return currentPassword;
     }
 
-    public boolean isHasCape() {
-        return hasCape;
-    }
-
-    public boolean isHasHDSkin() {
-        return hasHDSkin;
-    }
-
-    public void setHasCape(boolean hasCape) {
-        this.hasCape = hasCape;
-    }
-
-    public void setHasHDSkin(boolean hasHDSkin) {
-        this.hasHDSkin = hasHDSkin;
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
     }
 
 

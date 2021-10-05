@@ -48,10 +48,23 @@ function Ajax(){
 			if(successHandler == undefined){
 				successHandler = this.defaultHandler;
 			}
-			securedAjax({
-				type: form.attr('method'),
-				url: form.attr('action'),
-				data: form.serialize(),
+			let data = '';
+			let dataParams = {};
+			if(form.prop('enctype').startsWith('multipart/')){
+				data = new FormData(form[0]);
+				dataParams.contentType = false;
+				dataParams.processData = false;
+			}else{
+				data = form.serialize();
+			}
+			let method = form.prop('method');
+			if(!method) method = 'GET';
+			let action = form.prop('action');
+			if(!action) action = '';
+			securedAjax({...dataParams, ...{
+				type: method,
+				url: action,
+				data: data,
 				dataType: 'json',
 				success: function(res, status, xhr){
 					if(res.result == 'ok'){
@@ -76,7 +89,7 @@ function Ajax(){
 							.call(form, xhr.responseText, xhr, status, error);
 					}
 				}
-			});
+			}});
 		}
 
 		this.bind = function(form, success, err) {

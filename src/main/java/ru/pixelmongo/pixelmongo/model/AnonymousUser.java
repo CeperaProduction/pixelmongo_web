@@ -87,6 +87,11 @@ public final class AnonymousUser extends User{
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean isAnonymous() {
+        return true;
+    }
+
     public static final class AnonymousUserGroup extends UserGroup{
 
         private AnonymousUserGroup() {}

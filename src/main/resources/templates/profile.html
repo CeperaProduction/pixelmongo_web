@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Личный кабинет</title>
+
+	<th:block th:replace="/fragments/skin3d :: headers"></th:block>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="text-center">
+			<img th:src="@{/img/pokeball.png}" class="profile-pokeball">
+			<h1 class="text-pokemon text-center text-white text-shadow">Личный кабинет</h1>
+		</div>
+
+		<div class="container">
+
+			<div class="row">
+				<div class="col-md-4">
+					<div class="gradient-white-block">
+						<th:block th:replace="/fragments/skin3d :: skin3d(${user}, 180, 360)"></th:block>
+						<div class="text-center">
+							<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#skin-modal">
+								Изменить
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="gradient-white-block">
+						<div class="card my-4" th:with="status = ${ban == null ? 'active' : 'banned'}">
+							<div class="card-header text-center text-white">
+								<span class="text-shadow text-minecraft">Информация</span>
+							</div>
+							<div class="card-body">
+								<div class="row py-1">
+									<div class="col-4">
+										Логин (Ник):
+									</div>
+									<div class="col-8">
+										<span th:text="${user.name}"></span>
+									</div>
+								</div>
+								<div class="row py-1">
+									<div class="col-4">
+										Статус:
+									</div>
+									<div class="col-8" th:switch="${status}">
+										<span th:case="'active'" class="text-success">Активен</span>
+										<span th:case="'banned'" class="text-danger">Забанен</span>
+									</div>
+								</div>
+								<div class="row py-1">
+									<div class="col-4">
+										Баланс:
+									</div>
+									<div class="col-8">
+										<span class="balance" th:text="${user.balance}"></span>
+										<span class="vault" data-toggle="tooltip" data-placement="bottom" title="Go Point - донат-валюта нашего проекта">GP</span>
+									</div>
+								</div>
+								<div class="row py-1">
+									<div class="col-4">
+										Дата регистрации:
+									</div>
+									<div class="col-8">
+										<span th:text="${@templateService.printUserRegisterDate(user)}"
+											data-toggle="tooltip" data-placement="bottom" th:title="|IP: ${user.registrationIp}|"></span>
+									</div>
+								</div>
+								<div class="row py-1">
+									<div class="col-4">
+										Последняя авторизация:
+									</div>
+									<div class="col-8">
+										<span th:text="${@templateService.printUserLastLoginDate(user)}"
+											data-toggle="tooltip" data-placement="bottom" th:title="|IP: ${@templateService.printUserLastLoginIp(user)}|"></span>
+									</div>
+								</div>
+							</div>
+							<div class="card-footer">
+								<a href="#" class="btn btn-primary btn-block">
+									<i class="fa fa-coins"></i> Пополнение баланса
+								</a>
+								<th:block th:switch="${status}">
+									<a th:case="'active'" href="#" class="btn btn-secondary btn-block"
+										data-toggle="modal" data-target="#unban-modal">
+										<i class="fa fa-balance-scale"></i> Информация о разбане
+									</a>
+									<a th:case="'banned'" href="#" class="btn btn-danger btn-block"
+										data-toggle="modal" data-target="#unban-modal">
+										<i class="fa fa-balance-scale"></i> Снятие бана
+									</a>
+								</th:block>
+							</div>
+						</div>
+					</div>
+
+					<div class="gradient-white-block">
+						<div class="card my-4">
+							<div class="card-header text-center text-white">
+								<span class="text-shadow text-minecraft">Управление</span>
+							</div>
+							<div class="card-body">
+								<form id="userForm" th:action="@{''}" th:method="post" th:object="${userForm}">
+									<input type="text" name="username" th:value="${user.name}" autocomplete="username login"
+										style="display: none" tabindex="-1" disabled="disabled">
+									<div class="form-group row">
+										<label for="inputEmail" class="col-sm-4 col-form-label text-truncate">Почта</label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control"
+												id="inputEmail" placeholder="E-mail"
+												maxlength="128"
+												autocomplete="off"
+												th:field="*{email}"
+												required>
+											<div class="alert alert-danger px-3 my-1"
+												role="alert"
+												th:errors="*{email}"></div>
+										</div>
+									</div>
+									<hr class="separator">
+									<div class="form-group row">
+										<label for="inputPassword" class="col-sm-4 col-form-label text-truncate">Новый пароль</label>
+										<div class="col-sm-8">
+											<input type="password" class="form-control"
+												id="inputPassword" placeholder="Новый пароль"
+												maxlength="32" pattern=".{6,32}"
+												autocomplete="new-password"
+												th:field="*{password}">
+											<div class="alert alert-danger px-3 my-1"
+												role="alert"
+												th:errors="*{password}"></div>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="inputPasswordRepeat" class="col-sm-4 col-form-label text-truncate">Повторите</label>
+										<div class="col-sm-8">
+											<input type="password" class="form-control"
+												id="inputPasswordRepeat" placeholder="Новый пароль"
+												maxlength="32" pattern=".{6,32}"
+												autocomplete="new-password"
+												th:field="*{passwordRepeat}">
+											<div class="alert alert-danger px-3 my-1"
+												role="alert"
+												th:errors="*{passwordRepeat}"></div>
+										</div>
+									</div>
+									<div class="alert alert-danger px-3 my-1"
+										role="alert"
+										th:errors="${userForm}"></div>
+									<hr class="separator">
+									<div class="form-group row">
+										<label for="inputCurrentPassword" class="col-sm-4 col-form-label text-truncate">Текущий пароль</label>
+										<div class="col-sm-8">
+											<input type="password" class="form-control"
+												id="inputCurrentPassword" placeholder="Текущий пароль"
+												autocomplete="current-password"
+												th:field="*{currentPassword}"
+												required>
+											<div class="alert alert-danger px-3 my-1"
+												role="alert"
+												th:errors="*{currentPassword}"></div>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="card-footer">
+								<button form="userForm" type="submit" class="btn btn-primary btn-block">
+									Применить
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="skin-modal" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				    <div class="modal-header">
+				      	<h5 class="modal-title">Изменение скина и плаща</h5>
+				      	<button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+				        	<span aria-hidden="true">
+				        		<i class="fa fa-times"></i>
+							</span>
+				      	</button>
+				    </div>
+				    <div class="modal-body pb-0">
+				      	<form id="skin-form" th:action="@{/profile/skin}" th:method="POST" enctype="multipart/form-data">
+				      		<div class="form-group row">
+				      			<label for="inputSkin" class="col-sm-3 col-form-label text-truncate">Скин</label>
+								<div class="col-sm-9">
+									<div class="custom-file">
+									    <input type="file" class="custom-file-input" id="inputSkin" name="skin" accept=".png">
+									    <label class="custom-file-label" for="inputSkin" data-browse="Выбрать">
+									    	Выберите файл скина
+									    </label>
+									</div>
+									<small class="form-text text-muted">
+										Доступные размеры скина:
+										<span th:if="${!user.hasHDSkin}">64x32, 64x64</span>
+										<span th:if="${user.hasHDSkin}">64x32, 64x64, 128x64, 128x128, 256x128, 256x256, 512x256, 512x512, 1024x512, 1024x1024</span>
+									</small>
+								</div>
+				      		</div>
+				      		<div class="form-group row" th:if="${user.hasCape}">
+				      			<label for="inputCape" class="col-sm-3 col-form-label text-truncate">Плащ</label>
+								<div class="col-sm-9">
+									<div class="custom-file">
+									    <input type="file" class="custom-file-input" id="inputCape" name="cape" accept=".png">
+									    <label class="custom-file-label" for="inputCape" data-browse="Выбрать">
+									    	Выберите файл плаща
+									    </label>
+									</div>
+									<small class="form-text text-muted">
+										Доступные размеры плаща:
+										<span th:if="${!user.hasHDSkin}">22x17, 64x32</span>
+										<span th:if="${user.hasHDSkin}">22x17, 64x32, 128x64, 256x128, 512x256, 1024x512</span>
+									</small>
+								</div>
+				      		</div>
+				      	</form>
+				    </div>
+				    <div class="modal-footer">
+				    	<div style="width: 100%">
+					    	<div class="py-1">
+					      		<button type="submit" form="skin-form" class="btn btn-primary btn-block">Сохранить</button>
+					    	</div>
+					      	<form id="skin-delete-form" th:action="@{/profile/skin}" th:method="delete" th:if="${hasSkin}">
+					      		<input type="hidden" name="target" value="skin">
+					      		<div class="py-1">
+						      		<button type="submit" class="btn btn-secondary btn-block">
+						      			Удалить скин
+						      		</button>
+					      		</div>
+					      	</form>
+					      	<form id="cape-delete-form" th:action="@{/profile/skin}" th:method="delete" th:if="${hasCape}">
+					      		<input type="hidden" name="target" value="cape">
+					      		<div class="py-1">
+						      		<button type="submit" class="btn btn-secondary btn-block">
+						      			Удалить плащ
+						      		</button>
+					      		</div>
+					      	</form>
+					      	<form id="skin-buy-form" th:action="@{/profile/buy/hd_skin}" th:method="post" th:if="${!user.hasHDSkin}">
+					      		<div class="py-1">
+						      		<button type="submit" class="btn btn-info btn-block">
+						      			Купить доступ к HD скинам (<span th:text="${hdSkinCost}"></span> <span class="vault">GP</span>)
+						      		</button>
+					      		</div>
+					      	</form>
+					      	<form id="cape-buy-form" th:action="@{/profile/buy/cape}" th:method="post" th:if="${!user.hasCape}">
+					      		<div class="py-1">
+						      		<button type="submit" class="btn btn-info btn-block">
+						      			Купить доступ к плащам (<span th:text="${capeCost}"></span> <span class="vault">GP</span>)
+						      		</button>
+					      		</div>
+					      	</form>
+
+				    	</div>
+				    </div>
+				</div>
+			</div>
+		</div>
+
+		<div id="unban-modal" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content" th:with="status = ${ban == null ? 'active' : 'banned'}">
+				    <div class="modal-header">
+				      	<h5 class="modal-title">Снятие бана</h5>
+				      	<button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+				        	<span aria-hidden="true">
+				        		<i class="fa fa-times"></i>
+							</span>
+				      	</button>
+				    </div>
+				    <div class="modal-body pb-0">
+				      	<div class="row py-1">
+							<div class="col-4">
+								Статус аккаунта:
+							</div>
+							<div class="col-8" th:switch="${status}">
+								<span th:case="'active'" class="text-success">Активен</span>
+								<span th:case="'banned'" class="text-danger">Забанен</span>
+							</div>
+						</div>
+						<hr class="separator">
+						<th:block th:switch="${status}">
+							<div th:case="'active'" class="py-1">
+								<strong>В общем бан-листе нет информации о вашем аккаунте.</strong>
+								<p>
+									Более чем в 99% случаев при блокировке аккаунта он попадает в данный список.
+									Если на данный момент Вы испытываете проблемы со входом в игру, то это, скорее всего, не означает, что Вы забанены.
+								</p>
+							</div>
+							<th:block th:case="'banned'">
+								<div class="row py-1">
+									<div class="col-4">
+										Дата бана:
+									</div>
+									<div class="col-8">
+										<span th:text="${@templateService.printDate(ban.date)}"></span>
+									</div>
+								</div>
+								<div class="row py-1">
+									<div class="col-4">
+										Забанен до:
+									</div>
+									<div class="col-8">
+										<span th:text="${@templateService.printDate(ban.endDate)}"></span>
+									</div>
+								</div>
+								<div class="row py-1">
+									<div class="col-4">
+										Причина:
+									</div>
+									<div class="col-8">
+										<span th:text="${ban.reason}"></span>
+									</div>
+								</div>
+								<div class="row py-1">
+									<div class="col-4">
+										Забанил:
+									</div>
+									<div class="col-8">
+										<span th:text="${ban.admin}"></span>
+									</div>
+								</div>
+							</th:block>
+						</th:block>
+						<hr class="separator">
+						<div class="row py-1">
+							<div class="col-4">
+								Принцип расчета стоимости разбана:
+							</div>
+							<div class="col-8">
+								<p>1 день бана: <span th:text="${unbanDayCost}"></span> <span class="vault">GP</span>.</p>
+								<p>Максимальная стоимость разбана: <span th:text="${unbanMaxCost}"></span> <span class="vault">GP</span>.</p>
+							</div>
+						</div>
+				    </div>
+				    <div class="modal-footer" th:if="${status == 'banned'}">
+				    	<div style="width: 100%">
+					      	<form id="unban-form" th:action="@{/profile/buy/unban}" th:method="post">
+					      		<div class="py-1">
+						      		<button type="submit" class="btn btn-primary btn-block">
+						      			Купить разбан за <span th:text="${unbanCost}"></span> <span class="vault">GP</span>
+						      		</button>
+					      		</div>
+					      	</form>
+				    	</div>
+				    </div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

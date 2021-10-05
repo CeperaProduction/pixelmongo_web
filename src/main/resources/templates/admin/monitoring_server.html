@@ -14,11 +14,15 @@
 		<div class="card mb-4">
 		    <div class="card-header">
 		        <span th:if="${server.id == 0}">Добавление сервера в мониторинг</span>
-		        <div th:if="${server.id != 0}">
+		        <th:block th:if="${server.id != 0}">
 		        	<span>Изменение сервера в мониторинге</span>
-		        	<span class="text-secondary float-right"
+		        	<span class="text-secondary"
 		        		th:text="|#${server.id}|"></span>
-		        </div>
+		        </th:block>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/monitoring}">
+					<i class="fa fa-backward"></i>
+					Назад
+				</a>
 		    </div>
 		    <div class="card-body">
 	        	<form id="serverForm" th:action="@{''}" th:method="${method}" th:object="${serverForm}">

@@ -133,6 +133,9 @@
 								th:errors="*{passwordRepeat}"></div>
 						</div>
 					</div>
+					<div class="alert alert-danger py-1 px-3 my-1"
+								role="alert"
+								th:errors="${userForm}"></div>
 	        	</form>
 		    </div>
 		    <div class="card-footer" th:if="${can_manage}">

@@ -217,7 +217,6 @@ a.page-link.disabled{
 	position: fixed;
 	top: 0;
 	width: 100%;
-
 }
 
 .menu.fixed .navbar-brand{
@@ -588,5 +587,11 @@ form.link button:active{
 	width: 100%;
 	max-width: 400px;
 	margin-bottom: -100px;
+}
+
+.profile-pokeball{
+	margin-top: 20px;
+	width: 150px;
+	margin-bottom: -95px
 }
 

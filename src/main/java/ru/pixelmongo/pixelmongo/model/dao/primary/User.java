@@ -157,6 +157,8 @@ public class User {
         this.hasHDSkin = hasHDSkin;
     }
 
-
+    public boolean isAnonymous() {
+        return false;
+    }
 
 }

@@ -13,22 +13,30 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughtMoneyException;
+import ru.pixelmongo.pixelmongo.exceptions.DonateExtraNotFoundException;
+import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughMoneyException;
 import ru.pixelmongo.pixelmongo.exceptions.DonatePackTokenFormatException;
 import ru.pixelmongo.pixelmongo.exceptions.DonatePackTokenProcessExcetion;
+import ru.pixelmongo.pixelmongo.handlers.DonateExtraHandler;
 import ru.pixelmongo.pixelmongo.handlers.DonatePackTokenHandler;
 import ru.pixelmongo.pixelmongo.handlers.DonatePackTokenProcessResult;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateExtraRecord;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateQuery;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateServer;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackToken;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
 import ru.pixelmongo.pixelmongo.model.dto.forms.donate.DonatePackTokenData;
+import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
+import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateExtraRecordRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateQueryRepository;
 import ru.pixelmongo.pixelmongo.services.DonateService;
 
@@ -41,15 +49,34 @@ public class DonateServiceImpl implements DonateService{
     @Autowired
     private UserRepository users;
 
+    @Autowired
+    @Qualifier("defaultLocale")
+    private Locale defaultLocale;
+
+    @Autowired
+    private MessageSource msg;
+
+    @Autowired
+    private DonateExtraRecordRepository extraRecords;
+
     private Map<DonatePackTokenType, DonatePackTokenHandler<?>> tokenHandlers = new HashMap<>();
+
+    private Map<String, DonateExtraHandler> extraHandlers = new HashMap<>();
 
     private String packBackPrefix = "";
 
     @Autowired
-    public void setupHandlers(List<DonatePackTokenHandler<?>> handlers) {
+    public void setupTokenHandlers(List<DonatePackTokenHandler<?>> handlers) {
         handlers.forEach(h->tokenHandlers.put(h.getTokenType(), h));
         LOGGER.info("Found "+tokenHandlers.size()+" donate pack token handlers");
     }
+
+    @Autowired
+    public void setupExtraHandlers(List<DonateExtraHandler> handlers) {
+        handlers.forEach(h->extraHandlers.put(h.getExtraTag(), h));
+        LOGGER.info("Found "+tokenHandlers.size()+" donate extras handlers");
+    }
+
 
     @Autowired
     private void setupMessages(MessageSource msg, @Qualifier("defaultLocale") Locale defaultLocale) {
@@ -60,7 +87,7 @@ public class DonateServiceImpl implements DonateService{
     @Override
     public DonatePackToken makeToken(DonatePackTokenData tokenData, DonatePack pack) {
         try {
-            return getHandler(tokenData.getType()).makeToken(tokenData, pack);
+            return getTokenHandler(tokenData.getType()).makeToken(tokenData, pack);
         }catch(Exception ex) {
             throw new DonatePackTokenFormatException(tokenData.getName(), ex);
         }
@@ -68,11 +95,11 @@ public class DonateServiceImpl implements DonateService{
 
     @Override
     public DonatePackTokenData makeTokenData(DonatePackToken token) {
-        return getHandler(token.getType()).makeData(token);
+        return getTokenHandler(token.getType()).makeData(token);
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends DonatePackToken> DonatePackTokenHandler<T> getHandler(DonatePackTokenType tokenType){
+    private <T extends DonatePackToken> DonatePackTokenHandler<T> getTokenHandler(DonatePackTokenType tokenType){
         DonatePackTokenHandler<?> handler = tokenHandlers.get(tokenType);
         if(handler == null)
             throw new RuntimeException("Token handler for token type "+tokenType+" not found!");
@@ -82,7 +109,7 @@ public class DonateServiceImpl implements DonateService{
     @Override
     public DonatePackTokenProcessResult processToken(DonatePackToken token, List<String> data) {
         try {
-            return getHandler(token.getType()).processToken(token, data);
+            return getTokenHandler(token.getType()).processToken(token, data);
         }catch(Exception ex) {
             throw new DonatePackTokenProcessExcetion(token.getToken(), data, ex);
         }
@@ -185,23 +212,67 @@ public class DonateServiceImpl implements DonateService{
                 queries.add(query.getBack());
         }
 
-        if(sum > 0) {
-
-            int balance = user.getBalance();
-            int newBalance = balance - sum;
-
-            if(newBalance < 0)
-                throw new DonateNotEnoughtMoneyException(user.getName(), sum, balance);
-
-            user.setBalance(newBalance);
-
-            users.save(user);
-
-        }
+        consumeMoney(user, sum);
 
         this.queries.saveAll(queries);
 
         return given;
     }
+
+    @Override
+    public int consumeMoney(User user, int sum) {
+        int balance = user.getBalance();
+        if(sum <= 0) return balance;
+
+        int newBalance = balance - sum;
+
+        if(newBalance < 0)
+            throw new DonateNotEnoughMoneyException(user.getName(), sum, balance);
+
+        user.setBalance(newBalance);
+
+        users.save(user);
+
+        return newBalance;
+    }
+
+    @Override
+    public void logExtra(User user, int spentMoney, String content) {
+        DonateExtraRecord record = new DonateExtraRecord(user, spentMoney, content);
+        extraRecords.save(record);
+    }
+
+    @Override
+    public void logExtra(User user, int spentMoney, String contentLangKey, Object[] contentLangValues) {
+        logExtra(user, spentMoney, msg.getMessage(contentLangKey, contentLangValues, defaultLocale));
+    }
+
+    @Override
+    public Page<DonateExtraRecord> getExtraLogs(String search, Pageable limits){
+        if(!StringUtils.hasText(search)) {
+            return extraRecords.findAllByOrderByDateDesc(limits);
+        }
+        return extraRecords.search(search, limits);
+    }
+
+    @Override
+    public List<String> getExtraTags(){
+        return new ArrayList<String>(extraHandlers.keySet());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends DonateExtraHandler> T getExtraHandler(String tag) {
+        DonateExtraHandler extraHandler = extraHandlers.get(tag);
+        if(extraHandler == null)
+            throw new DonateExtraNotFoundException(tag);
+        return (T) extraHandler;
+    }
+
+    @Override
+    public ResultMessage buyExtra(String extra, User user, Locale loc, boolean forFree) {
+        return getExtraHandler(extra).buy(this, user, loc, forFree);
+    }
+
 
 }

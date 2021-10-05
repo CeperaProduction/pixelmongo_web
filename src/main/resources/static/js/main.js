@@ -1,5 +1,10 @@
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip();
+	bsCustomFileInput.init();
+})
+
 //Scrolling elements movement
-$(document).ready(function(){
+$(function(){
 	let menu = $('.menu');
 	let container = $('.menu-container');
 	if(menu.length && container.length){
@@ -18,13 +23,34 @@ $(document).ready(function(){
 	}
 });
 
-$(document).ready(function(){
+$(function(){
 	ajax.forms.defaultErrorHandler = function(res, xhr, status, error) {
 		let text = status+' '+error;
-		if(res !== null && res.message !== undefined){
+		if(res != null && res.result !== undefined){
 			text = res.message;
+			switch(res.result){
+				case 'validation_error':
+					if(Array.isArray(res.data)){
+						res.data.forEach.forEach(function(msg){
+							messages.showMessage(msg, 'error');
+						});
+					}else if(typeof res.data == 'object'){
+						Object.values(res.data).forEach(function(msg){
+							messages.showMessage(msg, 'error');
+						});
+					}else{
+						messages.showMessage(text, 'error');
+					}
+					break;
+				default:
+					messages.showMessage(text, 'error');
+					break;
+			}
+
+		}else{
+			messages.showMessage(text, 'error');
 		}
-		messages.showMessage(text, 'error');
+
 	}
 	ajax.forms.defaultHandler = function(res) {
 		messages.showMessage(res.message, 'ok');
@@ -46,6 +72,34 @@ $(document).ready(function(){
 		msg(res, 'ok');
 		document.location = baseUrl;
 	});
+});
+
+$(function(){
+
+	function msg(res){
+		messages.prepareMessage(res.message, res.result == 'ok' ? 'ok' : 'error');
+	}
+
+	ajax.forms.bind($('#skin-form'), function(res){
+		if(res.data != undefined && res.data.forEach != undefined){
+			res.data.forEach.forEach(function(subRes){
+				msg(subRes);
+			});
+		}else if(typeof res.data == 'object'){
+			Object.values(res.data).forEach(function(subRes){
+				msg(subRes);
+			});
+		}else{
+			msg(res);
+		}
+		document.location.reload();
+	});
+
+	ajax.forms.bind($('#skin-delete-form, #cape-delete-form, #skin-buy-form, #cape-buy-form, #unban-form'), function(res){
+		msg(res);
+		document.location.reload();
+	});
+
 });
 
 $(function(){

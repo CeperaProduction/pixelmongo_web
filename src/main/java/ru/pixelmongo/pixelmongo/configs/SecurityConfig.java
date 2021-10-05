@@ -155,9 +155,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .securityContext().securityContextRepository(securityContextRepository())
         .and()
         .authorizeRequests()
-            .antMatchers("/admin/users/**").hasAuthority("admin.panel.users")
-            //Users controller handles edit permissions by itself.
-            //It lets user manage his own profile.
+            //.antMatchers("/admin/users/**").hasAuthority("admin.panel.users")
+            //Users controller handles permissions by itself.
+            //It lets user see his own profile.
 
             .antMatchers(HttpMethod.POST, "/admin/groups/**").hasAuthority("admin.panel.groups.edit")
             .antMatchers(HttpMethod.DELETE, "/admin/groups/**").hasAuthority("admin.panel.groups.edit")
