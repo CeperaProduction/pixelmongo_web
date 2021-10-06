@@ -130,7 +130,10 @@
 			                        <a th:href="@{/admin/donate/give}"><i class="fa fa-gift fa-fw"></i> Выдача наборов</a>
 			                    </li>
 			                    <li sec:authorize="hasAuthority('admin.panel.donate.logs')">
-			                        <a th:href="@{/admin/donate/query}"><i class="fa fa-file fa-fw"></i> Лог донат-системы</a>
+			                        <a th:href="@{/admin/donate/query}"><i class="fa fa-file fa-fw"></i> Лог покупок на серверах</a>
+			                    </li>
+			                    <li sec:authorize="hasAuthority('admin.panel.donate.logs')">
+			                        <a th:href="@{/admin/donate/extras}"><i class="fa fa-file fa-fw"></i> Лог прочих покупок</a>
 			                    </li>
 			                </ul>
 			            </li>

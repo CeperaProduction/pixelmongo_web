@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -22,6 +24,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
@@ -151,6 +154,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        http.exceptionHandling().addObjectPostProcessor(new ObjectPostProcessor<ExceptionTranslationFilter>() {
+            @Override
+            public <O extends ExceptionTranslationFilter> O postProcess(O object) {
+                AuthenticationTrustResolverImpl atr = new AuthenticationTrustResolverImpl();
+                atr.setRememberMeClass(null);
+                object.setAuthenticationTrustResolver(atr);
+                return object;
+            }
+        });
+
         http
             .securityContext().securityContextRepository(securityContextRepository())
         .and()
@@ -178,6 +192,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers("/admin/donate/balance/**").hasAuthority("admin.panel.donate.balances")
             .antMatchers("/admin/donate/give/**").hasAuthority("admin.panel.donate.give")
             .antMatchers("/admin/donate/query/**").hasAuthority("admin.panel.donate.logs")
+            .antMatchers("/admin/donate/extras/**").hasAuthority("admin.panel.donate.logs")
             .antMatchers("/admin/donate/**").hasAuthority("admin.panel.donate")
 
             .antMatchers("/admin/**").hasAuthority("admin.panel.access")

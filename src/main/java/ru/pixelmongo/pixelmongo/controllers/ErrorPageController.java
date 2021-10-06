@@ -5,6 +5,8 @@ import java.util.Locale;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.context.MessageSource;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ErrorPageController implements ErrorController{
+
+    private Logger logger = LogManager.getLogger();
 
     @Autowired
     private MessageSource msg;
@@ -59,6 +63,7 @@ public class ErrorPageController implements ErrorController{
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handle(Exception e) {
+        logger.catching(e);
         return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

@@ -43,6 +43,10 @@
 				</div>
 		    </div>
 		</div>
+		<div class="alert alert-info px-3 mb-4" role="alert" th:if="${user.id == @user.id && !can_manage}">
+			У вас нет полномочий для редактирования пользователей через админ-панель.
+			Для управления собственным профилем перейдите в <a th:href="@{/profile}">пользовательский личный кабинет</a>
+		</div>
 		<div class="card mb-4">
 		    <div class="card-header">
 		        Изменение пользователя
@@ -74,7 +78,7 @@
 									th:value="${group.id}"
 									th:text="${group.name}"></option>
 							</select>
-							<th:block th:if="${user.id == @user.id}">
+							<th:block th:if="${user.id == @user.id && can_manage}">
 							<small class="text-muted">
 								Изменив собственную группу вы потеряете некоторые полномочия. В том числе вы не сможете её вернуть.
 							</small>
@@ -227,7 +231,7 @@
 		    </div>
 		</div>
 	    <script th:if="${!can_manage}">
-			$("#userForm :input").prop("disabled", true);
+			$("#userForm :input, #skinForm :input").prop("disabled", true);
 		</script>
 		<div class="card mb-3">
 		    <div class="card-header">

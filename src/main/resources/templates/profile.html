@@ -18,7 +18,7 @@
 		<div class="container">
 
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-md-4 my-4">
 					<div class="gradient-white-block">
 						<th:block th:replace="/fragments/skin3d :: skin3d(${user}, 170, 270)"></th:block>
 						<div class="text-center">
@@ -41,6 +41,14 @@
 									</div>
 									<div class="col-8">
 										<span th:text="${user.name}"></span>
+									</div>
+								</div>
+								<div class="row py-1" th:if="${user.group.id != 2}">
+									<div class="col-4">
+										Группа:
+									</div>
+									<div class="col-8">
+										<span th:text="${user.group.name}"></span>
 									</div>
 								</div>
 								<div class="row py-1">
