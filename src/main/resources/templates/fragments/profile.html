@@ -26,14 +26,14 @@
 			</div>
 		</div>
 		<a class="nav-link" sec:authorize="isAnonymous()" href="#"
-			data-toggle="modal" data-target="#login-modal">
+			data-toggle="modal" data-target="#login">
 			Вход
 		</a>
 	</th:block>
 	<th:block th:fragment="profile_modal">
 		<th:block sec:authorize="isAnonymous()">
 
-			<div id="login-modal" class="modal fade" tabindex="-1" role="dialog">
+			<div id="login" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 					<div class="modal-content">
 					    <div class="modal-header">

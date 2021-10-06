@@ -60,7 +60,7 @@ public class ProfileController {
     public String profile(Model model) {
         User user = userService.getCurrentUser();
         if(user.isAnonymous())
-            return "redirect:/";
+            return "redirect:/#login";
         addProfileAttributes(user, model);
         model.addAttribute("userForm", new UserManageForm(user));
         return "profile";

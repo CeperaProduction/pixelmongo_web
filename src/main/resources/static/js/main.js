@@ -138,3 +138,10 @@ $(function(){
 	});
 });
 
+$(function(){
+	let modalId = window.location.hash;
+	if(modalId.length > 1){
+		$(modalId+".modal").modal('show');
+	}
+});
+

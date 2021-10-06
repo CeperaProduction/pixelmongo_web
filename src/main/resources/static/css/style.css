@@ -341,6 +341,13 @@ form.link button:active{
 	margin: 0 auto;
 }
 
+.skin3d.fxaa{
+	border: 0px solid #fff;
+	border-radius: 20%;
+	overflow: hidden;
+	box-shadow: 0 0 30px 1px #fff, 0 0 20px 1px #fff, 0 0 10px 1px #fff;
+}
+
 .monitor-container{
 	width: 100%;
 	max-width: 250px;
@@ -581,6 +588,12 @@ form.link button:active{
 
 .rainbow-title .text-minecraft{
 	font-size: 0.7em;
+}
+
+@media (max-width: 500px) {
+	.rules-header h1{
+		font-size: 2rem;
+	}
 }
 
 .rules-anime-img{

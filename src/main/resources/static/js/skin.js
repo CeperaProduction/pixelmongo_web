@@ -2,17 +2,34 @@ function Skin3D(){
 
 	let skins = [];
 
-	function init(container_id, skinUrl, capeUrl){
+	function init(container_id, skinUrl, capeUrl, transparent){
 		destroy(container_id);
 
-		container = document.getElementById(container_id);
-		skinViewer = new skinview3d.SkinViewer(container, {
-			width: container.offsetWidth+container.offsetWidth/5,
-			height: container.offsetHeight
+		let container = document.getElementById(container_id);
+
+		let canvas = document.createElement("canvas");
+		canvas.id = container_id+'-canvas';
+		canvas.width = container.offsetWidth;
+		canvas.height = container.offsetHeight;
+		container.prepend(canvas);
+
+		let s3d = skinview3d.FXAASkinViewer;
+		if(transparent){
+			s3d = skinview3d.SkinViewer;
+		}
+
+		let skinViewer = new s3d({
+			canvas: canvas,
+			width: canvas.width,
+			height: canvas.height
 		});
+
+		skinViewer.fov = 30;
+
 		skins[container_id] = {
 			'id' : container_id,
 			'container' : container,
+			'canvas' : canvas,
 			'viewer' : skinViewer
 		};
 
@@ -26,6 +43,10 @@ function Skin3D(){
 		skinViewer.animations.speed = 0.7;
 		skinViewer.animations.add(skinview3d.WalkingAnimation);
 		skinViewer.animations.add(skinview3d.RotatingAnimation);
+
+		if(!transparent){
+			container.className += " fxaa";
+		}
 	}
 
 	function destroy(container_id){

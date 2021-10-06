@@ -12,7 +12,7 @@
 
 		<div class="text-center">
 			<img th:src="@{/img/pokeball.png}" class="profile-pokeball">
-			<h1 class="text-pokemon text-center text-white text-shadow">Личный кабинет</h1>
+			<h1 class="text-pokemon text-white text-shadow">Личный кабинет</h1>
 		</div>
 
 		<div class="container">
@@ -20,9 +20,9 @@
 			<div class="row">
 				<div class="col-md-4">
 					<div class="gradient-white-block">
-						<th:block th:replace="/fragments/skin3d :: skin3d(${user}, 180, 360)"></th:block>
+						<th:block th:replace="/fragments/skin3d :: skin3d(${user}, 170, 270)"></th:block>
 						<div class="text-center">
-							<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#skin-modal">
+							<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#skin">
 								Изменить
 							</a>
 						</div>
@@ -86,11 +86,11 @@
 								</a>
 								<th:block th:switch="${status}">
 									<a th:case="'active'" href="#" class="btn btn-secondary btn-block"
-										data-toggle="modal" data-target="#unban-modal">
+										data-toggle="modal" data-target="#unban">
 										<i class="fa fa-balance-scale"></i> Информация о разбане
 									</a>
 									<a th:case="'banned'" href="#" class="btn btn-danger btn-block"
-										data-toggle="modal" data-target="#unban-modal">
+										data-toggle="modal" data-target="#unban">
 										<i class="fa fa-balance-scale"></i> Снятие бана
 									</a>
 								</th:block>
@@ -101,7 +101,7 @@
 					<div class="gradient-white-block">
 						<div class="card my-4">
 							<div class="card-header text-center text-white">
-								<span class="text-shadow text-minecraft">Управление</span>
+								<span class="text-shadow text-minecraft">Настройки</span>
 							</div>
 							<div class="card-body">
 								<form id="userForm" th:action="@{''}" th:method="post" th:object="${userForm}">
@@ -178,7 +178,7 @@
 			</div>
 		</div>
 
-		<div id="skin-modal" class="modal fade" tabindex="-1" role="dialog">
+		<div id="skin" class="modal fade" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 				    <div class="modal-header">
@@ -267,7 +267,7 @@
 			</div>
 		</div>
 
-		<div id="unban-modal" class="modal fade" tabindex="-1" role="dialog">
+		<div id="unban" class="modal fade" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content" th:with="status = ${ban == null ? 'active' : 'banned'}">
 				    <div class="modal-header">
