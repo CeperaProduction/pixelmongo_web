@@ -20,10 +20,32 @@
 	text-shadow: 1px 1px 0px #444, 1px -1px 0px #444, -1px 1px 0px #444, -1px -1px 0px #444;
 }
 
+.text-shadow-white{
+	text-shadow: 1px 1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff, -1px -1px 0px #fff;
+}
+
+.text-shadow-rainbow{
+	text-shadow: 1px 1px 5px rgba(21, 195, 231, 0.56), 1px -1px 5px rgba(144, 10, 227, 0.5), -1px 1px 0px rgba(21, 195, 231, 0.56), -1px -1px 5px rgba(144, 10, 227, 0.5);
+}
+
+.text-stroke{
+	-webkit-text-stroke: 1px black;
+}
+
 body{
-	min-height: 100vh;
 	max-width: 100%;
 	min-width: 360px;
+	overflow-x: hidden;
+}
+
+html, body{
+	height: 100%;
+}
+
+#wrapper{
+	height: 100%;
+	display: grid;
+  	grid-template-rows: 1fr auto;
 }
 
 .btn-primary{
@@ -51,14 +73,6 @@ body{
 	background-size: 200px 200px;
 }
 
-#wrapper {
-	max-width: 100%;
-	overflow-x: hidden;
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-}
-
 .logo-full{
 	width: 30vw;
 	height: 24vw;
@@ -69,6 +83,31 @@ body{
 	margin: auto;
 	background: url("../img/logo_full.png") no-repeat scroll center top transparent;
 	background-size: 100% 100%;
+}
+
+.logo-text{
+	width: 120px;
+	height: 20px;
+	background: url("../img/logo_text.png") no-repeat scroll center top transparent;
+	background-size: 100% 100%;
+}
+
+.menu .logo-text{
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, 0);
+	display: none;
+	top: 18px;
+}
+
+@media (max-width: 768px) {
+	.logo-full{
+		background-image: url("../img/logo.png");
+	}
+
+	.menu .logo-text{
+		display: initial;
+	}
 }
 
 .card-footer .btn{
@@ -228,6 +267,13 @@ a.page-link.disabled{
 	padding-left: 2vw;
 	padding-right: 2vw;
 	text-align: center;
+}
+
+@media (max-width: 992px) {
+    .menu .nav-item{
+		padding-left: 1vw;
+		padding-right: 1vw;
+	}
 }
 
 .gradient-white-top {
@@ -526,7 +572,14 @@ form.link button:active{
 .error-content {
 	min-width: 100px;
 	min-height: 100px;
+	max-width: 60%;
 	text-align: center;
+}
+
+@media (max-width: 768px) {
+	.error-content {
+		max-width: 90%;
+	}
 }
 
 .error-status {
@@ -590,6 +643,10 @@ form.link button:active{
 	font-size: 0.7em;
 }
 
+.rainbow-title .close{
+	color: #fff;
+}
+
 @media (max-width: 500px) {
 	.rules-header h1{
 		font-size: 2rem;
@@ -606,5 +663,13 @@ form.link button:active{
 	margin-top: 20px;
 	width: 150px;
 	margin-bottom: -95px
+}
+
+.masterball{
+	background: url("../img/masterball.png") repeat;
+	background-position: center;
+	background-size: 101%;
+	border: 0px solid #fff;
+	border-radius: 50%;
 }
 

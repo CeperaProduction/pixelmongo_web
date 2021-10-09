@@ -78,7 +78,7 @@ public class ProfileController {
 
         if(!binding.hasErrors()) {
 
-            user = getStoredUser(user);
+            user = userService.getStoredUser(user);
 
             boolean changed = false;
 
@@ -136,9 +136,9 @@ public class ProfileController {
         }
     }
 
-    private User getStoredUser(User user) {
-        if(user.getClass() == User.class) return user;
-        return users.getById(user.getId());
+    @ModelAttribute
+    public void applyMode(Model model) {
+        model.addAttribute("mode", "profile");
     }
 
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Донат</title>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/donate.css}" />
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/donate.js}"></script>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="container">
+			<div class="donate-header-container">
+				<div class="text-center donate-header">
+					<div class="background-moving">
+						<div class="masterball"></div>
+					</div>
+				</div>
+				<div class="donate-header-content">
+					<div class="donate-header-text text-pokemon text-white text-shadow-rainbow">
+						Выберите раздел
+					</div>
+				</div>
+			</div>
+			<div class="row gradient-white-block">
+
+				<div class="col-6 col-md-4 mx-auto"
+					th:each="page : ${pages}">
+
+					<a class="donate-link donate-link-page" th:href="@{/donate/{page}(page=${page.tag})}">
+						<span class="donate-link-block" th:style="'background-image : url('+@{${images.get(page)}}+')'">
+							<span class="donate-link-content">
+								<span class="donate-link-text"
+						 			th:text="${page.title}"></span>
+							</span>
+						</span>
+					</a>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

@@ -25,6 +25,8 @@ public interface UserService extends UserDetailsService{
      */
     public User getCurrentUser();
 
+    public User getStoredUser(User user);
+
     /**
      * Find user using information in details
      * @param userDetails

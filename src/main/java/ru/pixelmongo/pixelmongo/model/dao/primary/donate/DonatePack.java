@@ -222,4 +222,8 @@ public class DonatePack implements OrderedData<Integer>{
         this.discount = (byte) Math.max(Math.min(discount, 100), 0);
     }
 
+    public int getActualCost() {
+        return (int)Math.round(Math.max(getCost() * (1.0D - (discount/100d)), 0));
+    }
+
 }

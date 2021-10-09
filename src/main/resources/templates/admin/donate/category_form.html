@@ -37,6 +37,25 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<div class="col-sm-3 text-truncate">
+							Отображение наборов
+						</div>
+						<div class="col-sm-9">
+							<div class="form-check form-check-inline"
+								th:each="display_type : ${display_types}"
+								th:with="inputId = ${'inputDisplayType' + display_type.ordinal()}">
+							  	<input class="form-check-input" type="radio" name="displayType"
+							  		th:id="${inputId}" th:value="${display_type}"
+							  		th:checked="${display_type == categoryForm.displayType}?checked">
+							  	<label class="form-check-label" th:for="${inputId}"
+							  		th:text="${@templateService.printDisplayType(display_type)}"></label>
+							</div>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{displayType}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
 						<label for="inputPage" class="col-sm-3 col-form-label text-truncate">Страница</label>
 						<div class="col-sm-9">
 							<select class="custom-select form-control" id="inputPage"

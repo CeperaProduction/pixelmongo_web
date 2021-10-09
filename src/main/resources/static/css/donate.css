@@ -1,0 +1,284 @@
+
+.donate-link{
+	display: block;
+	width: 100%;
+	overflow: hidden;
+	margin: 1rem auto;
+	max-width: 300px;
+	box-shadow: 0 0 40px #fff, 0 0 10px #000;
+	transition: 0.5s box-shadow;
+	text-decoration: none;
+	color: #fff;
+}
+
+.donate-link:hover{
+	color: #fff;
+	box-shadow: 0 5px 10px rgba(21, 195, 231, 0.56), 0 -5px 10px rgba(144, 10, 227, 0.5);
+}
+
+.donate-link:visited{
+	color: #fff;
+}
+
+.donate-link-block{
+	display: block;
+	width: 100%;
+	height: 0px;
+	padding-bottom: 100%;
+	background-position: center;
+	background-color: #fff;
+	background-size: cover;
+	position: relative;
+	transition: transform 0.8s
+}
+
+.donate-link-block:hover{
+	transform: scale(1.2);
+}
+
+.donate-link-content{
+	position: absolute;
+	display: table;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	background-image: linear-gradient(0deg, rgba(21, 195, 231, 0.45) 0%, rgba(144, 10, 227, 0.45) 100%);
+	transition: 0.5s opacity;
+	padding: 1rem;
+}
+
+.donate-link-content:hover{
+	opacity: 1;
+}
+
+.donate-link-text{
+	display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+	font-family: Pokemon;
+	text-shadow: 1px 1px 0px #444, 1px -1px 0px #444, -1px 1px 0px #444, -1px -1px 0px #444;
+	font-size: 1.5rem;
+}
+
+.donate-link-page{
+	border: 0px solid #fff;
+	border-radius: 4vh;
+}
+
+.donate-link-page .donate-link-block{
+	padding-bottom: 150%;
+}
+
+.donate-header{
+	width: 250px;
+	height: 250px;
+	margin: auto;
+	margin-top: 30px;
+	margin-bottom: -250px;
+}
+
+.donate-header .background-moving{
+	border: 0px solid #fff;
+	border-radius: 50%;
+	background: url("../img/donate/moving_bg_pages.jpg") repeat;
+	box-shadow: inset 0 0 30px rgba(0,0,0,0.7), 0 0 30px #fff, 0 0 10px rgba(0,0,0,1);
+	background-size: 500px;
+	padding: 25px;
+}
+
+.donate-header .masterball{
+	width: 200px;
+	height: 200px;
+	margin: 0 auto;
+	box-shadow: 0 5px 10px rgba(21, 195, 231, 0.56), 0 -5px 10px rgba(144, 10, 227, 0.5),
+		inset 0 -5px 10px rgba(21, 195, 231, 0.56), inset 0 5px 10px rgba(144, 10, 227, 0.5);
+}
+
+.donate-header-content{
+	text-align: center;
+	height: 250px;
+	display: table;
+	margin: auto;
+}
+
+.donate-header-text{
+	display: table-cell;
+	padding-top: 20px;
+	height: 230px;
+	width: 100%;
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	vertical-align: middle;
+	font-size: 2.5rem;
+}
+
+.donate-categories{
+	display: inline-block;
+	border: 1px solid #bbb;
+	border-radius: 5px;
+	background-color: #fff;
+}
+
+.donate-category-header{
+	padding-top: 4rem;
+	padding-bottom: 2rem;
+	font-size: 1.2rem;
+}
+
+.donate-category-header img{
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	box-shadow: 0 2px 5px rgba(21, 195, 231, 0.56), 0 -2px 5px rgba(144, 10, 227, 0.5),
+		inset 0 -2px 5px rgba(21, 195, 231, 0.56), inset 0 2px 5px rgba(144, 10, 227, 0.5);
+
+}
+
+.donate-link-pack{
+	border: 0px solid #fff;
+	border-radius: 4vh;
+	width: 85%;
+}
+
+.donate-link-pack .donate-link-content{
+	background-image: linear-gradient(0deg, rgba(21, 195, 231, 0.25) 0%, rgba(144, 10, 227, 0.25) 100%);
+}
+
+.display-type-rounded .donate-link-pack{
+	border-radius: 50%;
+}
+
+.display-type-big .donate-link-pack{
+	width: 100%;
+	max-width: 380px;
+}
+
+.display-type-big .donate-link-pack .donate-link-block{
+	padding-bottom: 133.33%;
+}
+
+.display-type-big .donate-link-pack .donate-link-block:hover{
+	transform: scale(1.05);
+}
+
+.display-type-big .donate-link-pack .donate-link-content{
+	background-image: linear-gradient(0deg, rgba(21, 195, 231, 0.05) 0%, rgba(144, 10, 227, 0.05) 100%);
+}
+
+.display-type-big .donate-link-text{
+	vertical-align: top;
+}
+
+.donate-pack-discount{
+	display: block;
+	position: absolute;
+	z-index: 1;
+	width: 160px;
+	height: 48px;
+	padding: 4px 40px;
+	margin-left: -50px;
+	margin-top: 5px;
+	background: #111;
+	color: #111;
+	transform: rotate(-45deg);
+	box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.3);
+	text-align: center;
+}
+
+.donate-pack-discount>span{
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	padding-top: 7px;
+	background: #ffffff;
+	border: 0px solid #000;
+	border-radius: 20px;
+	font-size: 16px;
+	font-weight: bold;
+	box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.3);
+}
+
+.display-type-rounded .donate-pack-discount{
+	margin-left: -38px;
+	margin-top: 22px;
+	padding: 2px 38px;
+	height: 38px;
+	border: 0px solid #000;
+	border-radius: 0 0 80% 80%;
+}
+
+.display-type-rounded .donate-pack-discount>span{
+	width: 34px;
+	height: 34px;
+	padding-top: 5px;
+	font-size: 14px;
+
+}
+
+.donate-pack-discount[data-discount="1"], .donate-pack-discount[data-discount="2"],
+.donate-pack-discount[data-discount="3"], .donate-pack-discount[data-discount="4"],
+.donate-pack-discount[data-discount="5"], .donate-pack-discount[data-discount="6"],
+.donate-pack-discount[data-discount="7"], .donate-pack-discount[data-discount="8"],
+.donate-pack-discount[data-discount="9"], .donate-pack-discount[data-discount="10"],
+.donate-pack-discount[data-discount="11"], .donate-pack-discount[data-discount="12"],
+.donate-pack-discount[data-discount="13"], .donate-pack-discount[data-discount="14"],
+.donate-pack-discount[data-discount="15"], .donate-pack-discount[data-discount="16"],
+.donate-pack-discount[data-discount="17"], .donate-pack-discount[data-discount="18"],
+.donate-pack-discount[data-discount="19"], .donate-pack-discount[data-discount="20"]{
+	background: #00d2ff;
+	color: #00a7a7;
+}
+
+.donate-pack-discount[data-discount="21"], .donate-pack-discount[data-discount="22"],
+.donate-pack-discount[data-discount="23"], .donate-pack-discount[data-discount="24"],
+.donate-pack-discount[data-discount="25"], .donate-pack-discount[data-discount="26"],
+.donate-pack-discount[data-discount="27"], .donate-pack-discount[data-discount="28"],
+.donate-pack-discount[data-discount="29"], .donate-pack-discount[data-discount="30"],
+.donate-pack-discount[data-discount="31"], .donate-pack-discount[data-discount="32"],
+.donate-pack-discount[data-discount="33"], .donate-pack-discount[data-discount="34"],
+.donate-pack-discount[data-discount="35"]{
+	background: #44ff44;
+	color: #1a1;
+}
+
+.donate-pack-discount[data-discount="36"], .donate-pack-discount[data-discount="37"],
+.donate-pack-discount[data-discount="38"], .donate-pack-discount[data-discount="39"],
+.donate-pack-discount[data-discount="40"], .donate-pack-discount[data-discount="41"],
+.donate-pack-discount[data-discount="42"], .donate-pack-discount[data-discount="43"],
+.donate-pack-discount[data-discount="44"], .donate-pack-discount[data-discount="45"]{
+	background: #ffab00;
+	color: #ef8124;
+}
+
+.donate-pack-discount[data-discount="46"], .donate-pack-discount[data-discount="47"],
+.donate-pack-discount[data-discount="48"], .donate-pack-discount[data-discount="49"],
+.donate-pack-discount[data-discount="50"], .donate-pack-discount[data-discount="51"],
+.donate-pack-discount[data-discount="52"], .donate-pack-discount[data-discount="53"],
+.donate-pack-discount[data-discount="54"], .donate-pack-discount[data-discount="55"],
+.donate-pack-discount[data-discount="56"], .donate-pack-discount[data-discount="57"],
+.donate-pack-discount[data-discount="58"], .donate-pack-discount[data-discount="59"],
+.donate-pack-discount[data-discount="60"], .donate-pack-discount[data-discount="61"],
+.donate-pack-discount[data-discount="62"], .donate-pack-discount[data-discount="63"],
+.donate-pack-discount[data-discount="64"], .donate-pack-discount[data-discount="65"]{
+	background: #e11515;
+	color: #d70303;
+}
+
+.donate-pack-discount[data-discount="66"], .donate-pack-discount[data-discount="67"],
+.donate-pack-discount[data-discount="68"], .donate-pack-discount[data-discount="69"],
+.donate-pack-discount[data-discount="70"], .donate-pack-discount[data-discount="71"],
+.donate-pack-discount[data-discount="72"], .donate-pack-discount[data-discount="73"],
+.donate-pack-discount[data-discount="74"], .donate-pack-discount[data-discount="75"],
+.donate-pack-discount[data-discount="76"], .donate-pack-discount[data-discount="77"],
+.donate-pack-discount[data-discount="78"], .donate-pack-discount[data-discount="79"],
+.donate-pack-discount[data-discount="80"], .donate-pack-discount[data-discount="81"],
+.donate-pack-discount[data-discount="82"], .donate-pack-discount[data-discount="83"],
+.donate-pack-discount[data-discount="84"], .donate-pack-discount[data-discount="85"],
+.donate-pack-discount[data-discount="86"], .donate-pack-discount[data-discount="87"],
+.donate-pack-discount[data-discount="88"], .donate-pack-discount[data-discount="89"]{
+	background: #c500b4;
+	color: #8f009e;
+}

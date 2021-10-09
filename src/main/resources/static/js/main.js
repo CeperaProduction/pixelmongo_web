@@ -1,6 +1,23 @@
 $(function () {
 	$('[data-toggle="tooltip"]').tooltip();
 	bsCustomFileInput.init();
+
+	let pr = '0px';
+
+	$('.modal').on('show.bs.modal', function(){
+		let body = $('body');
+		if(body.hasClass('modal-open')){
+			pr = body.css('padding-right');
+		}
+	});
+
+	$('.modal').on('shown.bs.modal', function(){
+		let body = $('body');
+		if(!body.hasClass('modal-open')){
+			body.addClass('modal-open');
+			body.css({'padding-right' : pr});
+		}
+	});
 })
 
 //Scrolling elements movement
@@ -99,13 +116,13 @@ $(function(){
 		msg(res);
 		document.location.reload();
 	});
-
 });
 
 $(function(){
 	let moving = $('.background-moving');
 	if(moving.length){
-		let r = 400;
+		let r = moving.data('move-radius');
+		if(!r) r = 400;
 		let a = 0;
 		function calc(a, r){
 			let dx = Math.cos(a)*r;

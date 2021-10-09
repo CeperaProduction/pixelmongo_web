@@ -16,14 +16,14 @@
 			</noscript>
 		</div>
 		<script type="text/javascript">
-			var skinUrl = "[[${@skinService.getSkinUrlPath(user)}]]";
-			var capeUrl = "[[${@skinService.getCapeUrlPath(user)}]]";
+			var skinUrl = "[[@{${@skinService.getSkinUrlPath(user)}}]]";
+			var capeUrl = "[[@{${@skinService.getCapeUrlPath(user)}}]]";
 			var transparent = "[[${transparent}]]" ? true : false;
 			try{
 				skin3d.init('skin3d', skinUrl, capeUrl, transparent);
 			}catch(e){
 				console.log(e);
-				var skinBodyUrl = "[[${@skinService.getSkinBodyUrlPath(user)}]]";
+				var skinBodyUrl = "[[@{${@skinService.getSkinBodyUrlPath(user)}}]]";
 				var skin2d = '<div id="skin2d" class="skin2d"><div class="skin" style="background-image: url(\''+skinBodyUrl+'\');"></div></div>';
 				$('#skin3d').html(skin2d);
 			}

@@ -59,7 +59,7 @@
 							    <label class="custom-file-label" for="imageInput" data-browse="Выбрать">Выберите файл</label>
 							</div>
 							<small class="text-muted">
-								Доступные форматы: PNG, JPG, JPEG. Рекомендованный размер: 400x400
+								Доступные форматы: PNG, JPG, JPEG. Рекомендованный размер: <span th:text="${image_width+'x'+image_height}"></span>
 							</small>
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"

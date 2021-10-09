@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,6 +40,10 @@ public class DonateCategory implements OrderedData<Integer>{
     private boolean enabled = true;
 
     private int ordinary = 0;
+
+    @Column(name="diplay", nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private DonateDisplayType displayType = DonateDisplayType.DEFAULT;
 
     public DonateCategory() {}
 
@@ -83,6 +89,14 @@ public class DonateCategory implements OrderedData<Integer>{
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public DonateDisplayType getDisplayType() {
+        return displayType;
+    }
+
+    public void setDisplayType(DonateDisplayType displayType) {
+        this.displayType = displayType;
     }
 
     public List<DonatePack> getPacks() {

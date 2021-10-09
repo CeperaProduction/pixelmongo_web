@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserRegistrationForm;
@@ -25,6 +26,11 @@ public class RegisterController {
     private boolean isLoggedIn() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth != null && !(auth instanceof AnonymousAuthenticationToken);
+    }
+
+    @ModelAttribute
+    public void applyMode(Model model) {
+        model.addAttribute("mode", "register");
     }
 
 }

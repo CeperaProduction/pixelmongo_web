@@ -74,6 +74,7 @@ public class DonateContentControllerRest {
             return new ResultMessage(DefaultResult.OK, "Donate pages reordered");
         }
         response.setStatus(HttpStatus.BAD_REQUEST.value());
+
         return new ResultMessage(DefaultResult.ERROR, "Wrong ids");
     }
 

@@ -6,15 +6,19 @@
 	<title layout:title-pattern="$LAYOUT_TITLE"></title>
 </head>
 <body>
-	<div id="wrapper" layout:fragment="main_content">
-		<div th:replace="/fragments/header :: header"></div>
-		<div th:replace="/fragments/menu :: menu"></div>
-		<div class="gradient-white-top manu-after"></div>
-		<div id="content-wrapper">
-			<section layout:fragment="content"></section>
+	<div layout:fragment="main_content" id="wrapper">
+		<div>
+			<div th:replace="/fragments/header :: header"></div>
+			<div th:replace="/fragments/menu :: menu"></div>
+			<div class="gradient-white-top manu-after"></div>
+			<div id="content-wrapper">
+				<section layout:fragment="content"></section>
+			</div>
 		</div>
-		<div class="gradient-white-bottom footer-before"></div>
-		<div th:replace="/fragments/footer :: footer"></div>
+		<div>
+			<div class="gradient-white-bottom footer-before"></div>
+			<div th:replace="/fragments/footer :: footer"></div>
+		</div>
 	</div>
 </body>
 </html>

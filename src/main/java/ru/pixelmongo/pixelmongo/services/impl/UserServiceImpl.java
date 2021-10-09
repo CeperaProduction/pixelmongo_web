@@ -84,6 +84,12 @@ public abstract class UserServiceImpl implements UserService{
     }
 
     @Override
+    public User getStoredUser(User user) {
+        if(user.getClass() == User.class) return user;
+        return users.getById(user.getId());
+    }
+
+    @Override
     public void invalidateDetails(User user) {
         invalidUserIds.add(user.getId());
     }

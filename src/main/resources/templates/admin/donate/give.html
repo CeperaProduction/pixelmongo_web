@@ -70,15 +70,16 @@
 								th:errors="*{count}"></div>
 						</div>
 					</div>
-					<th:block th:each="token : ${pack.tokens}">
+					<th:block th:each="token : ${pack.tokens}"
+						th:with="inputTokenId = ${'inputToken-'+token.token}">
 						<th:block th:switch="${token.type.name()}">
 
 							<div th:case="'SELECT_VALUE'"
 								class="form-group row">
-								<label for="inputServer" class="col-sm-3 col-form-label text-truncate"
+								<label th:for="${inputTokenId}" class="col-sm-3 col-form-label text-truncate"
 									th:text="${token.display}"></label>
 								<div class="col-sm-9">
-									<select class="custom-select form-control" id="inputServer"
+									<select class="custom-select form-control" th:id="${inputTokenId}"
 										th:field="*{tokens['__${token.token}__']}"
 										required="required">
 										<option th:each="value,i : ${token.valuesDisplay}"

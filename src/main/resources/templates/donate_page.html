@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	layout:decorate="~{layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE"
+		th:text="${'Донат - '+page.title}"></title>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/donate.css}" />
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/donate.js}"></script>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="container">
+
+			<div class="donate-header-container">
+				<div class="text-center donate-header">
+					<div class="background-moving">
+						<div class="masterball"></div>
+					</div>
+				</div>
+				<div class="donate-header-content">
+					<div class="donate-header-text text-pokemon text-white text-shadow-rainbow">
+						<span th:text="${page.title}"></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-center my-2">
+				<div class="donate-categories p-1">
+					<a th:each="category : ${page.categories}"
+							class="btn btn-info text-white mx-2 my-1"
+							th:href="${'#cat'+category.id}"
+							th:text="${category.title}"></a>
+				</div>
+			</div>
+
+			<div th:each="category : ${page.categories}"
+				th:if="${category.enabled}"
+				th:id="${'cat'+category.id}"
+				th:attrappend="data-donate-category=${category.id}"
+				th:with="type = ${category.displayType.name().toLowerCase()}"
+				class="donate-category-block"
+				th:classappend="${'display-type-'+type}">
+
+				<div class="donate-category-header gradient-white-block">
+					<div class="row align-items-center">
+						<div class="col-2 col-md-3 col-lg-4 text-right">
+							<img th:src="@{/img/masterball.png}">
+						</div>
+						<div class="col-8 col-md-6 col-lg-4 text-center">
+							<span th:text="${category.title}"
+								class="text-white text-minecraft text-shadow-rainbow"></span>
+						</div>
+						<div class="col-2 col-md-3 col-lg-4 text-left">
+							<img th:src="@{/img/masterball.png}">
+						</div>
+					</div>
+				</div>
+
+				<div class="row justify-content-md-center donate-category-content gradient-white-block">
+
+					<div th:each="pack : ${category.packs}"
+						th:if="${pack.enabled}"
+						th:classappend="${type=='big'
+										? 'col-12 col-md-6 col-xl-4'
+										: 'col-6 col-md-4 col-xl-3'}">
+
+						<a class="donate-link donate-link-pack mx-auto"
+							th:href="${'#pack'+pack.id}"
+							data-toggle="modal"
+							th:attrappend="data-target=${'#pack'+pack.id},
+										data-donate-pack=${pack.id}">
+							<span class="donate-link-block" th:style="'background-image : url('+@{${images.get(pack)}}+')'">
+								<span th:if="${pack.discount > 0}"
+									class="donate-pack-discount"
+									th:attrappend="data-discount=${pack.discount}">
+									<span th:text="${'-'+pack.discount+'%'}"
+										data-toggle="tooltip"
+										data-placement="right"
+										th:title="${'Скидка '+pack.discount+'%!'}"></span>
+								</span>
+								<span class="donate-link-content">
+									<span class="donate-link-text"
+							 			th:text="${pack.title}"></span>
+								</span>
+							</span>
+						</a>
+						<div class="my-2 text-center">
+							<a th:href="${'#pack'+pack.id}"
+								data-toggle="modal"
+								class="btn btn-info"
+								th:attrappend="data-target=${'#pack'+pack.id},
+											data-donate-pack=${pack.id}">
+								<small th:if="${pack.discount > 0}">
+									<del th:text="${pack.cost}"></del>
+								</small>
+								<span th:text="${pack.actualCost}"></span>
+								<span class="vault">GP</span>
+							</a>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<th:block th:each="category : ${page.categories}"
+			th:if="${category.enabled}">
+
+			<th:block th:each="pack : ${category.packs}"
+				th:if="${pack.enabled}">
+
+				<div th:id="${'pack'+pack.id}" class="modal fade donate-pack-modal donate-pack-content" tabindex="-1" role="dialog"
+					th:attrappend="data-donate-pack=${pack.id}">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+						    <div class="modal-header rainbow-title text-center py-2">
+						      	<div style="width: 100%; padding-left: 2rem">
+						      		<span class="modal-title text-minecraft text-shadow"
+							      		style="vertical-align: middle; font-size: 0.8rem"
+							      		th:text="${pack.title}"></span>
+						      	</div>
+						      	<button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+						        	<span aria-hidden="true">
+						        		<i class="fa fa-times"></i>
+									</span>
+						      	</button>
+						    </div>
+						    <div class="modal-body pb-0" th:utext="${pack.content}">
+
+						    </div>
+						    <div class="modal-footer">
+						    	<div class="font-weight-bold" style="width: 100%">
+							    	<span>Цена:</span>
+							    	<div class="float-right">
+							    		<small th:if="${pack.discount > 0}"><del th:text="${pack.cost}"></del></small>
+							    		<span th:text="${pack.actualCost}"></span>
+							    		<span class="vault" data-toggle="tooltip" data-placement="bottom" title="Go Point - донат-валюта нашего проекта">GP</span>
+							    	</div>
+						    	</div>
+						    </div>
+						    <div class="modal-footer">
+						    	<div style="width: 100%">
+							    	<div class="py-1">
+							    		<th:block sec:authorize="isAuthenticated()">
+							      			<button class="btn btn-primary btn-block donate-buy-button">Купить</button>
+							    		</th:block>
+							    		<th:block sec:authorize="isAnonymous()">
+							      			<a href="#" class="btn btn-primary btn-block"
+							      				data-dismiss="modal"
+							      				data-toggle="modal" data-target="#login">Войти</a>
+							    		</th:block>
+							    	</div>
+						    	</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+
+				<div th:id="${'pack'+pack.id+'-options'}" class="modal fade donate-pack-modal donate-pack-options" tabindex="-1" role="dialog"
+					sec:authorize="isAuthenticated()"
+					th:attrappend="data-donate-pack=${pack.id}">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+						    <div class="modal-header rainbow-title text-center py-2">
+						      	<div style="width: 100%; padding-left: 2rem">
+						      		<span class="modal-title text-minecraft text-shadow"
+							      		style="vertical-align: middle; font-size: 0.8rem"
+							      		th:text="${pack.title}"></span>
+						      	</div>
+						      	<button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+						        	<span aria-hidden="true">
+						        		<i class="fa fa-times"></i>
+									</span>
+						      	</button>
+						    </div>
+						    <div class="modal-body pb-0">
+
+								<form th:id="${'pack'+pack.id+'-form'}"
+									th:action="@{/donate/buy/{pack}(pack=${pack.id})}" th:method="post">
+
+									<input th:if="${pack.servers.size() == 1}" type="hidden" name="server" th:value="${pack.servers.get(0).id}"/>
+									<div th:if="${pack.servers.size() != 1}" class="form-group row">
+										<label for="inputServer" class="col-sm-3 col-form-label text-truncate">Сервер</label>
+										<div class="col-sm-9">
+											<select class="custom-select form-control" id="inputServer"
+												name="server"
+												required="required">
+												<option th:each="server : ${pack.servers}"
+													th:value="${server.id}"
+													th:text="${server.displayName}"></option>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group row" th:if="${pack.countable}">
+										<label for="inputCount" class="col-sm-3 col-form-label text-truncate">Количество</label>
+										<div class="col-sm-9">
+											<input type="number" class="form-control"
+												id="inputCount" placeholder="Количество наборов"
+												min="1"
+												max="64"
+												name="count"
+												value="1"
+												required>
+										</div>
+									</div>
+
+									<th:block th:each="token : ${pack.tokens}"
+										th:with="inputTokenId = ${'inputToken-'+token.token}">
+										<th:block th:switch="${token.type.name()}">
+
+											<div th:case="'SELECT_VALUE'"
+												class="form-group row donate-token-select">
+												<label th:for="${inputTokenId}" class="col-sm-3 col-form-label text-truncate"
+													th:text="${token.display}"></label>
+												<div class="col-sm-9">
+													<select class="custom-select form-control donate-token-select" th:id="${inputTokenId}"
+														th:name="${'tokens['+token.token+']'}"
+														required="required">
+														<option th:each="value,i : ${token.valuesDisplay}"
+															th:with="tokenCost = ${tokenHelper.getCost(pack, token, i.index)}"
+															th:value="${i.index}"
+															th:text="${value+(tokenCost != 0 ? ' ('+tokenHelper.getCostString(tokenCost)+' GP)' : '')}"
+															th:attrappend="data-token-cost=${tokenCost}"></option>
+													</select>
+												</div>
+											</div>
+
+										</th:block>
+									</th:block>
+
+								</form>
+						    </div>
+						    <div class="modal-footer">
+						    	<div class="font-weight-bold" style="width: 100%">
+							    	<span>Цена:</span>
+							    	<div class="float-right">
+							    		<span class="donate-pack-cost"
+							    			th:attrappend="data-pack-cost=${pack.actualCost}"
+							    			th:text="${pack.actualCost}"></span>
+							    		<span class="vault" data-toggle="tooltip" data-placement="bottom" title="Go Point - донат-валюта нашего проекта">GP</span>
+							    	</div>
+						    	</div>
+						    </div>
+						    <div class="modal-footer">
+						    	<div style="width: 100%">
+							    	<div class="py-1">
+						      			<button th:form="${'pack'+pack.id+'-form'}"
+						      				class="btn btn-primary btn-block donate-buy-button">Купить</button>
+						      			<a th:href="${'#pack'+pack.id}"
+											data-toggle="modal"
+											data-dismiss="modal"
+											class="btn btn-secondary btn-block"
+											th:attrappend="data-target=${'#pack'+pack.id},
+														data-donate-pack=${pack.id}">
+											Назад
+										</a>
+							    	</div>
+						    	</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+
+			</th:block>
+
+		</th:block>
+
+	</div>
+</body>
+</html>

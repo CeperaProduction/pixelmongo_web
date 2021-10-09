@@ -33,7 +33,7 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthControllerRest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

@@ -10,7 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 
 import org.apache.groovy.util.Arrays;
 import org.springframework.util.FileSystemUtils;
@@ -20,6 +25,8 @@ import ru.pixelmongo.pixelmongo.exceptions.WrongFileTypeException;
 import ru.pixelmongo.pixelmongo.services.UploadService;
 
 public class UploadServiceImpl implements UploadService{
+
+    private static final float JPG_QUALITY = 1.0F;
 
     private final String uploadUrlPath;
     private final String uploadDirPath;
@@ -133,12 +140,29 @@ public class UploadServiceImpl implements UploadService{
             File outFile = outPath.toFile();
             outFile.getParentFile().mkdirs();
             outFile.createNewFile();
-            ImageIO.write(outImage, saveAsPng ? "png" : "jpg", outFile);
+            if(saveAsPng) {
+                ImageIO.write(outImage, "png", outFile);
+            }else {
+                writeJpg(outImage, outFile);
+            }
             return outPath;
 
         }catch(IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    private void writeJpg(BufferedImage image, File outFile) throws IOException {
+        ImageWriter writer = ImageIO.getImageWritersByFormatName("jpg").next();
+        ImageWriteParam param = writer.getDefaultWriteParam();
+        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        param.setCompressionQuality(JPG_QUALITY);
+
+        ImageOutputStream outStream = new FileImageOutputStream(outFile);
+        writer.setOutput(outStream);
+        IIOImage outImage = new IIOImage(image, null, null);
+        writer.write(null, outImage, param);
+        writer.dispose();
     }
 
 

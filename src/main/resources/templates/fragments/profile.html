@@ -5,12 +5,23 @@
 		<div class="dropdown" sec:authorize="isAuthenticated()">
 			<a aria-expanded="false" data-toggle="dropdown" class="nav-link" href="#">
 				<img class="profile-image"
-					th:src="${@templateService.avatar}">
+					th:src="@{${@templateService.avatar}}">
 				<span th:text="${@user.name}"></span>
+				<th:block th:if="${mode == 'donate'}">
+					<span class="text-white text-shadow-rainbow font-weight-bold"
+						style="font-size: 0.9em">
+						<span class="balance" th:text="${@user.balance}"></span>
+						<span class="vault" data-toggle="tooltip" data-placement="bottom" title="Go Point - донат-валюта нашего проекта">GP</span>
+					</span>
+				</th:block>
 			</a>
 			<div class="dropdown-menu dropdown-menu-right">
 				<a class="dropdown-item" th:href="@{/profile}">
 					<i class="fa fa-user fa-fw"></i> Личный кабинет
+				</a>
+				<a class="dropdown-item" th:href="@{/profile#balance}"
+					th:if="${mode == 'donate'}">
+					<i class="fa fa-user fa-coins"></i> Пополнить баланс
 				</a>
 				<a class="dropdown-item" th:href="@{/admin}"
 					sec:authorize="hasAuthority('admin.panel.access')">

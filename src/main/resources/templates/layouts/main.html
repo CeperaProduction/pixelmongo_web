@@ -25,8 +25,8 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 
 	<script type="text/javascript" charset="UTF-8" th:src="@{/js/ajax.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/confirm.js}"></script>
 	<script type="text/javascript" charset="UTF-8" th:src="@{/js/main.js}"></script>
-	<script type="text/javascript" charset="UTF-8" th:src="@{/js/modal.js}"></script>
 
 	<th:block th:if="${_csrf != null}">
 		<meta name="_csrf" th:content="${_csrf.token}" />
@@ -38,8 +38,6 @@
 </head>
 <body class="bg-balls">
 	<div th:replace="/fragments/messages :: messages"></div>
-	<div id="wrapper">
-		<section layout:fragment="main_content"></section>
-	</div>
+	<section layout:fragment="main_content"></section>
 </body>
 </html>

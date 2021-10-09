@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
-	<div th:fragment="messages">
+	<th:block th:fragment="messages">
 		<div id="msg_block"></div>
 		<script type="text/javascript" charset="UTF-8" th:src="@{/js/msg.js}"></script>
 		<script type="text/javascript">
@@ -10,5 +10,5 @@
 				msg.animate({"margin-left":"0px", "opacity":"1"}, 500);
 			};
 		</script>
-	</div>
+	</th:block>
 </html>

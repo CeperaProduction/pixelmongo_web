@@ -129,12 +129,14 @@ public class DonateServiceImpl implements DonateService{
         //Don't need to process $player token here. It will be processed by MegaQuery
         //tokenValues.add(Pair.of("player", playerName));
 
+
+        float costMult = 1f - Math.min(Math.max(pack.getDiscount() / 100f, 0), 1f);
         int tokensCostChange = 0;
         for(DonatePackToken token : pack.getTokens()) {
             DonatePackTokenProcessResult result
                 = processToken(token, tokensData.getOrDefault(token.getToken(), Collections.emptyList()));
             tokenValues.add(Pair.of(token.getToken(), result.getTokenValue()));
-            tokensCostChange += result.getCostChange();
+            tokensCostChange += (int)Math.round(result.getCostChange()*costMult);
         }
 
         DonateQuery query = new DonateQuery(pack.getTitle(), serverName, playerName);
@@ -146,8 +148,7 @@ public class DonateServiceImpl implements DonateService{
         query.setOffline(pack.isGiveOffline());
         query.setPackId(pack.getId());
 
-        float costMult = 1f - Math.min(Math.max(pack.getDiscount() / 100f, 0), 1f);
-        int cost = (int) (costMult * (pack.getCost()+tokensCostChange));
+        int cost = pack.getActualCost() + tokensCostChange;
 
         query.setSpentMoney(cost > 0 ? cost : 0);
 

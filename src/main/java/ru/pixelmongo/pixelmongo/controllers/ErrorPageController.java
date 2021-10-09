@@ -1,9 +1,12 @@
 package ru.pixelmongo.pixelmongo.controllers;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,16 +32,26 @@ public class ErrorPageController implements ErrorController{
     @Autowired
     private MessageSource msg;
 
+    private List<String> imgTypes = Arrays.asList(".jpg", ".png", ".jpeg", ".gif");
+
     @RequestMapping("/error")
     public String handleError(@RequestParam(name = "c", required = false) String c,
-            HttpServletRequest request, Model model, Locale loc) {
+            HttpServletRequest request, HttpServletResponse response, Model model, Locale loc) {
         Object status = c != null ? c : request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         if (status != null) {
-            Integer statusCode = Integer.valueOf(status.toString());
+            int statusCode = Integer.valueOf(status.toString());
             String uri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI).toString();
+            if(statusCode == 404 && request.getMethod().equals("GET") && isImageRequested(uri)) {
+                return "redirect:/img/not_found.jpg";
+            }
 
             String message = msg.getMessage("error.status."+statusCode, null,
                     request.getAttribute(RequestDispatcher.ERROR_MESSAGE).toString(), loc);
+
+            if(message.isEmpty()) {
+                Object ex = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+                if(ex != null) message = ex.toString();
+            }
 
             model.addAttribute("status", statusCode);
             model.addAttribute("message", message);
@@ -59,6 +72,12 @@ public class ErrorPageController implements ErrorController{
             return template;
         }
         return "redirect:/";
+    }
+
+    private boolean isImageRequested(String uri) {
+        uri = uri.toLowerCase();
+        if(uri.equals("/img/not_found.jpg") || uri.contains("/skins/")) return false;
+        return imgTypes.stream().anyMatch(uri::endsWith);
     }
 
     @ExceptionHandler(Exception.class)

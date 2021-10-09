@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
+import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateDisplayType;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement;
 import ru.pixelmongo.pixelmongo.model.dto.PaginationElement.Step;
@@ -147,6 +148,11 @@ public class TemplateServiceImpl implements TemplateService{
     @Override
     public String printTokenType(DonatePackTokenType tokenType, Locale loc) {
         return msg.getMessage("donate.token."+tokenType.name().toLowerCase(), null, tokenType.name(), loc);
+    }
+
+    @Override
+    public String printDisplayType(DonateDisplayType displayType, Locale loc) {
+        return msg.getMessage("donate.display."+displayType.name().toLowerCase(), null, displayType.name(), loc);
     }
 
     @Override

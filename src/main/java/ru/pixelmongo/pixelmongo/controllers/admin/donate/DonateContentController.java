@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateCategory;
+import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateDisplayType;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePage;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
@@ -44,6 +46,8 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 @Controller
 @RequestMapping("/admin/donate/pages")
 public class DonateContentController {
+
+    private static final int PAGE_IMG_WIDTH = 600, PAGE_IMG_HEIGHT = 900;
 
     @Autowired
     private DonatePageRepository pages;
@@ -102,10 +106,8 @@ public class DonateContentController {
     @GetMapping("/new")
     public String newPage(Model model) {
 
-        model.addAttribute("method", "put");
-        model.addAttribute("page", new DonatePage());
         model.addAttribute("pageForm", new DonatePageForm());
-        model.addAttribute("servers", servers.findAll());
+        addEditorAttributes(model, "put", new DonatePage());
 
         return "admin/donate/page_form";
     }
@@ -139,21 +141,12 @@ public class DonateContentController {
             log("admin.log.donate.page.create", request, page.getTitle()+" #"+page.getId());
             popup("admin.donate.page.created", loc, PopupMessage.Type.OK, request, response);
 
-            if(!pageForm.getImage().isEmpty()) {
-                try {
-                    upload.uploadImageResized(pageForm.getImage(), 400, 400, false, page.getId()+".jpg", "donate", "pages");
-                }catch(Exception ex) {
-                    popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
-                    UploadService.LOGGER.catching(ex);
-                }
-            }
+            saveImage(page, pageForm.getImage(), loc, request, response);
 
             return "redirect:/admin/donate/pages/";
         }
 
-        model.addAttribute("method", "put");
-        model.addAttribute("page", page);
-        model.addAttribute("servers", servers.findAll());
+        addEditorAttributes(model, "put", page);
 
         return "admin/donate/page_form";
     }
@@ -163,10 +156,8 @@ public class DonateContentController {
 
         DonatePage page = find(pages.findByTag(pageTag), loc);
 
-        model.addAttribute("method", "post");
-        model.addAttribute("page", page);
         model.addAttribute("pageForm", new DonatePageForm(page));
-        model.addAttribute("servers", servers.findAll());
+        addEditorAttributes(model, "post", page);
 
         return "admin/donate/page_form";
     }
@@ -200,21 +191,12 @@ public class DonateContentController {
             log("admin.log.donate.page.edit", request, page.getTitle()+" #"+page.getId());
             popup("admin.donate.page.edited", loc, PopupMessage.Type.OK, request, response);
 
-            if(!pageForm.getImage().isEmpty()) {
-                try {
-                    upload.uploadImageResized(pageForm.getImage(), 400, 400, false, page.getId()+".jpg", "donate", "pages");
-                }catch(Exception ex) {
-                    popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
-                    UploadService.LOGGER.catching(ex);
-                }
-            }
+            saveImage(page, pageForm.getImage(), loc, request, response);
 
             return "redirect:/admin/donate/pages/";
         }
 
-        model.addAttribute("method", "post");
-        model.addAttribute("page", page);
-        model.addAttribute("servers", servers.findAll());
+        addEditorAttributes(model, "post", page);
 
         return "admin/donate/page_form";
     }
@@ -243,10 +225,7 @@ public class DonateContentController {
 
         DonatePage page = find(pages.findByTag(pageTag), loc);
 
-        model.addAttribute("method", "put");
-        model.addAttribute("page", page);
-        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
-        model.addAttribute("category", new DonateCategory("", page));
+        addEditorAttributes(model, "put", new DonateCategory("", page), page);
         model.addAttribute("categoryForm", new DonateCategoryForm(page));
 
         return "admin/donate/category_form";
@@ -278,10 +257,7 @@ public class DonateContentController {
             return "redirect:/admin/donate/pages/"+category.getPage().getTag();
         }
 
-        model.addAttribute("method", "put");
-        model.addAttribute("page", page);
-        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
-        model.addAttribute("category", category);
+        addEditorAttributes(model, "put", category, page);
 
         return "admin/donate/category_form";
     }
@@ -296,10 +272,7 @@ public class DonateContentController {
         if(!page.getTag().equals(pageTag))
             throw notFound(loc);
 
-        model.addAttribute("method", "post");
-        model.addAttribute("page", page);
-        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
-        model.addAttribute("category", category);
+        addEditorAttributes(model, "post", category, page);
         model.addAttribute("categoryForm", new DonateCategoryForm(category));
 
         return "admin/donate/category_form";
@@ -333,10 +306,7 @@ public class DonateContentController {
             return "redirect:/admin/donate/pages/"+category.getPage().getTag()+"/category/"+category.getId();
         }
 
-        model.addAttribute("method", "post");
-        model.addAttribute("page", page);
-        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
-        model.addAttribute("category", category);
+        addEditorAttributes(model, "post", category, page);
 
         return "admin/donate/category_form";
     }
@@ -369,11 +339,8 @@ public class DonateContentController {
 
         DonatePage page = find(pages.findByTag(pageTag), loc);
 
-        model.addAttribute("method", "put");
-        model.addAttribute("page", page);
-        model.addAttribute("pack", new DonatePack());
+        addEditorAttributes(model, "put", new DonatePack(), page);
         model.addAttribute("packForm", new DonatePackForm());
-        model.addAttribute("token_types", DonatePackTokenType.values());
 
         return "admin/donate/pack_form";
     }
@@ -401,22 +368,12 @@ public class DonateContentController {
             log("admin.log.donate.pack.create", request, pack.getTitle()+" #"+pack.getId());
             popup("admin.donate.pack.created", loc, PopupMessage.Type.OK, request, response);
 
-            if(!packForm.getImage().isEmpty()) {
-                try {
-                    upload.uploadImageResized(packForm.getImage(), 400, 400, false, pack.getId()+".jpg", "donate", "packs");
-                }catch(Exception ex) {
-                    popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
-                    UploadService.LOGGER.catching(ex);
-                }
-            }
+            saveImage(pack, packForm.getImage(), loc, request, response);
 
             return "redirect:/admin/donate/pages/"+page.getTag();
         }
 
-        model.addAttribute("method", "put");
-        model.addAttribute("page", page);
-        model.addAttribute("pack", pack);
-        model.addAttribute("token_types", DonatePackTokenType.values());
+        addEditorAttributes(model, "put", pack, page);
 
         return "admin/donate/pack_form";
     }
@@ -431,11 +388,8 @@ public class DonateContentController {
         if(!page.getTag().equals(pageTag))
             throw notFound(loc);
 
-        model.addAttribute("method", "post");
-        model.addAttribute("page", page);
-        model.addAttribute("pack", pack);
+        addEditorAttributes(model, "post", pack, page);
         model.addAttribute("packForm", new DonatePackForm(pack, donateService));
-        model.addAttribute("token_types", DonatePackTokenType.values());
 
         return "admin/donate/pack_form";
     }
@@ -465,22 +419,12 @@ public class DonateContentController {
             log("admin.log.donate.pack.edit", request, pack.getTitle()+" #"+pack.getId());
             popup("admin.donate.pack.edited", loc, PopupMessage.Type.OK, request, response);
 
-            if(!packForm.getImage().isEmpty()) {
-                try {
-                    upload.uploadImageResized(packForm.getImage(), 400, 400, false, pack.getId()+".jpg", "donate", "packs");
-                }catch(Exception ex) {
-                    popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
-                    UploadService.LOGGER.catching(ex);
-                }
-            }
+            saveImage(pack, packForm.getImage(), loc, request, response);
 
             return "redirect:/admin/donate/pages/"+page.getTag()+"/pack/"+pack.getId();
         }
 
-        model.addAttribute("method", "post");
-        model.addAttribute("page", page);
-        model.addAttribute("pack", pack);
-        model.addAttribute("token_types", DonatePackTokenType.values());
+        addEditorAttributes(model, "post", pack, page);
 
         return "admin/donate/pack_form";
     }
@@ -534,6 +478,56 @@ public class DonateContentController {
 
     private void log(String langKey, HttpServletRequest request, Object... langValues) {
         logs.log(langKey, langValues, userService.getCurrentUser(), request.getRemoteAddr());
+    }
+
+    private void saveImage(DonatePage page, MultipartFile mfile, Locale loc,
+            HttpServletRequest request, HttpServletResponse response) {
+        if(!mfile.isEmpty()) {
+            try {
+                upload.uploadImageResized(mfile, PAGE_IMG_WIDTH, PAGE_IMG_HEIGHT,
+                        false, page.getId()+".jpg", "donate", "pages");
+            }catch(Exception ex) {
+                popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
+                UploadService.LOGGER.catching(ex);
+            }
+        }
+    }
+
+    private void saveImage(DonatePack pack, MultipartFile mfile, Locale loc,
+            HttpServletRequest request, HttpServletResponse response) {
+        if(!mfile.isEmpty()) {
+            DonateDisplayType display = pack.getCategory().getDisplayType();
+            try {
+                upload.uploadImageResized(mfile, display.getWidth(), display.getHeight(),
+                        false, pack.getId()+".jpg", "donate", "packs");
+            }catch(Exception ex) {
+                popup("upload.failed.image", loc, PopupMessage.Type.WARN, request, response);
+                UploadService.LOGGER.catching(ex);
+            }
+        }
+    }
+
+    private void addEditorAttributes(Model model, String method, DonatePage page) {
+        model.addAttribute("method", method);
+        model.addAttribute("page", page);
+        model.addAttribute("servers", servers.findAll());
+        model.addAttribute("image_width", PAGE_IMG_WIDTH);
+        model.addAttribute("image_height", PAGE_IMG_HEIGHT);
+    }
+
+    private void addEditorAttributes(Model model, String method, DonateCategory category, DonatePage page) {
+        model.addAttribute("method", method);
+        model.addAttribute("page", page);
+        model.addAttribute("pages", pages.findAllByOrderByOrdinaryAsc());
+        model.addAttribute("category", category);
+        model.addAttribute("display_types", DonateDisplayType.values());
+    }
+
+    private void addEditorAttributes(Model model, String method, DonatePack pack, DonatePage page) {
+        model.addAttribute("method", method);
+        model.addAttribute("page", page);
+        model.addAttribute("pack", pack);
+        model.addAttribute("token_types", DonatePackTokenType.values());
     }
 
     //OTHER

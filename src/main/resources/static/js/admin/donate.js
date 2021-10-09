@@ -229,6 +229,20 @@ function DonateAdmin(){
 			handler.call(tokenBlock, name, type, typeText);
 		});
 
+		function applyImageSize(){
+			let optCat = $('#inputCategory option:selected');
+			let sizeDisplay = $('#donate-display-size');
+			let width = optCat.data('display-width');
+			let height = optCat.data('display-height');
+			sizeDisplay.text(width+'x'+height);
+		}
+
+		applyImageSize();
+		$('#inputCategory').on('change', function(){
+			applyImageSize();
+		});
+
+
 		loading = false;
 	}
 

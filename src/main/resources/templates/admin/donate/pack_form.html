@@ -31,7 +31,7 @@
 						<label for="inputTitle" class="col-sm-3 col-form-label text-truncate">Название</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control"
-								id="inputTitle" placeholder="Название страницы"
+								id="inputTitle" placeholder="Название набора"
 								th:field="*{title}"
 								required>
 							<div class="alert alert-danger px-3 my-1"
@@ -46,20 +46,16 @@
 								th:field="*{category}">
 								<option th:each="category : ${page.categories}"
 									th:value="${category.id}"
-									th:text="${category.title}"></option>
+									th:text="${category.title}"
+									th:attrappend="data-display-width=${category.displayType.width},
+												data-display-height=${category.displayType.height}"></option>
 							</select>
 						</div>
 					</div>
 
 					<div class="form-group row">
 						<div class="col-sm-3">
-						<span class="text-truncate">Изображение</span>
-							<p>
-								<small class="text-muted">
-									Доступные форматы: PNG, JPG, JPEG.<br>
-									Рекомендованный размер: 400x400
-								</small>
-							</p>
+							<span class="text-truncate">Изображение</span>
 						</div>
 						<div class="col-sm-9">
 							<div class="custom-file">
@@ -67,6 +63,12 @@
 							    	accept=".png,.jpeg,.jpg">
 							    <label class="custom-file-label" for="imageInput" data-browse="Выбрать">Выберите файл</label>
 							</div>
+							<p>
+								<small class="text-muted">
+									Доступные форматы: PNG, JPG, JPEG.
+									Рекомендованный размер: <span id="donate-display-size">?</span>
+								</small>
+							</p>
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
 								th:errors="*{image}"></div>
