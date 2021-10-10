@@ -10,11 +10,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.util.StringUtils;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.sub.PlayerBanRecord;
 
 public interface PlayerBanRecordRepository extends Repository<PlayerBanRecord, Integer>{
+
+    public void findById(int id);
 
     public void deleteById(int id);
 
@@ -26,11 +29,19 @@ public interface PlayerBanRecordRepository extends Repository<PlayerBanRecord, I
     public void delete(PlayerBanRecord entity);
 
     @Deprecated
+    @Query("SELECT r FROM PlayerBanRecord r WHERE r.id = :id AND (r.endTime = 0 OR r.endTime > :now)")
+    public Optional<PlayerBanRecord> getActiveBan(@Param("id") int id, @Param("now") int currentTimestamp);
+
+    @Deprecated
     @Query("SELECT r FROM PlayerBanRecord r WHERE r.player = :#{#u.name} AND (r.endTime = 0 OR r.endTime > :now)")
     public Optional<PlayerBanRecord> getActiveBan(@Param("u") User user, @Param("now") int currentTimestamp);
 
     public default Optional<PlayerBanRecord> getActiveBan(User user){
         return getActiveBan(user, (int) (System.currentTimeMillis()/1000));
+    }
+
+    public default Optional<PlayerBanRecord> getActiveBan(int id){
+        return getActiveBan(id, (int) (System.currentTimeMillis()/1000));
     }
 
     @Deprecated
@@ -45,7 +56,9 @@ public interface PlayerBanRecordRepository extends Repository<PlayerBanRecord, I
     public Page<PlayerBanRecord> searchActiveBans(@Param("pnp") String playerNamePart, @Param("now") int currentTimestamp, Pageable page);
 
     public default Page<PlayerBanRecord> getActiveBans(String playerNameSearch, Pageable page){
-        return searchActiveBans(playerNameSearch, (int) (System.currentTimeMillis()/1000), page);
+        if(StringUtils.hasText(playerNameSearch))
+            return searchActiveBans(playerNameSearch, (int) (System.currentTimeMillis()/1000), page);
+        return getActiveBans(page);
     }
 
 }

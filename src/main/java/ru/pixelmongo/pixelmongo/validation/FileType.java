@@ -13,7 +13,7 @@ import javax.validation.Payload;
 * File Type validation. Confirms empty files. For empty check use {@link FileNotEmpty}
 *
 */
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {FileTypeValidator.class})
 public @interface FileType {

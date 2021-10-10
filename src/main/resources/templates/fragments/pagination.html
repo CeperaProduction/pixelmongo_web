@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+
+	<div th:fragment="pagination">
+		<nav>
+			<ul class="pagination mb-0 center">
+				<li class="page-item" th:each="p: ${pagination}"
+					th:classappend="${p.active}?active">
+					<a class="page-link"
+						th:classappend="${p.disabled}?disabled"
+						th:disabled="${p.disabled}"
+						th:href="${@templateService.addParameterToCurrentUrl('page', p.page)}"
+						th:switch="${p.step}">
+						<span th:case="'back'">«</span>
+						<span th:case="'next'">»</span>
+						<span th:case="*" th:text="${p.page}"></span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+
+</body>
+</html>

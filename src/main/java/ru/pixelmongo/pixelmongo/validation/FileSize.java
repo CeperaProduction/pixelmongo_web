@@ -13,7 +13,7 @@ import javax.validation.Payload;
  * File size validation. Confirms empty files. For empty check use {@link FileNotEmpty}
  *
  */
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {FileSizeValidator.class})
 public @interface FileSize {

@@ -67,6 +67,20 @@ html, body{
 	border-color: #594ba5;
 }
 
+.page-item.active .page-link{
+	background-color: #3e3573;
+	border-color: #3e3573;
+}
+
+.page-link{
+	color: #3e3573;
+}
+
+.page-link:focus{
+	border-color: #594ba5;
+	box-shadow: 0 0 0 .2rem rgba(62,53,115,.25);
+}
+
 .bg-balls{
 	background-image: url("../img/background_balls.png");
 	background-repeat: repeat;
@@ -651,12 +665,22 @@ form.link button:active{
 	.rules-header h1{
 		font-size: 2rem;
 	}
+
+	.banlist-header h1{
+		font-size: 2rem;
+	}
 }
 
 .rules-anime-img{
 	width: 100%;
 	max-width: 400px;
 	margin-bottom: -100px;
+}
+
+.banlist-anime-img{
+	width: 100%;
+	max-width: 250px;
+	margin-bottom: -90px;
 }
 
 .profile-pokeball{
@@ -671,5 +695,27 @@ form.link button:active{
 	background-size: 101%;
 	border: 0px solid #fff;
 	border-radius: 50%;
+}
+
+.ban-proofs>*{
+	padding-left: 0.25rem;
+	padding-right: 0.25rem;
+}
+
+.ban-proofs a{
+	color: #3e3573;
+}
+
+.ban-proofs a:hover{
+	color: #3e85a3;
+}
+
+.ban-proof-container{
+	width: 100%;
+	text-align: center;
+}
+
+.ban-proof{
+	width: 100%;
 }
 

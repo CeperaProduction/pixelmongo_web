@@ -63,6 +63,9 @@ $(function(){
 					if(res.data != undefined && res.data.balance !== undefined){
 						$('.balance').text(res.data.balance);
 					}
+				}, function(res){
+					messages.showMessage(res.message, 'error');
+					modal.modal('show');
 				});
 			}, function(){
 				modal.modal('show');

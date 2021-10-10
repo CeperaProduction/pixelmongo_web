@@ -7,12 +7,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughMoneyException;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateServer;
@@ -86,6 +88,12 @@ public class DonateControllerRest {
                 .filter(p->p.isEnabled() && p.getCategory().isEnabled() && p.getCategory().getPage().isEnabled())
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,
                         msg.getMessage("error.status.404.donate_pack", null, loc)));
+    }
+
+    @ExceptionHandler
+    public ResultMessage handleNoMoney(DonateNotEnoughMoneyException ex, Locale loc) {
+        return new ResultMessage(DefaultResult.ERROR,
+                msg.getMessage("donate.no_money", null, loc));
     }
 
 }
