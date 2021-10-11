@@ -79,7 +79,7 @@
 			                <a th:href="@{/admin}"><i class="fa fa-home fa-fw"></i> Главная</a>
 			            </li>
 			            <li th:classappend="${mode == 'users'} ? active"
-			            	sec:authorize="hasAnyAuthority('admin.panel.users', 'admin.panel.groups')">
+			            	sec:authorize="hasAnyAuthority('admin.panel.users', 'admin.panel.groups', 'admin.panel.staff')">
 			                <a href="#menuUsers" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
 			                	<i class="fa fa-user-circle fa-fw"></i>
 			                	Пользователи
@@ -97,6 +97,12 @@
 			                        	Управление группами
 			                        </a>
 			                    </li>
+					            <li sec:authorize="hasAuthority('admin.panel.staff')">
+					                <a th:href="@{/admin/staff}">
+					                	<i class="fa fa-user-shield fa-fw"></i>
+					                	Страница персонала
+					                </a>
+					            </li>
 			                </ul>
 			            </li>
 			            <li th:classappend="${mode == 'rules'} ? active"

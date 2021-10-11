@@ -195,6 +195,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers("/admin/donate/extras/**").hasAuthority("admin.panel.donate.logs")
             .antMatchers("/admin/donate/**").hasAuthority("admin.panel.donate")
 
+            .antMatchers("/admin/staff/**").hasAuthority("admin.panel.staff")
+
             .antMatchers("/admin/**").hasAuthority("admin.panel.access")
 
             .anyRequest().permitAll()

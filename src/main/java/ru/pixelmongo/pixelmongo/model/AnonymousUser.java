@@ -3,8 +3,10 @@ package ru.pixelmongo.pixelmongo.model;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import ru.pixelmongo.pixelmongo.model.dao.primary.Staff;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
@@ -55,6 +57,11 @@ public final class AnonymousUser extends User{
     @Override
     public List<UserLoginRecord> getLoginRecords() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public Optional<Staff> getStaffInfo() {
+        return Optional.empty();
     }
 
     @Override

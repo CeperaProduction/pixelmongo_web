@@ -669,12 +669,22 @@ form.link button:active{
 	.banlist-header h1{
 		font-size: 2rem;
 	}
+
+	.staff-header h1{
+		font-size: 2rem;
+	}
 }
 
 .rules-anime-img{
 	width: 100%;
 	max-width: 400px;
 	margin-bottom: -100px;
+}
+
+.staff-anime-img{
+	width: 100%;
+	max-width: 200px;
+	margin-bottom: -150px;
 }
 
 .banlist-anime-img{

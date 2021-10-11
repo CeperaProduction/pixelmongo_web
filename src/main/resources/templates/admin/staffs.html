@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление страницей персонала</title>
+
+	<th:block th:replace="/fragments/jquery :: ui"></th:block>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/staff.css}" />
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/staff.js}"></script>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Страница персонала
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table id="staff-list" class="table table-striped m-0">
+					<tbody>
+						<tr>
+							<td></td>
+							<th>Ник</th>
+							<th>Роль</th>
+							<th>Действия</th>
+						</tr>
+						<tr class="staff-row"
+							th:each="staff : ${staffs}"
+							th:attrappend="data-staff-id=${staff.id}">
+							<td>
+								<div class="staff-block min"
+									th:classappend="${staff.display.styleClassBackground}">
+									<div class="staff-block-fg"
+										th:classappend="${staff.display.styleClassForeground}"></div>
+								</div>
+							</td>
+							<td th:text="${staff.user.name}"></td>
+							<td th:text="${staff.title}"></td>
+							<td>
+								<a class="btn btn-sm btn-outline-secondary"
+									style="cursor: pointer"
+									th:href="@{/admin/staff/{user}(user=${staff.user.name})}">
+									<i class="fa fa-cog"></i>
+									Настроить
+								</a>
+								<a class="btn btn-sm btn-outline-secondary staff-move"
+									style="cursor: move">
+									<i class="fa fa-sort"></i>
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="card-footer">
+		    	<a th:href="@{/admin/staff/new}" class="btn btn-primary">
+		    		<i class="fa fa-user-plus"></i> Добавить
+		    	</a>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

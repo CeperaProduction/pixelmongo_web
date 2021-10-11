@@ -1,0 +1,258 @@
+
+.staff-block{
+	border: 0px solid #000;
+	border-radius: 10%;
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	background-color: #fff;
+}
+
+.staff-block .staff-block-fg{
+	border: 0px solid #000;
+	border-radius: 10%;
+	width: 100%;
+	height: 100%;
+}
+
+span.staff-block, span.staff-block-fg{
+	display: inline-block;
+}
+
+.staff-display-radio{
+	margin-right: 0.5rem;
+}
+
+.staff-display-radio>input[type="radio"]{
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.staff-display-radio>input[type="radio"] + .staff-block{
+	cursor: pointer;
+}
+
+.staff-display-radio>input[type="radio"]:checked + .staff-block{
+	box-shadow: 0 0 0 .2rem rgba(38,143,255,0.5);
+}
+
+.staff-block.min{
+	width: 30px;
+	height: 30px;
+}
+
+
+/*
+
+	FOREGROUNDS
+
+*/
+
+.staff-block-fg.display-fg-none{
+	background: none;
+}
+
+.staff-block-fg.display-fg-pokeball{
+	background: no-repeat center/75% url('../img/staff/pokeball.png');
+}
+
+.staff-block-fg.display-fg-masterball{
+	background: no-repeat center/75% url('../img/staff/masterball.png');
+}
+
+.staff-block-fg.display-fg-ultraball{
+	background: no-repeat center/75% url('../img/staff/ultraball.png');
+}
+
+.staff-block-fg.display-fg-greatball{
+	background: no-repeat center/75% url('../img/staff/greatball.png');
+}
+
+
+/*
+
+	BACKGROUNDS
+
+*/
+
+.staff-block.display-bg-white{
+	background: #fff;
+}
+
+.staff-block.display-bg-blue{
+	background: #3c88dd;
+}
+
+.staff-block.display-bg-light-blue{
+	background: #62ccff;
+}
+
+.staff-block.display-bg-dark-blue{
+	background: #05509a;
+}
+
+.staff-block.display-bg-cyan{
+	background: #00d7e8;
+}
+
+.staff-block.display-bg-green{
+	background: #1cc84b;
+}
+
+.staff-block.display-bg-light-green{
+	background: #00ff40;
+}
+
+.staff-block.display-bg-dark-green{
+	background: #0a7632;
+}
+
+.staff-block.display-bg-red{
+	background: #ff0000;
+}
+
+.staff-block.display-bg-light-red{
+	background: #ff8080;
+}
+
+.staff-block.display-bg-dark-red{
+	background: #db1c1c;
+}
+
+.staff-block.display-bg-gray{
+	background: #808080;
+}
+
+.staff-block.display-bg-light-gray{
+	background: #c0c0c0;
+}
+
+.staff-block.display-bg-dark-gray{
+	background: #626262;
+}
+
+.staff-block.display-bg-yellow{
+	background: #ffff00;
+}
+
+.staff-block.display-bg-light-yellow{
+	background: #ffffa8;
+}
+
+.staff-block.display-bg-orange{
+	background: #ff8000;
+}
+
+.staff-block.display-bg-light-orange{
+	background: #ff9d6f;
+}
+
+.staff-block.display-bg-dark-orange{
+	background: #f36f0c;
+}
+
+.staff-block.display-bg-purple{
+	background: #b803e4;
+}
+
+.staff-block.display-bg-light-purple{
+	background: #e06ffd;
+}
+
+.staff-block.display-bg-dark-purple{
+	background: #8f02b3;
+}
+
+.staff-block.display-bg-pink{
+	background: #ff80c0;
+}
+
+
+.staff-block.display-bg-blue-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #3c88dd 100%);
+}
+
+.staff-block.display-bg-light-blue-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #62ccff 100%);
+}
+
+.staff-block.display-bg-dark-blue-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #05509a 100%);
+}
+
+.staff-block.display-bg-cyan-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #00d7e8 100%);
+}
+
+.staff-block.display-bg-green-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #1cc84b 100%);
+}
+
+.staff-block.display-bg-light-green-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #00ff40 100%);
+}
+
+.staff-block.display-bg-dark-green-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #0a7632 100%);
+}
+
+.staff-block.display-bg-red-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #ff0000 100%);
+}
+
+.staff-block.display-bg-light-red-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #ff8080 100%);
+}
+
+.staff-block.display-bg-dark-red-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #db1c1c 100%);
+}
+
+.staff-block.display-bg-gray-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #808080 100%);
+}
+
+.staff-block.display-bg-light-gray-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #c0c0c0 100%);
+}
+
+.staff-block.display-bg-dark-gray-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #626262 100%);
+}
+
+.staff-block.display-bg-yellow-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #ffff00 100%);
+}
+
+.staff-block.display-bg-light-yellow-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #ffffa8 100%);
+}
+
+.staff-block.display-bg-orange-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #ff8000 100%);
+}
+
+.staff-block.display-bg-light-orange-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #ff9d6f 100%);
+}
+
+.staff-block.display-bg-dark-orange-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #f36f0c 100%);
+}
+
+.staff-block.display-bg-purple-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #b803e4 100%);
+}
+
+.staff-block.display-bg-light-purple-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #e06ffd 100%);
+}
+
+.staff-block.display-bg-dark-purple-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #8f02b3 100%);
+}
+
+.staff-block.display-bg-pink-gradient{
+	background: linear-gradient(0deg, #ffffff 0%, #ff80c0 100%);
+}
+

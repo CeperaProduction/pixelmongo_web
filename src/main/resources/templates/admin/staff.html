@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление страницей персонала</title>
+
+	<th:block th:replace="/fragments/jquery :: ui"></th:block>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/staff.css}" />
+	<script type="text/javascript" charset="UTF-8" th:src="@{/js/admin/staff.js}"></script>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        <span th:if="${staff.id == 0}">Добавление пользователя в персонал</span>
+		        <span th:if="${staff.id != 0}">Изменение пользователя в персонале</span>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/staff}">
+					<i class="fa fa-backward"></i>
+					Назад
+				</a>
+		    </div>
+		    <div class="card-body">
+	        	<form id="staffForm" th:action="@{''}" th:method="${method}" th:object="${staffForm}">
+					<div class="form-group row">
+						<label for="inputUser" class="col-sm-3 col-form-label text-truncate">Ник</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputUser" placeholder="Ник игрока"
+								th:field="*{user}"
+								th:required="${staff.id == 0}"
+								th:disabled="${staff.id != 0}">
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{user}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputTitle" class="col-sm-3 col-form-label text-truncate">Роль</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputTitle" placeholder="Отображаемая роль"
+								th:field="*{title}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{title}"></div>
+						</div>
+					</div>
+					<hr class="separator" />
+					<div class="form-group row">
+						<div class="col-sm-3 text-truncate">
+							Стиль
+						</div>
+						<div class="col-sm-9">
+							<div>
+								<label class="staff-display-radio"
+									th:each="display : ${displayTypes}">
+								  	<input type="radio" name="display" th:value="${display}"
+								  		th:checked="${display.equals(staffForm.display)}">
+								  	<span class="staff-block min"
+										th:classappend="${display.styleClassBackground}">
+										<span class="staff-block-fg"
+											th:classappend="${display.styleClassForeground}"></span>
+									</span>
+								</label>
+							</div>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{display}"></div>
+						</div>
+					</div>
+					<div class="alert alert-danger px-3 my-1"
+						role="alert"
+						th:errors="${staffForm}"></div>
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="staffForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Применить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${staff.id != 0}">
+					<button type="submit" class="btn btn-danger"
+						data-confirm="Вы уверены, что хотите удалить данного пользователя со страницы персонала?"
+						data-confirm-title="Подтверждение">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
+				</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

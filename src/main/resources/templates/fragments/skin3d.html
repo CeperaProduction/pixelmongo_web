@@ -6,9 +6,9 @@
 		<script type="text/javascript" charset="UTF-8" th:src="@{/js/skin.js}"></script>
 	</th:block>
 
-	<div th:fragment="skin3d(user, width, height)">
+	<div th:fragment="skin3d(user, width, height)" th:with="id = ${'skin3d-'+user.id}">
 
-		<div id="skin3d" class="skin3d" th:style="|width: ${width}px; height: ${height}px|">
+		<div th:id="${id}" class="skin3d" th:style="|width: ${width}px; height: ${height}px|">
 			<noscript>
 				<div id="skin2d" class="skin2d">
 					<div class="skin" th:style="|background-image: url('${@skinService.getSkinBodyUrlPath(user)}');|"></div>
@@ -16,17 +16,20 @@
 			</noscript>
 		</div>
 		<script type="text/javascript">
-			var skinUrl = "[[@{${@skinService.getSkinUrlPath(user)}}]]";
-			var capeUrl = "[[@{${@skinService.getCapeUrlPath(user)}}]]";
-			var transparent = "[[${transparent}]]" ? true : false;
-			try{
-				skin3d.init('skin3d', skinUrl, capeUrl, transparent);
-			}catch(e){
-				console.log(e);
-				var skinBodyUrl = "[[@{${@skinService.getSkinBodyUrlPath(user)}}]]";
-				var skin2d = '<div id="skin2d" class="skin2d"><div class="skin" style="background-image: url(\''+skinBodyUrl+'\');"></div></div>';
-				$('#skin3d').html(skin2d);
-			}
+			(function(){
+				let id = "[[${id}]]";
+				let skinUrl = "[[@{${@skinService.getSkinUrlPath(user)}}]]";
+				let capeUrl = "[[@{${@skinService.getCapeUrlPath(user)}}]]";
+				let transparent = "[[${transparent}]]" ? true : false;
+				try{
+					skin3d.init(id, skinUrl, capeUrl, transparent);
+				}catch(e){
+					console.log(e);
+					let skinBodyUrl = "[[@{${@skinService.getSkinBodyUrlPath(user)}}]]";
+					let skin2d = '<div id="skin2d" class="skin2d"><div class="skin" style="background-image: url(\''+skinBodyUrl+'\');"></div></div>';
+					$('#skin3d').html(skin2d);
+				}
+			})();
 		</script>
 
 	</div>

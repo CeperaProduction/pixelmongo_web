@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Персонал</title>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/staff.css}" />
+	<th:block th:replace="/fragments/skin3d :: headers"></th:block>
+
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="container">
+			<div>
+				<div class="text-center staff-header py-4">
+					<img th:src="@{/img/staff_anime1.png}" class="staff-anime-img gradient-white-block"/>
+					<h1 class="text-pokemon text-white text-shadow text-nowrap">Персонал проекта</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div th:each="staff : ${staffs}"
+					class="col-6 col-md-4 col-lg-3 mx-auto my-2">
+					<div class="staff-block text-white p-2"
+						th:classappend="${staff.display.styleClassBackground}">
+						<div class="staff-block-fg"
+							th:classappend="${staff.display.styleClassForeground}">
+							<div class="text-center">
+								<span class="text-shadow text-pokemon" th:text="${staff.title}"></span>
+							</div>
+							<div class="text-center">
+								<strong class="text-shadow" th:text="${staff.user.name}"></strong>
+							</div>
+							<th:block th:replace="/fragments/skin3d :: skin3d(user=${staff.user}, width=170, height=270, transparent=true)"></th:block>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>
