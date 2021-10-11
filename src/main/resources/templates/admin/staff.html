@@ -51,21 +51,23 @@
 					</div>
 					<hr class="separator" />
 					<div class="form-group row">
-						<div class="col-sm-3 text-truncate">
+						<div class="col-sm-3 text-truncate pb-2">
 							Стиль
 						</div>
 						<div class="col-sm-9">
 							<div>
-								<label class="staff-display-radio"
-									th:each="display : ${displayTypes}">
-								  	<input type="radio" name="display" th:value="${display}"
-								  		th:checked="${display.equals(staffForm.display)}">
-								  	<span class="staff-block min"
-										th:classappend="${display.styleClassBackground}">
-										<span class="staff-block-fg"
-											th:classappend="${display.styleClassForeground}"></span>
-									</span>
-								</label>
+								<th:block th:each="display : ${displayTypes}">
+									<hr class="separator mt-0" th:if="${displayHelper.fgChanged(display)}" />
+									<label class="staff-display-radio">
+									  	<input type="radio" name="display" th:value="${display}"
+									  		th:checked="${display.equals(staffForm.display)}">
+									  	<span class="staff-block min"
+											th:classappend="${display.styleClassBackground}">
+											<span class="staff-block-fg"
+												th:classappend="${display.styleClassForeground}"></span>
+										</span>
+									</label>
+								</th:block>
 							</div>
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"

@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.Staff;
 import ru.pixelmongo.pixelmongo.model.dao.primary.StaffDisplay;
+import ru.pixelmongo.pixelmongo.model.dao.primary.StaffDisplayForeground;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.StaffManageForm;
@@ -188,11 +189,24 @@ public class StaffAdminController {
         model.addAttribute("method", method);
         model.addAttribute("staff", staff);
         model.addAttribute("displayTypes", StaffDisplay.getAllVariants());
+        model.addAttribute("displayHelper", new StaffDisplayHelper());
     }
 
     @ModelAttribute
     public void applyMode(Model model) {
         model.addAttribute("mode", "users");
+    }
+
+    public static class StaffDisplayHelper{
+
+        private StaffDisplayForeground lastFg;
+
+        public boolean fgChanged(StaffDisplay display) {
+            boolean res = lastFg != null && lastFg != display.getForeground();
+            lastFg = display.getForeground();
+            return res;
+        }
+
     }
 
 }
