@@ -143,6 +143,10 @@
 			                    </li>
 			                </ul>
 			            </li>
+			            <li th:classappend="${mode == 'billing'} ? active"
+			            	sec:authorize="hasAuthority('admin.panel.billing')">
+			                <a th:href="@{/admin/billing}"><i class="fa fa-wallet fa-fw"></i> Лог пополнений</a>
+			            </li>
 			            <li th:classappend="${mode == 'monitoring'} ? active"
 			            	sec:authorize="hasAuthority('admin.panel.monitoring')">
 			                <a th:href="@{/admin/monitoring}"><i class="fa fa-server fa-fw"></i> Мониторинг серверов</a>

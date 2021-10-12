@@ -197,6 +197,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
             .antMatchers("/admin/staff/**").hasAuthority("admin.panel.staff")
 
+            .antMatchers("/admin/billing/**").hasAuthority("admin.panel.billing")
+
             .antMatchers("/admin/**").hasAuthority("admin.panel.access")
 
             .anyRequest().permitAll()

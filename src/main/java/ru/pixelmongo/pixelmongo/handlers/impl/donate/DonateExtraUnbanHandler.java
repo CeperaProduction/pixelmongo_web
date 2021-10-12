@@ -1,4 +1,4 @@
-package ru.pixelmongo.pixelmongo.handlers.impl;
+package ru.pixelmongo.pixelmongo.handlers.impl.donate;
 
 import java.util.Date;
 import java.util.Locale;

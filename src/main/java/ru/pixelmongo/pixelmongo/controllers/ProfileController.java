@@ -1,6 +1,8 @@
 package ru.pixelmongo.pixelmongo.controllers;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,12 +22,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import ru.pixelmongo.pixelmongo.handlers.impl.DonateExtraUnbanHandler;
+import ru.pixelmongo.pixelmongo.handlers.BillingHandler;
+import ru.pixelmongo.pixelmongo.handlers.impl.donate.DonateExtraUnbanHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserManageForm;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.repositories.sub.PlayerBanRecordRepository;
+import ru.pixelmongo.pixelmongo.services.BillingService;
 import ru.pixelmongo.pixelmongo.services.DonateService;
 import ru.pixelmongo.pixelmongo.services.PlayerSkinService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
@@ -49,6 +53,9 @@ public class ProfileController {
 
     @Autowired
     private UserRepository users;
+
+    @Autowired
+    private BillingService billing;
 
     @Autowired
     private PopupMessageService popupMsg;
@@ -120,6 +127,10 @@ public class ProfileController {
         model.addAttribute("unbanCost", unbanHandler.getCost(user));
         model.addAttribute("unbanDayCost", unbanHandler.getDayCost());
         model.addAttribute("unbanMaxCost", unbanHandler.getMaxCost());
+        List<String> billingHandlers = this.billing.getHandlers().stream()
+                .filter(BillingHandler::isEnabled).map(BillingHandler::getName)
+                .collect(Collectors.toList());
+        model.addAttribute("billingHandlers", billingHandlers);
     }
 
     private void checkForm(UserManageForm form, User user, BindingResult binding, Locale loc) {

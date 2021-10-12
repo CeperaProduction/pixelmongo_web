@@ -89,7 +89,8 @@
 								</div>
 							</div>
 							<div class="card-footer">
-								<a href="#" class="btn btn-primary btn-block">
+								<a href="#" class="btn btn-primary btn-block"
+									data-toggle="modal" data-target="#balance">
 									<i class="fa fa-coins"></i> Пополнение баланса
 								</a>
 								<th:block th:switch="${status}">
@@ -360,6 +361,74 @@
 						      		</button>
 					      		</div>
 					      	</form>
+				    	</div>
+				    </div>
+				</div>
+			</div>
+		</div>
+
+		<div id="balance" class="modal fade" tabindex="-1" role="dialog">
+
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content" th:with="handlers = ${billingHandlers.size()}">
+
+				    <div class="modal-header">
+				      	<h5 class="modal-title">Пополнение баланса</h5>
+				      	<button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+				        	<span aria-hidden="true">
+				        		<i class="fa fa-times"></i>
+							</span>
+				      	</button>
+				    </div>
+
+				    <div class="modal-body pb-0">
+		      			<th:block th:if="${handlers == 0}">
+		      				<div class="text-center" style="min-height: 80px">
+		      					<span class="text-muted">В данный момент нет доступных способов пополнения баланса</span>
+		      				</div>
+		      			</th:block>
+				      	<form id="pay-form" th:action="@{/pay/form}" th:method="POST" th:if="${handlers > 0}">
+				      		<th:block th:if="${handlers == 1}"
+		      					th:with="handler = ${billingHandlers.get(0)}">
+		      					<input type="hidden" name="handler" th:value="${handler}" />
+		      				</th:block>
+
+		      				<th:block th:if="${handlers > 1}">
+		      					<div class="form-group row">
+		      						<div class="col-sm-4 pb-2">
+		      							Способ оплаты
+		      						</div>
+		      						<div class="col-sm-8">
+		      							<div class="form-check payment-type-block" th:each="handler,i : ${billingHandlers}"
+			      							th:with = "inputId = ${'inputHandler-'+i.index}">
+											<input class="form-check-input mt-3"
+												type="radio" name="handler"
+												th:id="${inputId}" th:value="${handler}"
+												th:checked="${i.index == 0}">
+											<label class="form-check-label" th:for="${inputId}">
+												<span class="payment-type" th:classappend="${'handler-'+handler}"></span>
+											</label>
+										</div>
+		      						</div>
+		      					</div>
+		      				</th:block>
+		      				<div class="form-group row">
+								<label for="inputPassword" class="col-sm-4 col-form-label text-truncate">Количество GP</label>
+								<div class="col-sm-8">
+									<input type="number" class="form-control"
+										id="inputSum" placeholder="Сумма"
+										name="sum" min="100" required >
+								</div>
+		      				</div>
+				      	</form>
+				    </div>
+				    <div class="modal-footer" th:if="${handlers > 0}">
+				    	<div style="width: 100%">
+					      	<div class="py-1">
+					      		<button form="pay-form" type="submit" class="btn btn-primary btn-block">
+					      			Пополнить баланс
+					      		</button>
+				      		</div>
 				    	</div>
 				    </div>
 				</div>

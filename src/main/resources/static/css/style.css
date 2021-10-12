@@ -744,3 +744,15 @@ form.link button:active{
 	width: 100%;
 }
 
+.payment-type{
+	display: inline-block;
+	height: 40px;
+	width: 250px;
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+}
+
+.payment-type.handler-anypay{
+	background-image: url('../img/billing/anypay.png');
+}
+

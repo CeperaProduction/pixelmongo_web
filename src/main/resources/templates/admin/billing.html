@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Информация о пополнениях счета</title>
+
+	<th:block th:replace="/fragments/bootstrap :: datepicker"></th:block>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-4">
+		    <div class="card-header">
+		        Поиск информации о пополнении
+		    </div>
+		    <div class="card-body">
+	        	<form th:method="GET" th:action="''">
+		        	<div class="input-group mb-2">
+		        		<input type="text" class="form-control"
+							placeholder="Ник игрока"
+							aria-label="Ник игрока"
+							aria-describedby="basic-addon2"
+							name="search" minlength="3"
+							th:value="${search}">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="fa fa-search"></i>
+								Поиск
+							</button>
+						</div>
+					</div>
+					<div class="form-row mb-0">
+		        		<div class="col-md-6">
+	        				<div class="input-group mb-2">
+	        					<div class="input-group-prepend">
+									<label class="input-group-text" for="startTime">Начало</label>
+								</div>
+				        		<input id="startTime" type="text"
+				        			class="form-control date-picker"
+				        			placeholder="Начальная дата поиска"
+									required>
+								<input id="startTimeVal" type="hidden"
+									name="start"
+									th:value="${start}">
+							</div>
+	        			</div>
+	        			<div class="col-md-6">
+	        				<div class="input-group mb-2">
+	        					<div class="input-group-prepend">
+									<label class="input-group-text" for="endTime">Конец</label>
+								</div>
+				        		<input id="endTime" type="text"
+				        			class="form-control date-picker"
+				        			placeholder="Конечная дата поиска"
+									required>
+								<input id="endTimeVal" type="hidden"
+									name="end"
+									th:value="${end}">
+							</div>
+	        			</div>
+					</div>
+	        	</form>
+		    </div>
+		</div>
+        <div class="card mb-4" th:if="${payments_count != 0}">
+        	<div class="card-body">
+        		<div class="row align-items-center">
+	        		<div class="col text-center text-muted">
+	        			Получено за указанный промежуток: <span th:text="${profit}"></span> р.
+	        		</div>
+	        	</div>
+        	</div>
+       	</div>
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Информация о пополнениях счета
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0" th:if="${payments_count != 0}">
+					<thead>
+						<tr>
+							<th scope="col">Логин</th>
+							<th scope="col">Дата</th>
+							<th scope="col">Источник</th>
+							<th scope="col">Способ оплаты</th>
+							<th scope="col">Сумма</th>
+							<th scope="col">Получено</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="payment : ${payments}">
+							<td th:text="${payment.userName}"
+								th:title="${payment.userName+'#'+payment.userId}"></td>
+							<td th:text="${@templateService.printDate(payment.updated)}"></td>
+							<td th:text="${payment.handler}"></td>
+							<td th:text="${payment.payMethod}"></td>
+							<td th:text="${payment.sum}"></td>
+							<td>
+								<span th:text="${payment.profitString}"></span> р.
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="container" th:if="${payments_count == 0}">
+					<table class="table" style="min-height: 200px">
+						<tbody>
+							<tr>
+								<td class="align-middle text-center">
+									По указанным параметрам не удалось найти ни одного пополнения
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+		    </div>
+		    <div class="card-footer p-1">
+		    	<div th:if="${payments_count != 0}">
+					<div th:replace="~{admin/fragments/pagination :: pagination}"></div>
+				</div>
+		    </div>
+		</div>
+		<script type="text/javascript">
+			let pickers = $('.date-picker');
+			pickers.datepicker({
+				format : 'dd-mm-yyyy',
+				autoclose : true,
+				language : 'ru'
+			});
+			pickers.each(function(){
+				let p = $(this);
+				let isEnd = p.attr('id').includes('end');
+				let valIn = $('#'+p.attr('id')+'Val');
+				if(valIn) {
+					let val = valIn.val();
+					if(val){
+						if(isEnd) val -= 86400;
+						p.datepicker('setDate', new Date(val * 1000));
+					}
+				}
+				p.datepicker().on('changeDate', function(){
+					let date = p.datepicker('getDate');
+					let val = Math.round(date.getTime()/1000);
+					if(isEnd) val += 86400;
+					valIn.val(val);
+				});
+			});
+		</script>
+	</div>
+</body>
+</html>
