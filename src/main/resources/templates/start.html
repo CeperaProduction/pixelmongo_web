@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Начать игру</title>
+
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="col-md-4 content-block gradient-white-block">
+					<div class="start-image-holder">
+						<div class="text-center w-100">
+							<img th:src="@{/img/start_anime1.png}" class="start-anime-img"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8 content-block gradient-white-block">
+					<div class="text-center mb-4">
+						<h1 class="text-pokemon">Начать игру</h1>
+						<p class="font-weight-bold">
+							Для начала игры на нашем проекте вам понадобится выполнить 3 этапа:
+						</p>
+					</div>
+					<div class="my-4">
+						<h4 class="font-weight-bold">Ознакомление с правилами</h4>
+						<p>
+							Чтобы не попасть в неприятную ситуацию, внимательно прочитай правила проекта.
+							Там описаны основные пункты, что не допускается делать в игре, а также как вести себя, если тебе причиняют дискомфорт на проекте.
+						</p>
+						<div class="text-center">
+							<a class="btn btn-md btn-primary" th:href="@{/rules}"><i class="fa fa-book"></i> Правила проекта</a>
+						</div>
+					</div>
+
+					<div class="my-4">
+						<h4 class="font-weight-bold">Регистрация</h4>
+						<p>
+							Чтобы играть на проекте, вам необходимо создать аккаунт на сайте проекта.
+							Пройдите простую регистрацию указав email, логин и пароль и начните свое приключение!
+						</p>
+						<div class="text-center">
+							<a class="btn btn-md btn-primary" th:href="@{/register}"><i class="fa fa-user-plus"></i> Регистрация</a>
+						</div>
+					</div>
+					<div class="my-4">
+						<h4 class="font-weight-bold">Загрузка лаунчера</h4>
+						<p>
+							Для вашего удобства мы сделали игровой клиент. Он обновляется самостоятельно и вам не придется самим скачивать все моды и ресурсы.
+							Для корректной работы клиента скачайте и установите программное обеспечение
+							<a href="https://www.java.com/ru/download/manual.jsp" target="_blank">JAVA</a>
+							на ваш ПК, предварительно удалив старое, если оно было.
+						</p>
+						<div class="text-center">
+							<a class="btn btn-md btn-info" href="/"><i class="fab fa-windows"></i> Скачать лаунчер</a>
+							<a class="btn btn-md btn-secondary" href="/"><i class="fab fa-java"></i> Скачать в формате JAR</a>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+
+		</div>
+
+	</div>
+</body>
+</html>

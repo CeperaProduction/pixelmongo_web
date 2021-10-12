@@ -24,7 +24,7 @@ public class Staff implements OrderedData<Integer>{
     private int id;
 
     @OneToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @JoinColumn(name = "user_id", unique = true, nullable = false, updatable = false)
     private User user;
 
     @Column(nullable = false)

@@ -687,6 +687,21 @@ form.link button:active{
 	margin-bottom: -150px;
 }
 
+.start-image-holder{
+	display: flex;
+	height: 100%;
+    align-items: center;
+    flex-wrap: wrap;
+	text-align: center;
+}
+
+.start-anime-img{
+	width: 70%;
+	max-width: 250px;
+	max-height: 420px;
+	vertical-align: middle;
+}
+
 .banlist-anime-img{
 	width: 100%;
 	max-width: 250px;
