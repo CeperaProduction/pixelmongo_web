@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -55,6 +56,12 @@ public class MailedConfirmationServiceImpl implements MailedConfirmationService 
         this.ABSOLUTE_URL_BASE = absoluteUrlBase;
         this.CONFIRMATION_ALIVE_TIME = confirmationAliveTime;
         this.CONFIRMATION_SPAM_TIME = confirmationSpamTime;
+    }
+
+    @PostConstruct
+    public void init() {
+        confirms.deleteByCreateDateLessThan(new Date(System.currentTimeMillis()-CONFIRMATION_ALIVE_TIME));
+        LOGGER.info("All expired mailed confirmations removed");
     }
 
     @SuppressWarnings("unchecked")

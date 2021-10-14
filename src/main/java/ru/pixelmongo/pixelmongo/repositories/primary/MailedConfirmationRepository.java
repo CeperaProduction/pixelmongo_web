@@ -1,5 +1,6 @@
 package ru.pixelmongo.pixelmongo.repositories.primary;
 
+import java.util.Date;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -15,6 +16,9 @@ public interface MailedConfirmationRepository extends CrudRepository<MailedConfi
 
     @Transactional
     public void deleteByUserIdAndType(int userId, MailedConfirmationType type);
+
+    @Transactional
+    public void deleteByCreateDateLessThan(Date date);
 
     public Optional<MailedConfirmation> findTopByUserIdAndTypeOrderByCreateDateDesc(int userId, MailedConfirmationType type);
 
