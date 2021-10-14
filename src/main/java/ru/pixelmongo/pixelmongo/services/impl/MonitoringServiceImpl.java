@@ -57,11 +57,11 @@ public class MonitoringServiceImpl implements MonitoringService{
     private Timer updateTimer;
     private ExecutorService threadPool;
 
-    public MonitoringServiceImpl(int timeout, int nextPingDelay, int serverCacheUpdatePeriod, boolean debug) {
+    public MonitoringServiceImpl(long timeout, long nextPingDelay, long serverCacheUpdatePeriod, boolean debug) {
         this.debug = debug;
-        this.timeout = timeout;
-        this.nextPingDelay = nextPingDelay;
-        this.serverCacheUpdatePeriod = serverCacheUpdatePeriod;
+        this.timeout = (int) timeout;
+        this.nextPingDelay = (int) nextPingDelay;
+        this.serverCacheUpdatePeriod = (int) serverCacheUpdatePeriod;
     }
 
     @PostConstruct

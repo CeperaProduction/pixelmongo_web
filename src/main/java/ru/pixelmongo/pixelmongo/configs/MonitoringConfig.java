@@ -1,5 +1,7 @@
 package ru.pixelmongo.pixelmongo.configs;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,18 +17,19 @@ public class MonitoringConfig {
     @Value("${monitoring.debug_mode}")
     private boolean debug;
 
-    @Value("${monitoring.server_cache_time}")
-    private int timeout;
+    @Value("${monitoring.connection_timeout}")
+    private Duration timeout;
 
-    @Value("${monitoring.connection_timeout_ms}")
-    private int nextPingDelay;
+    @Value("${monitoring.next_ping_delay}")
+    private Duration nextPingDelay;
 
     @Value("${monitoring.server_cache_time}")
-    private int serverCacheUpdatePeriod;
+    private Duration serverCacheUpdatePeriod;
 
     @Bean
     public MonitoringService monitoringService() {
-        return new MonitoringServiceImpl(timeout, nextPingDelay, serverCacheUpdatePeriod, debug);
+        return new MonitoringServiceImpl(timeout.toMillis(), nextPingDelay.toMillis(),
+                serverCacheUpdatePeriod.toMillis(), debug);
     }
 
 }
