@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+	<meta charset="UTF-8" />
+
+	<title>Pixelmon Go</title>
+
+	<style>
+		.wrapper{
+			color: #333;
+			background-color: #fff;
+			padding: 2rem;
+		}
+
+		.header{
+			text-align: center;
+		}
+
+		.header img{
+			width: 25%;
+			max-width: 250px;
+			min-width: 140px;
+		}
+
+		.text-center{
+			text-align: center;
+		}
+
+		.content{
+			margin-bottom: 1rem;
+			padding: 1rem;
+			border: 1px solid rgba(0,0,0,0.125);
+			border-radius: 0.25rem;
+		}
+
+		.footer{
+			text-align: center;
+			color: #6c757d;
+		}
+
+		a, a:visited{
+			color: #3e3573;
+			text-decoration: none;
+		}
+
+		a:active, a:focus, a:hover{
+			color: #594ba5;
+			text-decoration: none;
+		}
+
+		.btn{
+			color: #fff;
+			text-decoration: none;
+			background-color: #3e3573;
+			border: 1px solid #3e3573;
+			display: inline-block;
+			font-weight: 400;
+			text-align: center;
+			vertical-align: middle;
+			padding: .375rem .75rem;
+			font-size: 1rem;
+			line-height: 1.5;
+			border-radius: 0.25rem;
+			transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+		}
+
+		.btn:active, .btn:focus{
+			background-color: #3e3573;
+			border-color: #3e3573;
+			text-decoration: none;
+			box-shadow: 0 0 0 .2rem rgba(122, 103, 215, 0.5) !important;
+		}
+
+		.btn:hover{
+			background-color: #594ba5;
+			border-color: #594ba5;
+			text-decoration: none;
+		}
+
+		.btn:visited {
+			color: #fff;
+			text-decoration: none;
+		}
+	</style>
+
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<div class="header">
+			<img src="cid:logo.png" />
+		</div>
+
+		<div class="content">
+			<th:block layout:fragment="content"></th:block>
+		</div>
+
+		<div class="footer">
+			<small>Это автоматическое сообщение. Отвечать на него не следует.</small>
+		</div>
+
+	</div>
+
+</body>
+</html>

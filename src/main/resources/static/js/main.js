@@ -119,6 +119,20 @@ $(function(){
 			messages.showMessage(res.message, res.result == 'ok' ? 'ok' : 'error');
 		}
 	});
+
+	ajax.forms.bind($('#mail-confirm-form'), function(res){
+		messages.showMessage(res.message, res.result == 'ok' ? 'info' : 'error');
+	});
+
+	let confirmBtn = $('#button-mail-confirm');
+	if(confirmBtn.length && userMail){
+
+		$('#inputEmail').on('input', function(){
+			let val = $(this).val();
+			confirmBtn.prop('disabled', val != userMail);
+		});
+
+	}
 });
 
 $(function(){

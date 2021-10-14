@@ -661,7 +661,7 @@ form.link button:active{
 	color: #fff;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 530px) {
 	.rules-header h1{
 		font-size: 2rem;
 	}
@@ -671,6 +671,10 @@ form.link button:active{
 	}
 
 	.staff-header h1{
+		font-size: 2rem;
+	}
+
+	.password-header h1{
 		font-size: 2rem;
 	}
 }
@@ -685,6 +689,12 @@ form.link button:active{
 	width: 100%;
 	max-width: 200px;
 	margin-bottom: -150px;
+}
+
+.password-anime-img{
+	width: 100%;
+	max-width: 200px;
+	margin-bottom: -250px;
 }
 
 .start-image-holder{

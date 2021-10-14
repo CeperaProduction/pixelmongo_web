@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{mail/layout}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE" th:text="${title}"></title>
+
+</head>
+<body>
+	<div layout:fragment="content">
+		<div>
+			<h2>Привет, <span th:text="${confirm.userName}"></span>!</h2>
+			<p>
+				Это письмо было отправлено для подтверждения адреса электронной почты.
+			</p>
+			<p>
+				Если <strong th:text="${confirm.userName}"></strong> - это ваш аккаунт на сайте проекта
+				<a th:href="${baseUrl}">Pixelmon GO</a>, нажмите на кнопку ниже.
+			</p>
+		</div>
+		<div class="text-center">
+			<a class="btn" th:href="${link}">Подтвердить email</a>
+		</div>
+	</div>
+</body>
+</html>

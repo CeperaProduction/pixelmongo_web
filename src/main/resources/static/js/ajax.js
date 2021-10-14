@@ -127,7 +127,7 @@ function Ajax(){
 		}
 
 		$(document).ready(function(){
-			_this.bind($('form[ajax]'));
+			_this.bind($('form[data-ajax]'));
 		});
 
 	}

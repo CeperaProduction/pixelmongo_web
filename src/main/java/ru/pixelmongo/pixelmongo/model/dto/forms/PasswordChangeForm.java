@@ -2,34 +2,33 @@ package ru.pixelmongo.pixelmongo.model.dto.forms;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
-import ru.pixelmongo.pixelmongo.utils.DefaultPatterns;
+import ru.pixelmongo.pixelmongo.model.dto.ConfirmedPassword;
 
-public class UserLoginForm {
-
-    @NotNull
-    @Pattern(regexp = DefaultPatterns.USERNAME_PATTERN, message = "{auth.login.invalid}")
-    private String login;
+public class PasswordChangeForm implements ConfirmedPassword{
 
     @NotNull
     @NotBlank(message = "{auth.password.invalid}")
     private String password;
 
-    public String getLogin() {
-        return login;
-    }
+    private String passwordRepeat;
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
+    public String getPasswordRepeat() {
+        return passwordRepeat;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setPasswordRepeat(String passwordRepeat) {
+        this.passwordRepeat = passwordRepeat;
     }
 
 }

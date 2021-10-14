@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +29,14 @@ import ru.pixelmongo.pixelmongo.exceptions.DonateExtraNotFoundException;
 import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughMoneyException;
 import ru.pixelmongo.pixelmongo.exceptions.WrongImageSizeException;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.confirm.MailedConfirmationType;
 import ru.pixelmongo.pixelmongo.model.dto.forms.SkinUploadForm;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.services.DonateService;
+import ru.pixelmongo.pixelmongo.services.MailedConfirmationService;
 import ru.pixelmongo.pixelmongo.services.PlayerSkinService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
@@ -54,6 +58,9 @@ public class ProfileControllerRest {
 
     @Autowired
     private DonateService donate;
+
+    @Autowired
+    private MailedConfirmationService confirms;
 
     @PostMapping("/skin")
     public ResultMessage uploadSkin(@Valid SkinUploadForm skinForm, BindingResult binding, Locale loc) {
@@ -138,6 +145,22 @@ public class ProfileControllerRest {
         }catch(DonateExtraNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad extra tag", ex);
         }
+    }
+
+    @PostMapping("/mailconfirm")
+    public ResultMessage confirmMail(Locale loc, HttpServletRequest request, HttpServletResponse response) {
+        User user = userService.getCurrentUser();
+        if(user.isAnonymous())
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if(user.isEmailConfirmed())
+            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("mconfirm.mailconfirm.already", null, loc));
+        long await = confirms.checkForSpam(user, MailedConfirmationType.MAIL_CONFIRM, request);
+        if(await > 0) {
+            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("mconfirm.error.spam",
+                    new Object[] {confirms.printAwaitTime(await)}, loc));
+        }
+        confirms.sendConfirmation(MailedConfirmationType.MAIL_CONFIRM, user, loc, request, user.getEmail());
+        return new ResultMessage(DefaultResult.OK, msg.getMessage("mconfirm.mailconfirm.send", null, loc));
     }
 
     private User getStoredUser(User user) {

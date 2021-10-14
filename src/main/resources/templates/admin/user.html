@@ -59,11 +59,27 @@
 					<div class="form-group row">
 						<label for="inputEmail" class="col-sm-2 col-form-label text-truncate">Email</label>
 						<div class="col-sm-10">
-							<input type="email" class="form-control"
-								id="inputEmail" placeholder="Email"
-								autocomplete="new-password"
-								th:field="*{email}"
-								required>
+							<div class="input-group">
+								<div class="input-group-prepend" th:if="${user.emailConfirmed}"
+									data-toggle="tooltip" data-placement="bottom"
+											title="Email адрес подтвержден">
+									<span class="input-group-text">
+										<i class="fa fa-check"></i>
+									</span>
+								</div>
+								<div class="input-group-prepend" th:if="${!user.emailConfirmed}"
+									data-toggle="tooltip" data-placement="bottom"
+											title="Email адрес не подтвержден">
+									<span class="input-group-text">
+										<i class="fa fa-times"></i>
+									</span>
+								</div>
+								<input type="email" class="form-control"
+									id="inputEmail" placeholder="Email"
+									autocomplete="new-password"
+									th:field="*{email}"
+									required>
+							</div>
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
 								th:errors="*{email}"></div>
@@ -232,6 +248,11 @@
 		</div>
 	    <script th:if="${!can_manage}">
 			$("#userForm :input, #skinForm :input").prop("disabled", true);
+		</script>
+		<script>
+			$(function(){
+				$('*[data-toggle=tooltip]').tooltip();
+			});
 		</script>
 		<div class="card mb-3">
 		    <div class="card-header">

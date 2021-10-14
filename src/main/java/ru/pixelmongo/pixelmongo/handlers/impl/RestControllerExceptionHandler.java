@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
-import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
+import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaException;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
@@ -78,7 +78,7 @@ public class RestControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ResultMessage handleCaptchaException(InvalidCaptchaEcxeption ex, Locale loc){
+    public ResultMessage handleCaptchaException(InvalidCaptchaException ex, Locale loc){
         return new ResultMessage(DefaultResult.ERROR, msg.getMessage("captcha.fail", null, loc));
     }
 

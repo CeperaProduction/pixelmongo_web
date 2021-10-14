@@ -167,6 +167,7 @@ public class UsersController {
 
             if(StringUtils.hasText(userForm.getEmail())
                     && !userForm.getEmail().equals(user.getEmail())) {
+                user.setEmailConfirmed(false);
                 user.setEmail(userForm.getEmail());
                 changed = true;
             }
@@ -177,9 +178,9 @@ public class UsersController {
             }
 
             if(user.getGroup().getId() != userForm.getGroupId()) {
+                UserGroup cg = userService.getCurrentUser().getGroup();
                 groups.findById(userForm.getGroupId())
                     .filter(g->{
-                        UserGroup cg = userService.getCurrentUser().getGroup();
                         if(cg.getId() == UserGroupRepository.GROUP_ID_ADMIN)
                             return true;
                         return cg.getPermissionLevel() > g.getPermissionLevel();

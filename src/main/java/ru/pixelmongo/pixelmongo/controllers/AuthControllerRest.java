@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -34,8 +32,6 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 @RestController
 @RequestMapping("/auth")
 public class AuthControllerRest {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired
     private AuthenticationManager authManager;
@@ -68,7 +64,7 @@ public class AuthControllerRest {
         captchaService.processResponse(captcha, ip);
 
         User user = userService.registerUser(form.getLogin(), form.getEmail(), form.getPassword(), ip);
-        LOGGER.debug("User "+user.getName()+" registered with IP "+ip);
+        AuthController.LOGGER.debug("User "+user.getName()+" registered with IP "+ip);
 
         login(request, response, form.getLogin(), form.getPassword());
 

@@ -119,15 +119,47 @@
 									<div class="form-group row">
 										<label for="inputEmail" class="col-sm-4 col-form-label text-truncate">Почта</label>
 										<div class="col-sm-8">
-											<input type="email" class="form-control"
-												id="inputEmail" placeholder="E-mail"
-												maxlength="128"
-												autocomplete="off"
-												th:field="*{email}"
-												required>
+											<div class="input-group">
+												<div class="input-group-prepend" th:if="${user.emailConfirmed}"
+													data-toggle="tooltip" data-placement="bottom"
+															title="Email адрес подтвержден">
+													<span class="input-group-text">
+														<i class="fa fa-check"></i>
+													</span>
+												</div>
+												<div class="input-group-prepend" th:if="${!user.emailConfirmed}"
+													data-toggle="tooltip" data-placement="bottom"
+															title="Email адрес не подтвержден">
+													<span class="input-group-text">
+														<i class="fa fa-times"></i>
+													</span>
+												</div>
+												<input type="email" class="form-control"
+													id="inputEmail" placeholder="E-mail"
+													maxlength="128"
+													autocomplete="off"
+													th:field="*{email}"
+													required>
+												<div class="input-group-append" th:if="${!user.emailConfirmed}">
+													<button id="button-mail-confirm" form="mail-confirm-form"
+														class="btn btn-outline-secondary"
+														type="submit">
+														Подтвердить
+													</button>
+												</div>
+											</div>
+											<script>
+												var userMail = "[[${user.email}]]";
+											</script>
 											<div class="alert alert-danger px-3 my-1"
 												role="alert"
 												th:errors="*{email}"></div>
+											<div th:if="${!user.emailConfirmed}">
+												<small class="text-muted">
+													Подтвердите адрес электронной почты, чтобы
+													улучшить безопасность аккаунта.
+												</small>
+											</div>
 										</div>
 									</div>
 									<hr class="separator">
@@ -174,6 +206,10 @@
 												th:errors="*{currentPassword}"></div>
 										</div>
 									</div>
+								</form>
+								<form th:if="${!user.emailConfirmed}" id="mail-confirm-form"
+									th:action="@{/profile/mailconfirm}" th:method="POST">
+
 								</form>
 							</div>
 							<div class="card-footer">

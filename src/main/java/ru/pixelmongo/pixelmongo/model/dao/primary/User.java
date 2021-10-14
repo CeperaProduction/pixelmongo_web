@@ -32,6 +32,9 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column(name = "email_confirmed")
+    private boolean emailConfirmed = false;
+
     //password hash
     @Column(nullable = false)
     private String password;
@@ -100,6 +103,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isEmailConfirmed() {
+        return emailConfirmed;
+    }
+
+    public void setEmailConfirmed(boolean emailConfirmed) {
+        this.emailConfirmed = emailConfirmed;
     }
 
     /**

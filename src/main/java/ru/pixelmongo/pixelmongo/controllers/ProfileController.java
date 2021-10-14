@@ -25,12 +25,14 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.pixelmongo.pixelmongo.handlers.BillingHandler;
 import ru.pixelmongo.pixelmongo.handlers.impl.donate.DonateExtraUnbanHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.confirm.MailedConfirmationType;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserManageForm;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.repositories.sub.PlayerBanRecordRepository;
 import ru.pixelmongo.pixelmongo.services.BillingService;
 import ru.pixelmongo.pixelmongo.services.DonateService;
+import ru.pixelmongo.pixelmongo.services.MailedConfirmationService;
 import ru.pixelmongo.pixelmongo.services.PlayerSkinService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
 import ru.pixelmongo.pixelmongo.services.UserService;
@@ -63,6 +65,9 @@ public class ProfileController {
     @Autowired
     private MessageSource msg;
 
+    @Autowired
+    private MailedConfirmationService confirms;
+
     @GetMapping
     public String profile(Model model) {
         User user = userService.getCurrentUser();
@@ -91,8 +96,23 @@ public class ProfileController {
 
             if(StringUtils.hasText(userForm.getEmail())
                     && !userForm.getEmail().equals(user.getEmail())) {
-                user.setEmail(userForm.getEmail());
-                changed = true;
+                if(user.isEmailConfirmed()) {
+                    long await = confirms.checkForSpam(user, MailedConfirmationType.MAIL_CHANGE, request);
+                    if(await > 0) {
+                        popupMsg.sendUsingCookies(new PopupMessage(
+                                msg.getMessage("mconfirm.error.spam",
+                                        new Object[] {confirms.printAwaitTime(await)}, loc),
+                                PopupMessage.Type.ERROR), request, response);
+                    }else {
+                        confirms.sendConfirmation(MailedConfirmationType.MAIL_CHANGE, user, loc, request, userForm.getEmail());
+                        popupMsg.sendUsingCookies(new PopupMessage(
+                                msg.getMessage("mconfirm.mailchange.send", null, loc),
+                                PopupMessage.Type.INFO), request, response);
+                    }
+                }else {
+                    user.setEmail(userForm.getEmail());
+                    changed = true;
+                }
             }
 
             if(StringUtils.hasText(userForm.getPassword())) {

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestOperations;
 
-import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaEcxeption;
+import ru.pixelmongo.pixelmongo.exceptions.InvalidCaptchaException;
 import ru.pixelmongo.pixelmongo.model.dto.ReCaptchaResponse;
 import ru.pixelmongo.pixelmongo.services.CaptchaService;
 
@@ -40,10 +40,10 @@ public class ReCaptchaV2Service implements CaptchaService{
     }
 
     @Override
-    public void processResponse(String response, String clientIp) throws InvalidCaptchaEcxeption {
+    public void processResponse(String response, String clientIp) throws InvalidCaptchaException {
         if(!checkResponsePattern(response)) {
             LOGGER.debug("Invalid response pattern: "+response);
-            throw new InvalidCaptchaEcxeption("Response contains invalid characters");
+            throw new InvalidCaptchaException("Response contains invalid characters");
         }
 
         URI verifyUri = URI.create(String.format(GOOGLE_URL_PATTERN, secretKey, response, clientIp));
@@ -53,7 +53,7 @@ public class ReCaptchaV2Service implements CaptchaService{
         LOGGER.debug("Google response: "+googleResponse.toString());
 
         if(!googleResponse.isSuccess()) {
-            throw new InvalidCaptchaEcxeption("reCaptcha was not successfully validated");
+            throw new InvalidCaptchaException("reCaptcha was not successfully validated");
         }
     }
 
