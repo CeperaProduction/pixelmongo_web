@@ -18,6 +18,11 @@
 		        	<span class="text-secondary"
 		        		th:text="|#${pack.id}|"></span>
 		        	<div class="float-right">
+						<a class="btn btn-sm btn-outline-secondary"
+							th:href="@{/admin/donate/pages/{page}/pack/new(page=${page.tag},dup=${pack.id})}">
+							<i class="fa fa-copy"></i>
+							Дублировать
+						</a>
 				        <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/donate/pages/{page}(page=${page.tag})}">
 							<i class="fa fa-backward"></i>
 							Назад

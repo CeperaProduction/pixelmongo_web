@@ -84,7 +84,8 @@
 									</div>
 									<div class="col-8">
 										<span th:text="${@templateService.printUserLastLoginDate(user)}"
-											data-toggle="tooltip" data-placement="bottom" th:title="|IP: ${@templateService.printUserLastLoginIp(user)}|"></span>
+											data-toggle="tooltip" data-placement="bottom"
+											th:title="|IP: ${@templateService.printUserLastLoginIp(user)}  Источник: ${@templateService.printUserLastLoginSource(user)}|"></span>
 									</div>
 								</div>
 							</div>

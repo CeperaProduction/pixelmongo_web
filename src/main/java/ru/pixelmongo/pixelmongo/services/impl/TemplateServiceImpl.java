@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateDisplayType;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
@@ -126,6 +127,24 @@ public class TemplateServiceImpl implements TemplateService{
     public String printUserLastLoginIp(User user) {
         if(user != null) {
             return userService.getLastLogin(user).map(r->r.getIp()).orElse("---");
+        }
+        return "---";
+    }
+
+    @Override
+    public String printLoginSource(UserLoginRecord record, Locale loc) {
+        if(record != null && record.getSource() != null) {
+            String sourceName = record.getSource().name().toLowerCase();
+            return msg.getMessage("loginrecord.source."+sourceName, null, sourceName, loc);
+        }
+        return "---";
+    }
+
+    @Override
+    public String printUserLastLoginSource(User user, Locale loc) {
+        if(user != null) {
+            UserLoginRecord record = userService.getLastLogin(user).orElse(null);
+            return printLoginSource(record, loc);
         }
         return "---";
     }

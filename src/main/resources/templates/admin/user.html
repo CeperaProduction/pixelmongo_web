@@ -37,7 +37,7 @@
 						<div class="col-8">
 							<span th:text="${@templateService.printUserLastLoginDate(user)}"></span>
 							<small class="form-text text-muted"
-							th:text="|IP: ${@templateService.printUserLastLoginIp(user)}|"></small>
+							th:text="|IP: ${@templateService.printUserLastLoginIp(user)} Источник: ${@templateService.printUserLastLoginSource(user)}|"></small>
 						</div>
 					</div>
 				</div>
@@ -264,12 +264,14 @@
 						<tr>
 							<th scope="col">Дата</th>
 							<th scope="col">IP</th>
+							<th scope="col">Источник</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="record : ${user.loginRecords}">
 							<td th:text="${@templateService.printDate(record.date)}"></td>
 							<td th:text="${record.ip}"></td>
+							<td th:text="${@templateService.printLoginSource(record)}"></td>
 						</tr>
 					</tbody>
 				</table>

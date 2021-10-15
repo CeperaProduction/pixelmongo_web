@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    @Column(name = "email_confirmed")
+    @Column(name = "email_confirmed", columnDefinition = "bit(1) not null default 0")
     private boolean emailConfirmed = false;
 
     //password hash
@@ -43,7 +43,7 @@ public class User {
     @JoinColumn(name = "group_id", nullable = false)
     private UserGroup group;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "int(11) not null default 0")
     private int balance = 0;
 
     @Column(name="reg_date", nullable = false)
@@ -56,10 +56,10 @@ public class User {
     @OrderBy("date DESC")
     private List<UserLoginRecord> loginRecords;
 
-    @Column(name = "cape")
+    @Column(name = "cape", columnDefinition = "bit(1) not null default 0")
     private boolean hasCape = false;
 
-    @Column(name = "hd_skin")
+    @Column(name = "hd_skin", columnDefinition = "bit(1) not null default 0")
     private boolean hasHDSkin = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

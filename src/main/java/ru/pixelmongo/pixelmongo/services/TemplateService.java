@@ -8,6 +8,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateDisplayType;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.tokens.DonatePackTokenType;
@@ -82,5 +83,19 @@ public interface TemplateService {
     public String getAvatar(User user);
 
     public String getAvatar();
+
+    public String printLoginSource(UserLoginRecord record, Locale loc);
+
+    public default String printLoginSource(UserLoginRecord record) {
+        Locale loc = LocaleContextHolder.getLocale();
+        return printLoginSource(record, loc);
+    }
+
+    public String printUserLastLoginSource(User user, Locale loc);
+
+    public default String printUserLastLoginSource(User user) {
+        Locale loc = LocaleContextHolder.getLocale();
+        return printUserLastLoginSource(user, loc);
+    }
 
 }

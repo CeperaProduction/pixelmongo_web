@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -335,12 +336,27 @@ public class DonateContentController {
     //PACK EDITOR
 
     @GetMapping("/{page}/pack/new")
-    public String packNew(@PathVariable("page") String pageTag, Model model, Locale loc) {
+    public String packNew(@PathVariable("page") String pageTag,
+            @RequestParam(name = "dup", defaultValue = "0") int dupId,
+            Model model, Locale loc) {
 
-        DonatePage page = find(pages.findByTag(pageTag), loc);
+        DonatePage page;
+        DonatePack pack = new DonatePack();
+        DonatePackForm form;
+        if(dupId != 0) {
+            DonatePack originalPack = find(packs.findById(dupId), loc);
+            page = originalPack.getCategory().getPage();
+            if(!page.getTag().equals(pageTag))
+                throw notFound(loc);
+            form = new DonatePackForm(originalPack, donateService);
+            form.apply(pack, donateService, categories, servers);
+        }else {
+            page = find(pages.findByTag(pageTag), loc);
+            form = new DonatePackForm();
+        }
 
-        addEditorAttributes(model, "put", new DonatePack(), page);
-        model.addAttribute("packForm", new DonatePackForm());
+        addEditorAttributes(model, "put", pack, page);
+        model.addAttribute("packForm", form);
 
         return "admin/donate/pack_form";
     }
