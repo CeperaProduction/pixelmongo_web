@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import ru.pixelmongo.pixelmongo.exceptions.UserAlreadyExistsException;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
@@ -28,6 +33,7 @@ import ru.pixelmongo.pixelmongo.repositories.primary.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserLoginRecordRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserPermissionRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
+import ru.pixelmongo.pixelmongo.services.SessionService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
 public abstract class UserServiceImpl implements UserService{
@@ -46,6 +52,15 @@ public abstract class UserServiceImpl implements UserService{
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RememberMeServices rememberMe;
+
+    @Autowired
+    private PersistentTokenRepository rememberMeTokens;
+
+    @Autowired
+    private SessionService sessions;
 
     private Set<Integer> invalidUserIds = ConcurrentHashMap.newKeySet();
     private Map<Integer, Long> invalidGroupIdsAndTimes = new ConcurrentHashMap<>();
@@ -166,6 +181,21 @@ public abstract class UserServiceImpl implements UserService{
                 .anyMatch(p->p.getAuthority().equals(permission));
         }
         return false;
+    }
+
+    @Override
+    public void logoutOtherDevices(Authentication auth, HttpServletRequest request,
+            HttpServletResponse response) {
+        UserDetails details = (UserDetails) auth.getPrincipal();
+        ((LogoutHandler) rememberMe).logout(request, response, auth);
+        sessions.dropSessions(details, request.getSession().getId());
+        rememberMe.loginSuccess(request, response, auth);
+    }
+
+    @Override
+    public void logoutEverywhere(User user) {
+        sessions.dropSessions(user);
+        rememberMeTokens.removeUserTokens(user.getName());
     }
 
     private class BindedValidationUserDetails extends UserDetails {

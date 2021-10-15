@@ -12,4 +12,6 @@ public interface SessionService {
 
     public void dropSessions(User user);
 
+    public void dropSessions(UserDetails userDetails, String... exceptIds);
+
 }

@@ -1,7 +1,9 @@
 package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,6 +58,18 @@ public class SessionServiceImpl implements SessionService{
         List<SessionInformation> ss = sessions.getAllSessions(userDetails, false);
         for(SessionInformation si : ss) {
             si.expireNow();
+        }
+    }
+
+    @Override
+    public void dropSessions(UserDetails userDetails, String... exceptIds) {
+        Set<String> except = new HashSet<String>();
+        for(String e : exceptIds)
+            except.add(e);
+        List<SessionInformation> ss = sessions.getAllSessions(userDetails, false);
+        for(SessionInformation si : ss) {
+            if(!except.contains(si.getSessionId()))
+                si.expireNow();
         }
     }
 

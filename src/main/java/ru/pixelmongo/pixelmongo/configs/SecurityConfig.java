@@ -225,6 +225,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .sessionManagement()
                 .maximumSessions(-1)
                 .sessionRegistry(sessionRegistry())
+                .expiredUrl("/#login")
             .and()
         .and();
 

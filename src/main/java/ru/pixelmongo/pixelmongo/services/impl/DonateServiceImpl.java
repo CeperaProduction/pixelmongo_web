@@ -74,7 +74,7 @@ public class DonateServiceImpl implements DonateService{
     @Autowired
     public void setupExtraHandlers(List<DonateExtraHandler> handlers) {
         handlers.forEach(h->extraHandlers.put(h.getExtraTag(), h));
-        LOGGER.info("Found "+tokenHandlers.size()+" donate extras handlers");
+        LOGGER.info("Found "+extraHandlers.size()+" donate extras handlers");
     }
 
 

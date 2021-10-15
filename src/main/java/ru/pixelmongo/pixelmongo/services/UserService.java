@@ -3,6 +3,9 @@ package ru.pixelmongo.pixelmongo.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -99,5 +102,10 @@ public interface UserService extends UserDetailsService{
      * @return
      */
     public boolean hasPerm(User user, String permission);
+
+    public void logoutOtherDevices(Authentication auth, HttpServletRequest request,
+            HttpServletResponse response);
+
+    public void logoutEverywhere(User user);
 
 }

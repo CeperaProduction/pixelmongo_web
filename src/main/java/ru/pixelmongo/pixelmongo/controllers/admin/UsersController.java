@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.exceptions.WrongImageSizeException;
+import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserGroup;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
@@ -174,6 +177,14 @@ public class UsersController {
 
             if(StringUtils.hasText(userForm.getPassword())) {
                 userService.changePassword(user, userForm.getPassword());
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                boolean self = auth.getPrincipal() instanceof UserDetails
+                        && ((UserDetails)auth.getPrincipal()).getUserId() == user.getId();
+                if(self) {
+                    userService.logoutOtherDevices(auth, request, response);
+                }else {
+                    userService.logoutEverywhere(user);
+                }
                 changed = true;
             }
 
