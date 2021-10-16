@@ -194,13 +194,17 @@ public class UsersController {
 
             if(user.getGroup().getId() != userForm.getGroupId()) {
                 UserGroup cg = userService.getCurrentUser().getGroup();
+                final User u = user;
                 groups.findById(userForm.getGroupId())
                     .filter(g->{
                         if(cg.getId() == UserGroupRepository.GROUP_ID_ADMIN)
                             return true;
                         return cg.getPermissionLevel() > g.getPermissionLevel();
                     })
-                    .ifPresent(user::setGroup);
+                    .ifPresent(g->{
+                        u.setGroup(g);
+                        userService.invalidateDetails(u);
+                    });
                 changed = true;
             }
 

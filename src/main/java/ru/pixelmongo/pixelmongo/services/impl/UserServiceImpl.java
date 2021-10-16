@@ -62,8 +62,12 @@ public abstract class UserServiceImpl implements UserService{
     @Autowired
     private SessionService sessions;
 
-    private Set<Integer> invalidUserIds = ConcurrentHashMap.newKeySet();
-    private Map<Integer, Long> invalidGroupIdsAndTimes = new ConcurrentHashMap<>();
+    /*
+     * Static access, because UserDetails is serializable and we don't want to serialize
+     * this service too
+    */
+    private static Set<Integer> invalidUserIds = ConcurrentHashMap.newKeySet();
+    private static Map<Integer, Long> invalidGroupIdsAndTimes = new ConcurrentHashMap<>();
 
     @Override
     @Transactional
@@ -198,7 +202,7 @@ public abstract class UserServiceImpl implements UserService{
         rememberMeTokens.removeUserTokens(user.getName());
     }
 
-    private class BindedValidationUserDetails extends UserDetails {
+    private static class BindedValidationUserDetails extends UserDetails {
 
         private static final long serialVersionUID = -8378729763230637533L;
 
