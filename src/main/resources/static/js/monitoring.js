@@ -9,7 +9,7 @@ var monitoring = {
 
 	started : false,
 
-	refreshTime : 10000,
+	refreshTime : 5000,
 
 	lineTemplate : '',
 

@@ -82,9 +82,9 @@ public abstract class UserServiceImpl implements UserService{
             getCustomGroupTag(group).ifPresent(tag->
                 auth.add(new SimpleGrantedAuthority("GROUP_"+tag)));
             if(group.getId() == UserGroupRepository.GROUP_ID_ADMIN) {
-                permissions.findAll().forEach(auth::add);
+                permissions.findAll().forEach(p->auth.add(new SimpleGrantedAuthority(p.getValue())));
             }else {
-                auth.addAll(group.getPermissions());
+                group.getPermissions().forEach(p->auth.add(new SimpleGrantedAuthority(p.getValue())));
             }
         }
         return auth;
@@ -178,7 +178,7 @@ public abstract class UserServiceImpl implements UserService{
     public boolean hasPerm(User user, String permission) {
         if(user != null) {
             return user.getGroup().getPermissions().stream()
-                .anyMatch(p->p.getAuthority().equals(permission));
+                .anyMatch(p->p.getValue().equals(permission));
         }
         return false;
     }
@@ -200,9 +200,6 @@ public abstract class UserServiceImpl implements UserService{
 
     private class BindedValidationUserDetails extends UserDetails {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = -8378729763230637533L;
 
         public BindedValidationUserDetails(User user, Collection<? extends GrantedAuthority> authorities) {

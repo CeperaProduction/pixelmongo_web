@@ -1,5 +1,6 @@
 package ru.pixelmongo.pixelmongo.controllers;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import ru.pixelmongo.pixelmongo.configs.SecurityConfig;
 import ru.pixelmongo.pixelmongo.handlers.BillingHandler;
 import ru.pixelmongo.pixelmongo.handlers.impl.donate.DonateExtraUnbanHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
@@ -70,12 +72,15 @@ public class ProfileController {
     @Autowired
     private MailedConfirmationService confirms;
 
+    @Autowired
+    private SecurityConfig securityConfig;
+
     @GetMapping
-    public String profile(Model model) {
+    public String profile(Model model, HttpServletRequest request) {
         User user = userService.getCurrentUser();
         if(user.isAnonymous())
             return "redirect:/#login";
-        addProfileAttributes(user, model);
+        addProfileAttributes(user, model, request);
         model.addAttribute("userForm", new UserManageForm(user));
         return "profile";
     }
@@ -132,11 +137,11 @@ public class ProfileController {
 
             return "redirect:/profile";
         }
-        addProfileAttributes(user, model);
+        addProfileAttributes(user, model, request);
         return "profile";
     }
 
-    public void addProfileAttributes(User user, Model model) {
+    public void addProfileAttributes(User user, Model model, HttpServletRequest request) {
         model.addAttribute("user", user);
         String skinUrl = skinService.getSkinUrlPath(user);
         model.addAttribute("skin", skinUrl);
@@ -155,6 +160,13 @@ public class ProfileController {
                 .filter(BillingHandler::isEnabled).map(BillingHandler::getName)
                 .collect(Collectors.toList());
         model.addAttribute("billingHandlers", billingHandlers);
+        boolean needRemember = false;
+        if(!securityConfig.isRememberMeAuto()) {
+            needRemember = Arrays.stream(request.getCookies())
+                    .anyMatch(c->c.getName().equals(securityConfig.getRememberMeCookie()));
+        }
+        model.addAttribute("needRemember", needRemember);
+
     }
 
     private void checkForm(UserManageForm form, User user, BindingResult binding, Locale loc) {

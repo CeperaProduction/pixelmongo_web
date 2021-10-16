@@ -1,5 +1,6 @@
 package ru.pixelmongo.pixelmongo.configs;
 
+import java.time.Duration;
 import java.util.Optional;
 
 import javax.sql.DataSource;
@@ -48,6 +49,9 @@ import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 @PropertySource("classpath:security.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
+    @Value( "${spring.security.rememberme.auto}" )
+    private boolean rememberMeAuto;
+
     @Value( "${spring.security.rememberme.key}" )
     private String rememberMeKey;
 
@@ -60,11 +64,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Value( "${spring.security.rememberme.secured}" )
     private boolean rememberMeSecure;
 
+    @Value( "${spring.security.rememberme.time}" )
+    private Duration rememberMeTime;
+
     @Autowired
     private DataSource dataSource;
 
     @Autowired
     private UploadConfig uploadCfg;
+
+    public boolean isRememberMeAuto() {
+        return rememberMeAuto;
+    }
+
+    public String getRememberMeParam() {
+        return rememberMeParam;
+    }
+
+    public String getRememberMeCookie() {
+        return rememberMeCookie;
+    }
 
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
@@ -113,12 +132,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         PersistentTokenBasedRememberMeServices services
             = new PersistentTokenBasedRememberMeServices(
                     rememberMeKey, userDetailsService(), tokenRepository());
-        services.setAlwaysRemember(true);
+        services.setAlwaysRemember(rememberMeAuto);
         services.setCookieName(rememberMeCookie);
         services.setParameter(rememberMeParam);
         services.setSeriesLength(16);
         services.setTokenLength(16);
-        services.setUseSecureCookie(rememberMeSecure);
+        if(rememberMeSecure)
+            services.setUseSecureCookie(true);
+        services.setTokenValiditySeconds((int)rememberMeTime.getSeconds());
         return services;
     }
 

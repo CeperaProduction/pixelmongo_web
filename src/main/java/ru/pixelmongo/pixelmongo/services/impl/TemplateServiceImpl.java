@@ -13,6 +13,7 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import ru.pixelmongo.pixelmongo.configs.SecurityConfig;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
@@ -38,6 +39,9 @@ public class TemplateServiceImpl implements TemplateService{
 
     @Autowired
     private PlayerSkinService skinService;
+
+    @Autowired
+    private SecurityConfig securityConfig;
 
     public List<PaginationElement> getPagination(int currentPage,
             int totalPages, int maxButtons) {
@@ -196,6 +200,16 @@ public class TemplateServiceImpl implements TemplateService{
     @Override
     public String getAvatar() {
         return skinService.getSkinFaceUrlPath(userService.getCurrentUser());
+    }
+
+    @Override
+    public boolean isRememberMeAuto() {
+        return securityConfig.isRememberMeAuto();
+    }
+
+    @Override
+    public String getRememberMeParam() {
+        return securityConfig.getRememberMeParam();
     }
 
 }

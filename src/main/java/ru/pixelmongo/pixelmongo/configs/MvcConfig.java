@@ -14,6 +14,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
+import ru.pixelmongo.pixelmongo.services.UploadService;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
@@ -23,9 +24,12 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(uploadCfg.getUploadUrl()+"/**")
+        String url = uploadCfg.getUploadUrl()+"/**";
+        String path = uploadCfg.getUploadPath();
+        registry.addResourceHandler(url)
             .setCachePeriod(0)
-            .addResourceLocations(uploadCfg.getUploadPath());
+            .addResourceLocations(path);
+        UploadService.LOGGER.info("Upload dir set to '"+path+"' with handler url path '"+url+"'");
     }
 
     @Bean

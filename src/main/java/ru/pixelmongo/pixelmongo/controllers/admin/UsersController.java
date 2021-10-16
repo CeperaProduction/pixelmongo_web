@@ -1,6 +1,7 @@
 package ru.pixelmongo.pixelmongo.controllers.admin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import ru.pixelmongo.pixelmongo.configs.SecurityConfig;
 import ru.pixelmongo.pixelmongo.exceptions.WrongImageSizeException;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
@@ -73,6 +75,9 @@ public class UsersController {
     @Autowired
     private PlayerSkinService skinService;
 
+    @Autowired
+    private SecurityConfig securityConfig;
+
     @GetMapping
     public String userList(@RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String search,
@@ -97,16 +102,15 @@ public class UsersController {
     }
 
     @GetMapping("/{userName}")
-    public String user(@PathVariable String userName, Model model, Locale loc) {
+    public String user(@PathVariable String userName, Model model, Locale loc,
+            HttpServletRequest request) {
         User user = findUser(userName, loc);
 
         checkPerms(user, false);
 
-        model.addAttribute("user", user);
-        model.addAttribute("can_manage", hasPerm(user, true) && canManage(user));
+        setUserAttributes(model, user, request);
         model.addAttribute("userForm", new UserManageAdminForm(user));
         model.addAttribute("skinForm", new SkinUploadForm());
-        model.addAttribute("groups", getAvailableGroups(user));
 
         return "admin/user";
     }
@@ -224,9 +228,7 @@ public class UsersController {
 
         }
 
-        model.addAttribute("user", user);
-        model.addAttribute("can_manage", hasPerm(user, true) && canManage(user));
-        model.addAttribute("groups", getAvailableGroups(user));
+        setUserAttributes(model, user, request);
         model.addAttribute("skinForm", new SkinUploadForm());
 
         return "admin/user";
@@ -305,9 +307,7 @@ public class UsersController {
 
         }
 
-        model.addAttribute("user", user);
-        model.addAttribute("can_manage", hasPerm(user, true) && canManage(user));
-        model.addAttribute("groups", getAvailableGroups(user));
+        setUserAttributes(model, user, request);
         model.addAttribute("userForm", new UserManageAdminForm(user));
 
         return "admin/user";
@@ -422,6 +422,18 @@ public class UsersController {
             }
         }
         return av;
+    }
+
+    private void setUserAttributes(Model model, User user, HttpServletRequest request) {
+        model.addAttribute("user", user);
+        model.addAttribute("can_manage", hasPerm(user, true) && canManage(user));
+        model.addAttribute("groups", getAvailableGroups(user));
+        boolean needRemember = false;
+        if(!securityConfig.isRememberMeAuto() && user.getId() == userService.getCurrentUser().getId()) {
+            needRemember = Arrays.stream(request.getCookies())
+                    .anyMatch(c->c.getName().equals(securityConfig.getRememberMeCookie()));
+        }
+        model.addAttribute("needRemember", needRemember);
     }
 
     @ModelAttribute

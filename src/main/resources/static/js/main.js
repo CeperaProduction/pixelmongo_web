@@ -42,7 +42,12 @@ $(function(){
 
 $(function(){
 	ajax.forms.defaultErrorHandler = function(res, xhr, status, error) {
-		let text = status+' '+error;
+		let text;
+		if(xhr.status == 403){
+			text = 'Ошибка доступа. Попробуйте обновить страницу.';
+		}else{
+			text = status+' '+error;
+		}
 		if(res != null && res.result !== undefined){
 			text = res.message;
 			switch(res.result){
@@ -138,28 +143,20 @@ $(function(){
 $(function(){
 	let moving = $('.background-moving');
 	if(moving.length){
-		let r = moving.data('move-radius');
-		if(!r) r = 400;
+		let r = 400;
 		let a = 0;
 		function calc(a, r){
 			let dx = Math.cos(a)*r;
 			let dy = Math.sin(a)*r;
 			return [dx, dy];
 		}
-		let d = calc(a, r);
-		moving.css({
-			'background-position-x' : d[0]+'px',
-			'background-position-y' : d[1]+'px'
-		});
-		function animate(){
+		setInterval(function(){
 			a += 0.08;
 			let d = calc(a, r);
-			moving.animate({
-				'background-position-x' : d[0]+'px',
-				'background-position-y' : d[1]+'px',
-			}, 1000, 'linear', animate);
-		}
-		animate();
+			moving.each(function(){
+				this.style.backgroundPosition = d[0]+'px '+d[1]+'px';
+			});
+		}, 1000);
 	}
 });
 

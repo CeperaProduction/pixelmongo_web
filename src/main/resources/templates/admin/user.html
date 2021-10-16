@@ -156,6 +156,9 @@
 					<div class="alert alert-danger py-1 px-3 my-1"
 								role="alert"
 								th:errors="${userForm}"></div>
+					<input th:if="${needRemember}"
+						th:name="${@templateService.rememberMeParam}"
+						type="hidden" value="true"></input>
 	        	</form>
 		    </div>
 		    <div class="card-footer" th:if="${can_manage}">

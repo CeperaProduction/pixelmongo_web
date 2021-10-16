@@ -207,6 +207,9 @@
 												th:errors="*{currentPassword}"></div>
 										</div>
 									</div>
+									<input th:if="${needRemember}"
+										th:name="${@templateService.rememberMeParam}"
+										type="hidden" value="true"></input>
 								</form>
 								<form th:if="${!user.emailConfirmed}" id="mail-confirm-form"
 									th:action="@{/profile/mailconfirm}" th:method="POST">

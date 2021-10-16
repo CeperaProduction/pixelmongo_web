@@ -62,6 +62,9 @@
 										</div>
 									</div>
 								</div>
+								<input th:if="${!@templateService.rememberMeAuto}"
+									th:name="${@templateService.rememberMeParam}"
+									type="hidden" value="true"></input>
 								<div class="form-group row">
 									<div class="col-xl-4 col-md-12 pb-2">Проверка на робота</div>
 									<div class="col-xl-8 col-md-12">

@@ -82,7 +82,7 @@
 .donate-header .background-moving{
 	border: 0px solid #fff;
 	border-radius: 50%;
-	background: url("../img/donate/moving_bg_pages.jpg") repeat;
+	background-image: url("../img/donate/moving_bg_pages.jpg");
 	box-shadow: inset 0 0 30px rgba(0,0,0,0.7), 0 0 30px #fff, 0 0 10px rgba(0,0,0,1);
 	background-size: 500px;
 	padding: 25px;
@@ -101,6 +101,7 @@
 	height: 250px;
 	display: table;
 	margin: auto;
+	transform: translateZ(0);
 }
 
 .donate-header-text{

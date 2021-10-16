@@ -1,8 +1,8 @@
 package ru.pixelmongo.pixelmongo.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.TreeSet;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -11,9 +11,6 @@ import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 5947676842275095406L;
 
     private final int userId;
@@ -71,11 +68,19 @@ public class UserDetails implements org.springframework.security.core.userdetail
     }
 
     private void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        TreeSet<GrantedAuthority> sortedAuthorities = new TreeSet<>(new AuthorityComparator());
+        TreeSet<GrantedAuthority> sortedAuthorities = new TreeSet<>((g1, g2)->{
+            if (g2.getAuthority() == null) {
+                return -1;
+            }
+            if (g1.getAuthority() == null) {
+                return 1;
+            }
+            return g1.getAuthority().compareTo(g2.getAuthority());
+        });
         for (GrantedAuthority grantedAuthority : authorities) {
             sortedAuthorities.add(grantedAuthority);
         }
-        this.authorities = Collections.unmodifiableCollection(sortedAuthorities);
+        this.authorities = Collections.unmodifiableCollection(new ArrayList<>(sortedAuthorities));
     }
 
     @Override
@@ -123,21 +128,6 @@ public class UserDetails implements org.springframework.security.core.userdetail
         sb.append("Password=[PROTECTED], ");
         sb.append("Authorities=").append(this.authorities).append("]");
         return sb.toString();
-    }
-
-    private static class AuthorityComparator implements Comparator<GrantedAuthority> {
-
-        @Override
-        public int compare(GrantedAuthority g1, GrantedAuthority g2) {
-            if (g2.getAuthority() == null) {
-                return -1;
-            }
-            if (g1.getAuthority() == null) {
-                return 1;
-            }
-            return g1.getAuthority().compareTo(g2.getAuthority());
-        }
-
     }
 
 }

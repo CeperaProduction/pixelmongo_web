@@ -80,6 +80,7 @@ public class AuthHandlerImpl implements AuthHandler{
         request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.FORBIDDEN.value()+"");
         request.setAttribute(RequestDispatcher.ERROR_REQUEST_URI, request.getRequestURI());
         request.setAttribute(RequestDispatcher.ERROR_MESSAGE, authException.getMessage());
+        request.setAttribute(RequestDispatcher.ERROR_EXCEPTION, authException);
         RequestDispatcher dispatcher = request.getServletContext()
                 .getRequestDispatcher("/error");
         dispatcher.forward(request, response);

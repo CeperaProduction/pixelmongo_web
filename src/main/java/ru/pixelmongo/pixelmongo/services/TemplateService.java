@@ -98,4 +98,8 @@ public interface TemplateService {
         return printUserLastLoginSource(user, loc);
     }
 
+    public String getRememberMeParam();
+
+    public boolean isRememberMeAuto();
+
 }

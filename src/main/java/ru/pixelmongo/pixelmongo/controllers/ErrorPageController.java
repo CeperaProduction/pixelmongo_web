@@ -45,8 +45,9 @@ public class ErrorPageController implements ErrorController{
                 return "redirect:/img/not_found.jpg";
             }
 
-            String message = msg.getMessage("error.status."+statusCode, null,
-                    request.getAttribute(RequestDispatcher.ERROR_MESSAGE).toString(), loc);
+            Object errMsgObj = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
+            if(errMsgObj == null) errMsgObj = "";
+            String message = msg.getMessage("error.status."+statusCode, null, errMsgObj.toString(), loc);
 
             if(message.isEmpty()) {
                 Object ex = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);

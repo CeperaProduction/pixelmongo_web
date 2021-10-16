@@ -538,10 +538,17 @@ form.link button:active{
 }
 
 .background-moving{
-	background: url("../img/moving_bg.jpg") repeat;
+	background-image: url("../img/moving_bg.jpg");
+	background-repeat: repeat;
 	box-shadow: inset 0 0 250px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.5);
 	width: 100%;
 	height: 100%;
+	background-position: 400px 0px;
+	-webkit-transition:background-position 1s linear;
+	-moz-transition:background-position 1s linear;
+	-o-transition:background-position 1s linear;
+	transition:background-position 1s linear;
+	transform: translateZ(0);
 }
 
 .btn-vk{
