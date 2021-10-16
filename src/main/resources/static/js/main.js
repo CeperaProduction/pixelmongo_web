@@ -117,6 +117,11 @@ $(function(){
 		document.location.reload();
 	});
 
+	ajax.forms.bind($('#skin-delete-form, #cape-delete-form, #skin-buy-form, #cape-buy-form, #unban-form'), function(res){
+		msg(res);
+		document.location.reload();
+	});
+
 	ajax.forms.bind($('#pay-form'), function(res){
 		if(res.data != undefined && res.data.location != undefined){
 			document.location = res.data.location;

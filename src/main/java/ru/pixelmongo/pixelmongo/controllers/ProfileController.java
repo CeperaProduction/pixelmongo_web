@@ -145,11 +145,11 @@ public class ProfileController {
         model.addAttribute("user", user);
         String skinUrl = skinService.getSkinUrlPath(user);
         model.addAttribute("skin", skinUrl);
-        model.addAttribute("hasSkin", !skinUrl.startsWith("/img/"));
+        model.addAttribute("hasSkin", !skinUrl.startsWith("/static/"));
         model.addAttribute("hdSkinCost", donate.getExtraHandler("hd_skin").getCost(user));
         String capeUrl = skinService.getCapeUrlPath(user);
         model.addAttribute("cape", capeUrl);
-        model.addAttribute("hasCape", !capeUrl.startsWith("/img/"));
+        model.addAttribute("hasCape", !capeUrl.startsWith("/static/"));
         model.addAttribute("capeCost", donate.getExtraHandler("cape").getCost(user));
         model.addAttribute("ban", banlist.getActiveBan(user).orElse(null));
         DonateExtraUnbanHandler unbanHandler = donate.getExtraHandler("unban");

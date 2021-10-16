@@ -187,11 +187,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             ignore.add(uploadCfg.getUploadUrl()+"/**");
         }
         web.ignoring().antMatchers(ignore.toArray(new String[ignore.size()]));
-        /*
-        web.ignoring().antMatchers(
-                "/css/**", "/js/**", "/fonts/**", "/img/**", "/favicon.ico",
-                "/open/**", uploadCfg.getUploadUrl()+"/**"
-                );*/
     }
 
     @Override

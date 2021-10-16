@@ -140,25 +140,25 @@ public class PlayerSkinServiceImpl implements PlayerSkinService{
 
     @Override
     public String getSkinUrlPath(User user) {
-        return upload.getUploadPathURLIfExists("/img/skins/default_skin.png",
+        return upload.getUploadPathURLIfExists("/static/img/skins/default_skin.png",
                 user.getName()+".png", "skins", "skins");
     }
 
     @Override
     public String getCapeUrlPath(User user) {
-        return upload.getUploadPathURLIfExists("/img/skins/default_cape.png",
+        return upload.getUploadPathURLIfExists("/static/img/skins/default_cape.png",
                 user.getName()+".png", "skins", "capes");
     }
 
     @Override
     public String getSkinFaceUrlPath(User user) {
-        return upload.getUploadPathURLIfExists("/img/skins/default_face.png",
+        return upload.getUploadPathURLIfExists("/static/img/skins/default_face.png",
                 user.getName()+".png", "skins", "faces");
     }
 
     @Override
     public String getSkinBodyUrlPath(User user) {
-        return upload.getUploadPathURLIfExists("/img/skins/default_body.png",
+        return upload.getUploadPathURLIfExists("/static/img/skins/default_body.png",
                 user.getName()+".png", "skins", "bodies");
     }
 

@@ -82,7 +82,7 @@ public class ErrorPageController implements ErrorController{
 
     private boolean isImageRequested(String uri) {
         uri = uri.toLowerCase();
-        if(uri.equals("/img/not_found.jpg") || uri.contains("/skins/")) return false;
+        if(uri.equals("/static/img/not_found.jpg") || uri.contains("/skins/")) return false;
         return imgTypes.stream().anyMatch(uri::endsWith);
     }
 

@@ -78,11 +78,11 @@ public class DonateController {
         }
 
         public String get(DonatePage page) {
-            return upload.getUploadPathURLIfExists("/img/donate/default_page.jpg", page.getId()+".jpg", "donate", "pages");
+            return upload.getUploadPathURLIfExists("/static/img/donate/default_page.jpg", page.getId()+".jpg", "donate", "pages");
         }
 
         public String get(DonatePack pack) {
-            return upload.getUploadPathURLIfExists("/img/donate/default_pack.jpg", pack.getId()+".jpg", "donate", "packs");
+            return upload.getUploadPathURLIfExists("/static/img/donate/default_pack.jpg", pack.getId()+".jpg", "donate", "packs");
         }
 
 
