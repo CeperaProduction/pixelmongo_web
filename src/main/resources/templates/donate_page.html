@@ -7,8 +7,8 @@
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE"
 		th:text="${'Донат - '+page.title}"></title>
 
-	<link rel="stylesheet" type="text/css" th:href="@{/css/donate.css}" />
-	<script type="text/javascript" charset="UTF-8" th:src="@{/js/donate.js}"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/static/css/donate.css}" />
+	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/donate.js}"></script>
 </head>
 <body>
 	<div layout:fragment="content">
@@ -48,14 +48,14 @@
 				<div class="donate-category-header gradient-white-block">
 					<div class="row align-items-center">
 						<div class="col-2 col-md-3 col-lg-4 text-right">
-							<img th:src="@{/img/masterball.png}">
+							<img th:src="@{/static/img/masterball.png}">
 						</div>
 						<div class="col-8 col-md-6 col-lg-4 text-center">
 							<span th:text="${category.title}"
 								class="text-white text-minecraft text-shadow-rainbow"></span>
 						</div>
 						<div class="col-2 col-md-3 col-lg-4 text-left">
-							<img th:src="@{/img/masterball.png}">
+							<img th:src="@{/static/img/masterball.png}">
 						</div>
 					</div>
 				</div>

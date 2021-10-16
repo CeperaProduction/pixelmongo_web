@@ -1,0 +1,14 @@
+
+task buildStatic(type: Zip) {
+	dependsOn processResources
+    group = 'build'
+    description = 'Make static resources ZIP file'
+
+    archiveFileName = rootProject.name + "-" + project.version + "-static.zip"
+    destinationDirectory = file("$buildDir/libs")
+
+    from "$buildDir/resources/main/static"
+}
+
+build.dependsOn(buildStatic)
+

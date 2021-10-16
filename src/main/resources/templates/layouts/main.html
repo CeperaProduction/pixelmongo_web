@@ -6,13 +6,13 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=false">
 
-	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="16x16">
-	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="32x32">
-	<link rel="icon" type="image/png" th:href="@{/img/icons/favicon.png}" sizes="96x96">
-	<link rel="apple-touch-icon" sizes="120x120" th:href="@{/img/icons/favicon.png}">
-	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/img/icons/favicon.png}">
-	<link rel="apple-touch-icon" sizes="152x152" th:href="@{/img/icons/favicon.png}">
-	<link rel="apple-touch-icon" sizes="167x167" th:href="@{/img/icons/favicon.png}">
+	<link rel="icon" type="image/png" th:href="@{/static/img/icons/favicon.png}" sizes="16x16">
+	<link rel="icon" type="image/png" th:href="@{/static/img/icons/favicon.png}" sizes="32x32">
+	<link rel="icon" type="image/png" th:href="@{/static/img/icons/favicon.png}" sizes="96x96">
+	<link rel="apple-touch-icon" sizes="120x120" th:href="@{/static/img/icons/favicon.png}">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/static/img/icons/favicon.png}">
+	<link rel="apple-touch-icon" sizes="152x152" th:href="@{/static/img/icons/favicon.png}">
+	<link rel="apple-touch-icon" sizes="167x167" th:href="@{/static/img/icons/favicon.png}">
 
 	<meta property="vk:image" content="https://pixelmongo.ru/img/vk_logo.jpg" />
 
@@ -24,11 +24,11 @@
 	<th:block th:replace="/fragments/bootstrap :: bootstrap"></th:block>
 	<th:block th:replace="/fragments/fontawesome :: fa"></th:block>
 
-	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/static/css/style.css}" />
 
-	<script type="text/javascript" charset="UTF-8" th:src="@{/js/ajax.js}"></script>
-	<script type="text/javascript" charset="UTF-8" th:src="@{/js/confirm.js}"></script>
-	<script type="text/javascript" charset="UTF-8" th:src="@{/js/main.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/ajax.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/confirm.js}"></script>
+	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/main.js}"></script>
 
 	<th:block th:if="${_csrf != null}">
 		<meta name="_csrf" th:content="${_csrf.token}" />

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ru.pixelmongo.pixelmongo.configs.MvcConfig;
+
 @Controller
 public class ErrorPageController implements ErrorController{
 
@@ -31,6 +33,9 @@ public class ErrorPageController implements ErrorController{
 
     @Autowired
     private MessageSource msg;
+
+    @Autowired
+    private MvcConfig mvcConfig;
 
     private List<String> imgTypes = Arrays.asList(".jpg", ".png", ".jpeg", ".gif");
 
@@ -41,8 +46,8 @@ public class ErrorPageController implements ErrorController{
         if (status != null) {
             int statusCode = Integer.valueOf(status.toString());
             String uri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI).toString();
-            if(statusCode == 404 && request.getMethod().equals("GET") && isImageRequested(uri)) {
-                return "redirect:/img/not_found.jpg";
+            if(mvcConfig.isStaticEnabled() && statusCode == 404 && request.getMethod().equals("GET") && isImageRequested(uri)) {
+                return "redirect:/static/img/not_found.jpg";
             }
 
             Object errMsgObj = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);

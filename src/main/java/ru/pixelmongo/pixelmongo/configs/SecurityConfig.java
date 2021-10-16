@@ -1,6 +1,8 @@
 package ru.pixelmongo.pixelmongo.configs;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.sql.DataSource;
@@ -66,6 +68,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Value( "${spring.security.rememberme.time}" )
     private Duration rememberMeTime;
+
+    @Value("${spring.web.resources.add-mappings}")
+    private boolean staticEnabled;
+
+    @Value("${spring.mvc.static-path-pattern}")
+    private String staticHandler;
 
     @Autowired
     private DataSource dataSource;
@@ -167,10 +175,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     public void configure(WebSecurity web) throws Exception {
+        List<String> ignore = new ArrayList<String>();
+        ignore.add("/open/**");
+        if(staticEnabled) {
+            ignore.add(staticHandler);
+            ignore.add("/favicon.ico");
+            ignore.add("/robots.txt");
+            ignore.add("/sitemap.xml");
+        }
+        if(uploadCfg.isHandlerEnabled()) {
+            ignore.add(uploadCfg.getUploadUrl()+"/**");
+        }
+        web.ignoring().antMatchers(ignore.toArray(new String[ignore.size()]));
+        /*
         web.ignoring().antMatchers(
                 "/css/**", "/js/**", "/fonts/**", "/img/**", "/favicon.ico",
                 "/open/**", uploadCfg.getUploadUrl()+"/**"
-                );
+                );*/
     }
 
     @Override

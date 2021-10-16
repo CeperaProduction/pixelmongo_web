@@ -1,9 +1,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 	<th:block th:fragment="headers">
-		<link rel="stylesheet" type="text/css" th:href="@{/css/skin3d.css}" />
-		<script type="text/javascript" charset="UTF-8" th:src="@{/js/skinview3d.js}"></script>
-		<script type="text/javascript" charset="UTF-8" th:src="@{/js/skin.js}"></script>
+		<link rel="stylesheet" type="text/css" th:href="@{/static/css/skin3d.css}" />
+		<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/skinview3d.js}"></script>
+		<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/skin.js}"></script>
 	</th:block>
 
 	<div th:fragment="skin3d(user, width, height)" th:with="id = ${'skin3d-'+user.id}">

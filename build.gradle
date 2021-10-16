@@ -9,6 +9,8 @@ group = 'ru.pixelmongo'
 version = '1.0.0'
 sourceCompatibility = '8'
 
+apply from: 'resources.gradle'
+
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
