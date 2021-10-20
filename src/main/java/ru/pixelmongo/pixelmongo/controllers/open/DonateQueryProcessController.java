@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,7 +16,8 @@ import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateServer;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateQueryRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerRepository;
 
-@RestController("/open/donate")
+@RestController
+@RequestMapping("/open/donate")
 public class DonateQueryProcessController {
 
     @Autowired
@@ -106,7 +108,7 @@ public class DonateQueryProcessController {
             return cmds;
         }
 
-        public boolean isHiden() {
+        public boolean isIsHiden() {
             return isHiden;
         }
 

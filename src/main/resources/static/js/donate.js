@@ -26,8 +26,15 @@ $(function(){
 			});
 		}
 
+
+		let inputCount = options.find('input#inputCount');
 		let costBlock = options.find('.donate-pack-cost');
 		let initialCost = costBlock.data('pack-cost');
+
+		updateTokens();
+		$('.donate-token-select select').on('change', updateTokens);
+		inputCount.on('input', updateTokens);
+
 		function updateTokens(){
 			let costChange = 0;
 			packForm.find('.donate-token-select option:selected[data-token-cost]').each(function(){
@@ -36,11 +43,16 @@ $(function(){
 					costChange += val;
 				}
 			});
-			costBlock.text((initialCost+costChange)+'');
+			costBlock.text((initialCost+costChange)*getCount()+'');
 		}
 
-		updateTokens();
-		$('.donate-token-select select').on('change', updateTokens);
+		function getCount(){
+			if(inputCount.length){
+				let c = parseInt(inputCount.val());
+				if(c) return c;
+			}
+			return 1;
+		}
 
 		packForm.on('submit', function(e){
 			e.preventDefault();

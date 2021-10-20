@@ -51,6 +51,9 @@ import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 @PropertySource("classpath:security.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
+    @Value("${server.servlet.session.cookie.domain}")
+    private String cookieDomain;
+
     @Value( "${spring.security.rememberme.auto}" )
     private boolean rememberMeAuto;
 
@@ -91,6 +94,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     public String getRememberMeCookie() {
         return rememberMeCookie;
+    }
+
+    public String getCookieDomain() {
+        return cookieDomain;
     }
 
     @Autowired
@@ -143,6 +150,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         services.setAlwaysRemember(rememberMeAuto);
         services.setCookieName(rememberMeCookie);
         services.setParameter(rememberMeParam);
+        services.setCookieDomain(cookieDomain);
         services.setSeriesLength(16);
         services.setTokenLength(16);
         if(rememberMeSecure)

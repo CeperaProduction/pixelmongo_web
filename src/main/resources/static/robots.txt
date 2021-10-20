@@ -1,0 +1,11 @@
+User-agent: *
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /profile
+Disallow: /profile/
+Disallow: /static/
+Disallow: /uploads/
+Disallow: /open/
+
+Sitemap: https://pixelmongo.ru/sitemap.xml

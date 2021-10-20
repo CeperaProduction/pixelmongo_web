@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	xmlns:th="http://www.thymeleaf.org">
-<head>
+<head lang="ru" translate="no">
 	<meta charset="UTF-8">
+
+	<meta name="anypay-verification" content="5e5dc9c0fd402908af578fedc606">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=false">
 
@@ -15,6 +17,8 @@
 	<link rel="apple-touch-icon" sizes="167x167" th:href="@{/static/img/icons/favicon.png}">
 
 	<meta property="vk:image" content="https://pixelmongo.ru/img/vk_logo.jpg" />
+
+	<meta name="google" content="notranslate">
 
 	<meta http-equiv="cleartype" content="on">
 
@@ -30,13 +34,14 @@
 	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/confirm.js}"></script>
 	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/main.js}"></script>
 
-	<th:block th:if="${_csrf != null}">
-		<meta name="_csrf" th:content="${_csrf.token}" />
-		<meta name="_csrf_header" th:content="${_csrf.headerName}" />
-	</th:block>
-
+	<meta th:if="${_csrf}" name="_csrf" th:content="${_csrf.token}" />
+	<meta th:if="${_csrf}" name="_csrf_header" th:content="${_csrf.headerName}" />
 
 	<title>Pixelmon Go</title>
+
+	<meta name="description" content="Проект серверов Minecraft с тематикой покемонов">
+	<meta name="keywords" content="Minecraft, Pixelmon, Reforged, Pixelmon Go, Pokemon, Pokemon Go, Покемоны">
+
 </head>
 <body class="bg-balls">
 	<div th:replace="/fragments/messages :: messages"></div>

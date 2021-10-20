@@ -64,7 +64,7 @@ public class DonateControllerRest {
 
         user = userService.getStoredUser(user);
 
-        DonateServer server = servers.findById(packId)
+        DonateServer server = servers.findById(packForm.getServer())
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,
                         msg.getMessage("error.status.404.donate_server", null, loc)));
         int count = pack.isCountable() ? packForm.getCount() : 1;
