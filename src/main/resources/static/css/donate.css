@@ -9,6 +9,7 @@
 	transition: 0.5s box-shadow;
 	text-decoration: none;
 	color: #fff;
+	transform: translateZ(0);
 }
 
 .donate-link:hover{
@@ -60,6 +61,18 @@
 	font-family: Pokemon;
 	text-shadow: 1px 1px 0px #444, 1px -1px 0px #444, -1px 1px 0px #444, -1px -1px 0px #444;
 	font-size: 1.5rem;
+}
+
+@media (max-width: 520px) {
+	.donate-link-text{
+		font-size: 1.2rem;
+	}
+}
+
+@media (max-width: 420px) {
+	.donate-link-text{
+		font-size: 1rem;
+	}
 }
 
 .donate-link-page{
@@ -170,7 +183,7 @@
 }
 
 .display-type-big .donate-link-text{
-	vertical-align: top;
+	display: none;
 }
 
 .donate-pack-discount{

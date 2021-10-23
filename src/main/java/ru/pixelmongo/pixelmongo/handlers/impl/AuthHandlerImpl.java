@@ -17,15 +17,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ru.pixelmongo.pixelmongo.exceptions.TooMuchLoginAttemptsException;
 import ru.pixelmongo.pixelmongo.handlers.AuthHandler;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
+import ru.pixelmongo.pixelmongo.services.LoginAttemptService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
 public class AuthHandlerImpl implements AuthHandler{
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LoginAttemptService loginAttempts;
 
     @Autowired
     private MessageSource msg;
@@ -46,10 +51,14 @@ public class AuthHandlerImpl implements AuthHandler{
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
         String message;
-        if(exception instanceof UsernameNotFoundException
+        if(exception instanceof TooMuchLoginAttemptsException) {
+            message = msg.getMessage("auth.fail.blocked", null, request.getLocale());
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+        }else if(exception instanceof UsernameNotFoundException
                 || exception instanceof BadCredentialsException) {
             message = msg.getMessage("auth.fail", null, request.getLocale());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            loginAttempts.onLoginFail(request);
         }else {
             message = exception.toString();
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

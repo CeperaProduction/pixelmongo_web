@@ -49,34 +49,36 @@
 		    <div class="card-header">
 		        Список пользователей (<span th:text="${users_count}"></span>)
 		    </div>
-		    <div class="card-body table-responsive p-0">
-				<table class="table table-striped m-0" th:if="${users_count != 0}">
-					<thead>
-						<tr>
-							<th scope="col"></th>
-							<th scope="col">Логин</th>
-							<th scope="col">Группа</th>
-							<th scope="col">Дата регистрации</th>
-							<th scope="col">Последняя авторизация</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="user : ${users}">
-							<td>
-								<img class="profile-image"
-									th:src="${@templateService.getAvatar(user)}"
-									style="width: 1.5em; height: 1.5em">
-							</td>
-							<td >
-								<a th:href="@{/admin/users/{user}(user=${user.name})}"
-									th:text="${user.name}"></a>
-							</td>
-							<td th:text="${user.group.name}"></td>
-							<td th:text="${@templateService.printUserRegisterDate(user)}"></td>
-							<td th:text="${@templateService.printUserLastLoginDate(user)}"></td>
-						</tr>
-					</tbody>
-				</table>
+		    <div class="card-body p-0">
+		    	<div class="table-responsive" th:if="${users_count != 0}">
+		    		<table class="table table-striped m-0">
+						<thead>
+							<tr>
+								<th scope="col"></th>
+								<th scope="col">Логин</th>
+								<th scope="col">Группа</th>
+								<th scope="col">Дата регистрации</th>
+								<th scope="col">Последняя авторизация</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="user : ${users}">
+								<td>
+									<img class="profile-image"
+										th:src="${@templateService.getAvatar(user)}"
+										style="width: 1.5em; height: 1.5em">
+								</td>
+								<td >
+									<a th:href="@{/admin/users/{user}(user=${user.name})}"
+										th:text="${user.name}"></a>
+								</td>
+								<td th:text="${user.group.name}"></td>
+								<td th:text="${@templateService.printUserRegisterDate(user)}"></td>
+								<td th:text="${@templateService.printUserLastLoginDate(user)}"></td>
+							</tr>
+						</tbody>
+					</table>
+		    	</div>
 				<div class="container" th:if="${users_count == 0}">
 					<table class="table" style="min-height: 200px">
 						<tbody>

@@ -13,7 +13,7 @@
 
 		<div class="banlist-header text-center mb-2">
 			<img th:src="@{/static/img/banlist_anime1.png}" class="banlist-anime-img gradient-white-block"/>
-			<h1 class="text-pokemon text-white text-shadow text-nowrap">Забаненные игроки</h1>
+			<h1 class="text-pokemon text-white text-shadow">Забаненные игроки</h1>
 		</div>
 
 		<div class="row justify-content-md-center">
@@ -40,34 +40,36 @@
 							</div>
 			        	</form>
 				    </div>
-				    <div class="card-body table-responsive p-0">
-						<table class="table table-striped m-0" th:if="${logs_count != 0}">
-							<thead>
-								<tr>
-									<th scope="col">Ник</th>
-									<th scope="col">Причина</th>
-									<th scope="col">Дата бана</th>
-									<th scope="col">Забанен до</th>
-									<th scope="col">Забанил</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="ban : ${bans}">
-									<td th:text="${ban.player}"></td>
-									<td>
-										<span th:text="${ban.reason}"></span>
-										<span class="ban-proofs"
-											th:attrappend="data-ban=${ban.id},
-													data-ban-proof=@{${proof.get(ban)}},
-													data-ban-proof-upload=${proof.canUpload(ban)},
-													data-ban-proof-delete=${proof.canDelete(ban)}"></span>
-									</td>
-									<td th:text="${@templateService.printDate(ban.date)}"></td>
-									<td th:text="${@templateService.printDate(ban.endDate)}"></td>
-									<td th:text="${ban.admin}"></td>
-								</tr>
-							</tbody>
-						</table>
+				    <div class="card-body p-0">
+				    	<div class="banlist-content table-responsive" th:if="${bans_count != 0}">
+							<table class="table table-striped m-0">
+								<thead>
+									<tr>
+										<th scope="col">Ник</th>
+										<th scope="col">Причина</th>
+										<th scope="col">Дата бана</th>
+										<th scope="col">Забанен до</th>
+										<th scope="col">Забанил</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="ban : ${bans}">
+										<td th:text="${ban.player}"></td>
+										<td>
+											<span th:text="${ban.reason}"></span>
+											<span class="ban-proofs"
+												th:attrappend="data-ban=${ban.id},
+														data-ban-proof=@{${proof.get(ban)}},
+														data-ban-proof-upload=${proof.canUpload(ban)},
+														data-ban-proof-delete=${proof.canDelete(ban)}"></span>
+										</td>
+										<td th:text="${@templateService.printDate(ban.date)}"></td>
+										<td th:text="${@templateService.printDate(ban.endDate)}"></td>
+										<td th:text="${ban.admin}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 						<div class="container" th:if="${bans_count == 0}">
 							<table class="table" style="min-height: 200px">
 								<tbody>

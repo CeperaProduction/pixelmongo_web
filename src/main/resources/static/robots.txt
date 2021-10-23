@@ -7,5 +7,7 @@ Disallow: /profile/
 Disallow: /static/
 Disallow: /uploads/
 Disallow: /open/
+Disallow: /auth/
+Disallow: /mconfirm
 
 Sitemap: https://pixelmongo.ru/sitemap.xml

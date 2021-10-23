@@ -34,7 +34,7 @@
 
 body{
 	max-width: 100%;
-	min-width: 360px;
+	min-width: 320px;
 	overflow-x: hidden;
 }
 
@@ -240,6 +240,15 @@ a.page-link.disabled{
 .menu{
 	background: #fff;
 	z-index: 10;
+}
+
+@media (max-width: 768px) {
+	.menu .navbar-collapse.show .navbar-nav {
+		max-height: 80vh;
+		overflow-y: scroll;
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
 }
 
 .menu .start{
@@ -630,9 +639,21 @@ form.link button:active{
 	color: #54a6ff;
 }
 
+
+
 .g-recaptcha.mx-auto>div{
 	margin-left: auto;
 	margin-right: auto;
+}
+
+@media (max-width: 400px) {
+	.g-recaptcha{
+		width: 250px;
+	}
+	.g-recaptcha>div{
+		transform:scale(0.83);
+		transform-origin:0 0;
+	}
 }
 
 .register-anime-img{
@@ -683,6 +704,11 @@ form.link button:active{
 
 	.password-header h1{
 		font-size: 2rem;
+	}
+
+	.banlist-content{
+		max-width: 89vw;
+		margin: 0 auto;
 	}
 }
 

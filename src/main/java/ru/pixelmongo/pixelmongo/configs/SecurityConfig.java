@@ -28,6 +28,7 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
@@ -36,13 +37,16 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.context.annotation.RequestScope;
 
+import ru.pixelmongo.pixelmongo.filters.LoginAttemptFilter;
 import ru.pixelmongo.pixelmongo.handlers.AuthHandler;
 import ru.pixelmongo.pixelmongo.handlers.impl.AuthHandlerImpl;
 import ru.pixelmongo.pixelmongo.model.AnonymousUser;
 import ru.pixelmongo.pixelmongo.model.UserDetails;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.repositories.internal.UserDetailsValidCheckHttpSessionSecurityContextRepository;
+import ru.pixelmongo.pixelmongo.services.LoginAttemptService;
 import ru.pixelmongo.pixelmongo.services.UserService;
+import ru.pixelmongo.pixelmongo.services.impl.LoginAttemptServiceImpl;
 import ru.pixelmongo.pixelmongo.services.impl.UserServiceImpl;
 import ru.pixelmongo.pixelmongo.utils.MD5PasswordEncoder;
 
@@ -77,6 +81,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Value("${spring.mvc.static-path-pattern}")
     private String staticHandler;
+
+    @Value( "${spring.security.failures.max}" )
+    private int authFailMaxCount;
+
+    @Value( "${spring.security.failures.time}" )
+    private Duration authFailBlockTime;
 
     @Autowired
     private DataSource dataSource;
@@ -119,6 +129,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 return user();
             }
         };
+    }
+
+    @Bean
+    public LoginAttemptService loginAttemptService() {
+        return new LoginAttemptServiceImpl(authFailMaxCount, authFailBlockTime.toMillis());
     }
 
     @Bean
@@ -273,6 +288,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .expiredUrl("/#login")
             .and()
         .and();
+
+        http.addFilterBefore(
+                new LoginAttemptFilter(loginAttemptService(), "/auth/login", authHandler()),
+                UsernamePasswordAuthenticationFilter.class);
 
     }
 

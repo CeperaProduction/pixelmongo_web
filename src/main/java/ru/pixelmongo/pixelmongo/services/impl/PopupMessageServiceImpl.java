@@ -71,9 +71,11 @@ public class PopupMessageServiceImpl implements PopupMessageService{
         ObjectMapper mapper = new ObjectMapper();
 
         String msgCookie = "[]";
-        for(Cookie cookie : request.getCookies()) {
-            if(cookie.getName().equals(COOKIE_KEY)) {
-                msgCookie = cookie.getValue();
+        if(request.getCookies() != null) {
+            for(Cookie cookie : request.getCookies()) {
+                if(cookie.getName().equals(COOKIE_KEY)) {
+                    msgCookie = cookie.getValue();
+                }
             }
         }
 

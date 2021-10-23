@@ -30,7 +30,8 @@ function Skin3D(){
 			'id' : container_id,
 			'container' : container,
 			'canvas' : canvas,
-			'viewer' : skinViewer
+			'viewer' : skinViewer,
+			'sizes' : [canvas.width, canvas.height]
 		};
 
 		skinViewer.loadSkin(skinUrl).catch((e)=>{
@@ -47,6 +48,13 @@ function Skin3D(){
 		if(!transparent){
 			container.className += " fxaa";
 		}
+
+		canvas.style.maxWidth = canvas.style.width;
+		canvas.style.width = '100%';
+		canvas.style.height = 'auto';
+		container.style.maxWidth = container.style.width;
+		container.style.width = '';
+		container.style.height = 'auto';
 	}
 
 	function destroy(container_id){

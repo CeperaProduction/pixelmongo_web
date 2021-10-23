@@ -67,7 +67,7 @@ function MessageHandler(){
 	this.showMessage = function(msg, type, time) {
 		msg = getMsg(msg, type, time);
 		let index = ++msgCounter;
-		let tpl = this.template.replaceAll('{text}', msg.text);
+		let tpl = this.template.replace('{text}', msg.text);
 		tpl = '<div message-index="'+index+'" class="message">'+tpl+'</div>';
 		if(this.append){
 			$('#msg_block').append(tpl);
