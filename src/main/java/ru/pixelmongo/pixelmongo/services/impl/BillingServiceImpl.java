@@ -23,12 +23,16 @@ import ru.pixelmongo.pixelmongo.services.BillingService;
 public class BillingServiceImpl implements BillingService{
 
     private Map<String, BillingHandler> billings = new HashMap<>();
+    private List<BillingHandler> ordered = new ArrayList<>();
 
     @Autowired
     public void setupHandlers(List<BillingHandler> handlers) {
         handlers.forEach(h->billings.put(h.getName(), h));
+        this.ordered = new ArrayList<>(handlers);
+        Collections.sort(this.ordered, (h1, h2)->Integer.compare(h2.getPriority(), h1.getPriority()));
         LOGGER.info("Loaded "+billings.size()+" billing handlers: "
                 + String.join(",", billings.keySet().toArray(new String[billings.size()])));
+
     }
 
     @Override
@@ -38,12 +42,14 @@ public class BillingServiceImpl implements BillingService{
 
     @Override
     public List<String> getHandlerNames(){
-        return Collections.unmodifiableList(new ArrayList<>(billings.keySet()));
+        ArrayList<String> handlerNames = new ArrayList<>();
+        this.ordered.forEach(h->handlerNames.add(h.getName()));
+        return Collections.unmodifiableList(handlerNames);
     }
 
     @Override
     public List<BillingHandler> getHandlers(){
-        return Collections.unmodifiableList(new ArrayList<>(billings.values()));
+        return Collections.unmodifiableList(ordered);
     }
 
     @Override

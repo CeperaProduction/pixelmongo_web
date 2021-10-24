@@ -14,6 +14,8 @@ public interface BillingHandler {
 
     public boolean isEnabled();
 
+    public int getPriority();
+
     public String getName();
 
     /**

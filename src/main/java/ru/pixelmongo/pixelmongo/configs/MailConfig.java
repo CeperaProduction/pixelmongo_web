@@ -19,7 +19,7 @@ public class MailConfig {
     @Value("${spring.mail.address}")
     private String systemEmailAddress;
 
-    @Value("${mailedconfirmations.url}")
+    @Value("${server.url}")
     private String absoluteUrl;
 
     @Value("${mailedconfirmations.time}")

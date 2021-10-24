@@ -16,13 +16,22 @@ public interface BillingDataRepository extends CrudRepository<BillingData, Integ
 
     public Page<BillingData> findByStatusAndUpdatedBetweenOrderByUpdatedDesc(int status, Date start, Date ent, Pageable page);
 
+    public Page<BillingData> findByStatusAndHandlerAndUpdatedBetweenOrderByUpdatedDesc(int status, String handler, Date start, Date ent, Pageable page);
+
     public Page<BillingData> findByStatusAndUserNameContainsIgnoreCaseAndUpdatedBetweenOrderByUpdatedDesc(int status, String userNamePart, Date start, Date ent, Pageable page);
 
-    public default Page<BillingData> searchPayments(String userNamePart, Date start, Date end, Pageable page){
+    public Page<BillingData> findByStatusAndHandlerAndUserNameContainsIgnoreCaseAndUpdatedBetweenOrderByUpdatedDesc(int status, String userNamePart, String handler, Date start, Date ent, Pageable page);
+
+    public default Page<BillingData> searchPayments(String userNamePart, String handler, Date start, Date end, Pageable page){
+        boolean handlerSet = StringUtils.hasText(handler) && !"all".equals(handler);
         if(StringUtils.hasText(userNamePart)) {
-            return findByStatusAndUserNameContainsIgnoreCaseAndUpdatedBetweenOrderByUpdatedDesc(BillingData.STATUS_DONE, userNamePart, start, end, page);
+            if(!handlerSet)
+                return findByStatusAndUserNameContainsIgnoreCaseAndUpdatedBetweenOrderByUpdatedDesc(BillingData.STATUS_DONE, userNamePart, start, end, page);
+            return findByStatusAndHandlerAndUserNameContainsIgnoreCaseAndUpdatedBetweenOrderByUpdatedDesc(BillingData.STATUS_DONE, userNamePart, handler, start, end, page);
         }
-        return findByStatusAndUpdatedBetweenOrderByUpdatedDesc(BillingData.STATUS_DONE, start, end, page);
+        if(!handlerSet)
+            return findByStatusAndUpdatedBetweenOrderByUpdatedDesc(BillingData.STATUS_DONE, start, end, page);
+        return findByStatusAndHandlerAndUpdatedBetweenOrderByUpdatedDesc(BillingData.STATUS_DONE, handler, start, end, page);
     }
 
 }

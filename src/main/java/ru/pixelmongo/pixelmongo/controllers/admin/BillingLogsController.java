@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ru.pixelmongo.pixelmongo.handlers.BillingHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.BillingData;
 import ru.pixelmongo.pixelmongo.repositories.primary.BillingDataRepository;
+import ru.pixelmongo.pixelmongo.services.BillingService;
 import ru.pixelmongo.pixelmongo.services.TemplateService;
 
 @Controller
@@ -32,9 +35,13 @@ public class BillingLogsController {
     @Autowired
     private BillingDataRepository payments;
 
+    @Autowired
+    private BillingService billing;
+
     @GetMapping
     public String searchLogs(Model model, Locale loc,
             @RequestParam(name = "search", defaultValue = "") String search,
+            @RequestParam(name = "handler", defaultValue = "all") String billingHandler,
             @RequestParam(name = "start", defaultValue = "-1") int start,
             @RequestParam(name = "end", defaultValue = "-1") int end,
             @RequestParam(name = "page", defaultValue = "1") int page) {
@@ -51,7 +58,7 @@ public class BillingLogsController {
         search = search.trim();
         Pageable pageable = PageRequest.of(page-1, 1000);
         Page<BillingData> pagePayments = this.payments.searchPayments(search,
-                new Date(1000L*start), new Date(1000L*end), pageable);
+                billingHandler, new Date(1000L*start), new Date(1000L*end), pageable);
 
         float sum = 0;
         List<BillingData> payments = pagePayments.getContent();
@@ -64,6 +71,11 @@ public class BillingLogsController {
         model.addAttribute("profit", String.format("%1.2f", sum));
         model.addAttribute("start", start);
         model.addAttribute("end", end);
+        List<String> billingHandlers = this.billing.getHandlers().stream()
+                .filter(BillingHandler::isEnabled).map(BillingHandler::getName)
+                .collect(Collectors.toList());
+        model.addAttribute("billingHandlers", billingHandlers);
+        model.addAttribute("handler", billingHandler);
         tpl.addPagination(model, page, pagePayments.getTotalPages(), 9);
 
         return "admin/billing";

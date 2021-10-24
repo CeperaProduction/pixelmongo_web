@@ -1,6 +1,7 @@
 package ru.pixelmongo.pixelmongo.handlers.impl.billing;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,13 +9,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import ru.pixelmongo.pixelmongo.handlers.BillingHandler;
@@ -36,6 +40,9 @@ public class AnyPayHandler implements BillingHandler{
     @Value("${billing.anypay.enabled}")
     private boolean enabled;
 
+    @Value("${billing.anypay.priority}")
+    private int priority;
+
     @Value("${billing.anypay.test}")
     private boolean allowTest;
 
@@ -45,8 +52,9 @@ public class AnyPayHandler implements BillingHandler{
     @Value("${billing.anypay.id}")
     private String merchantId;
 
-    @Value("#{'${billing.anypay.ips}'.split(',')}")
-    private List<String> trustedIps;
+    @Value("${billing.anypay.ips}")
+    private String trustedIpsStr;
+    private List<IpAddressMatcher> trustedIps;
 
     @Value("${billing.anypay.key.secret}")
     private String secretKey;
@@ -65,6 +73,14 @@ public class AnyPayHandler implements BillingHandler{
 
     private DateFormatter dfRemote = new DateFormatter("DD.MM.YYYY hh:mm:ss");
 
+    @PostConstruct
+    public void init() {
+        trustedIps = new ArrayList<>();
+        for(String ip : trustedIpsStr.split(",")) {
+            trustedIps.add(new IpAddressMatcher(ip.trim()));
+        }
+    }
+
     @Override
     public String getName() {
         return "anypay";
@@ -73,6 +89,11 @@ public class AnyPayHandler implements BillingHandler{
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public int getPriority() {
+       return priority;
     }
 
     @Override
@@ -185,7 +206,12 @@ public class AnyPayHandler implements BillingHandler{
             try {
                 profit = Float.parseFloat(profitStr);
             }catch(Exception ex) {
-                return "Error: Invalid profit value";
+                if(test) {
+                    profit = 0;
+                }else {
+                    profit = sum;
+                    BillingService.LOGGER.warn("Got pay notify request without profit value (pay_id="+bill.getId()+"). Setting profit to sum value.");
+                }
             }
 
             User user = users.findById(bill.getUserId()).orElse(null);
@@ -202,13 +228,12 @@ public class AnyPayHandler implements BillingHandler{
             bill.setUpdated(date);
             bill.setMessage(test ? "Test pay" : "Paid");
             bill.setProfit(profit);
-            bill.setPayMethod(payMethod);
+            bill.setPayMethod(StringUtils.hasText(payMethod) ? payMethod : test ? "test" : "");
             bill.setStatus(BillingData.STATUS_DONE);
             bills.save(bill);
 
             user.setBalance(user.getBalance()+sum);
             users.save(user);
-
 
             return "OK";
         }else {
@@ -223,7 +248,7 @@ public class AnyPayHandler implements BillingHandler{
 
     private boolean isTrusted(HttpServletRequest request) {
         if(this.trustedIps.isEmpty()) return true;
-        return trustedIps.stream().anyMatch(ip->request.getRemoteAddr().equals(ip));
+        return trustedIps.stream().anyMatch(ip->ip.matches(request));
     }
 
     private boolean checkBillingSign(String sign, String merchantId, String sumStr,

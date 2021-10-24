@@ -142,6 +142,12 @@
 	font-size: 1.2rem;
 }
 
+@media (max-width: 520px) {
+	.donate-category-header{
+		font-size: 1rem;
+	}
+}
+
 .donate-category-header img{
 	width: 2rem;
 	height: 2rem;

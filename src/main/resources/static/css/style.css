@@ -799,3 +799,7 @@ form.link button:active{
 	background-image: url('../img/billing/anypay.png');
 }
 
+.payment-type.handler-qiwi{
+	background-image: url('../img/billing/qiwi.png');
+}
+

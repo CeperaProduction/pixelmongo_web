@@ -60,6 +60,26 @@
 							</div>
 	        			</div>
 					</div>
+					<div th:if="${billingHandlers.size() > 1}">
+						<span class="pr-2">Источник:</span>
+						<div class="form-check form-check-inline">
+						  	<input class="form-check-input" type="radio" name="handler"
+						  		id="inputBillSource-all" value="all"
+						  		th:checked="${handler == 'all'}?checked">
+						  	<label class="form-check-label" for="inputBillSource-all">
+						  		Все
+						  	</label>
+						</div>
+						<div class="form-check form-check-inline"
+							th:each="billHandler : ${billingHandlers}"
+							th:with="inputId = ${'inputBillSource' + billHandler}">
+						  	<input class="form-check-input" type="radio" name="handler"
+						  		th:id="${inputId}" th:value="${billHandler}"
+						  		th:checked="${billHandler == handler}?checked">
+						  	<label class="form-check-label" th:for="${inputId}"
+						  		th:text="${billHandler}"></label>
+						</div>
+					</div>
 	        	</form>
 		    </div>
 		</div>
