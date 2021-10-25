@@ -80,8 +80,8 @@ public class QiwiHandler implements BillingHandler{
     @Autowired
     private UserRepository users;
 
-    private DateFormatter dfForm = new DateFormatter("YYYY-MM-DD'T'hhmm");
-    private DateFormatter dfRemote = new DateFormatter("YYYY-MM-DD'T'hh:mm:ssX");
+    private DateFormatter dfForm = new DateFormatter("yyyy-MM-dd'T'HHmm");
+    private DateFormatter dfRemote = new DateFormatter("yyyy-MM-dd'T'HH:mm:ssX");
 
     @PostConstruct
     public void init() {

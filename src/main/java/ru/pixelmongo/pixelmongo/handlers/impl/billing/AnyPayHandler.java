@@ -71,7 +71,7 @@ public class AnyPayHandler implements BillingHandler{
     @Autowired
     private DateFormatter df;
 
-    private DateFormatter dfRemote = new DateFormatter("DD.MM.YYYY hh:mm:ss");
+    private DateFormatter dfRemote = new DateFormatter("dd.MM.yyyy HH:mm:ss");
 
     @PostConstruct
     public void init() {
