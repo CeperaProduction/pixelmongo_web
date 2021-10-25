@@ -91,9 +91,14 @@
 
 						</th:block>
 					</th:block>
+
 					<div class="alert alert-danger px-3 my-1"
 						role="alert"
 						th:errors="*{tokens}"></div>
+
+					<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="${giveForm}"></div>
 
 	        	</form>
 		    </div>

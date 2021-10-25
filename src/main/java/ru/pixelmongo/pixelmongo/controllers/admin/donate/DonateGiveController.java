@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import ru.pixelmongo.pixelmongo.exceptions.DonatePackActiveException;
 import ru.pixelmongo.pixelmongo.exceptions.DonatePackTokenException;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
@@ -33,6 +35,7 @@ import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerReposito
 import ru.pixelmongo.pixelmongo.services.AdminLogService;
 import ru.pixelmongo.pixelmongo.services.DonateService;
 import ru.pixelmongo.pixelmongo.services.PopupMessageService;
+import ru.pixelmongo.pixelmongo.services.TemplateService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
 @Controller
@@ -62,6 +65,9 @@ public class DonateGiveController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TemplateService tpl;
 
     @GetMapping(params = "!pack")
     public String choosePack(Model model) {
@@ -116,6 +122,15 @@ public class DonateGiveController {
             }catch(DonatePackTokenException ex) {
                 DonateService.LOGGER.catching(ex);
                 binding.addError(new FieldError("giveForm", "tokens", ex.getMessage()));
+            }catch(DonatePackActiveException ex) {
+                String message;
+                if(ex.getBackExecuteDate().getTime() > System.currentTimeMillis()) {
+                    message = msg.getMessage("donate.pack.active",
+                            new Object[] {tpl.printDate(ex.getBackExecuteDate(), loc)}, loc);
+                }else {
+                    message = msg.getMessage("donate.pack.active.now", null, loc);
+                }
+                binding.addError(new ObjectError("giveForm", message));
             }
         }
 

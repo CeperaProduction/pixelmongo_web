@@ -2,6 +2,7 @@ package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import ru.pixelmongo.pixelmongo.exceptions.DonateExtraNotFoundException;
 import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughMoneyException;
+import ru.pixelmongo.pixelmongo.exceptions.DonatePackActiveException;
 import ru.pixelmongo.pixelmongo.exceptions.DonatePackTokenFormatException;
 import ru.pixelmongo.pixelmongo.exceptions.DonatePackTokenProcessExcetion;
 import ru.pixelmongo.pixelmongo.handlers.DonateExtraHandler;
@@ -153,6 +155,7 @@ public class DonateServiceImpl implements DonateService{
         query.setSpentMoney(cost > 0 ? cost : 0);
 
         if(makeBackIfTimed && pack.isTimed()) {
+
             DonateQuery backQuery = query.duplicate();
             List<String> backCmds = pack.getBackCommands().stream().map(cmd->applyTokens(cmd, tokenValues))
                     .collect(Collectors.toList());
@@ -178,13 +181,18 @@ public class DonateServiceImpl implements DonateService{
 
     @Override
     public int buyPack(DonatePack pack, User user, DonateServer server,
-            Map<String, List<String>> tokensData, int count, boolean forFree) {
+            Map<String, List<String>> tokensData, int count, boolean fromAdmin) {
 
         if(count < 1) count = 1;
         if(count > 1 && pack.isTimed()) {
             LOGGER.warn("Illegal pack count "+count+" for timed pack "+pack.getTitle()+". Timed packs can't be countable.");
             count = 1;
         }
+
+        DonateQuery activeBackQuery = this.queries.getActiveBackQuery(server, user, pack).orElse(null);
+        if(activeBackQuery != null && !fromAdmin)
+            throw new DonatePackActiveException(pack.getId(), activeBackQuery.getId(),
+                    new Date(activeBackQuery.getExecuteAfter()*1000L));
 
         List<DonateQuery> queries = new ArrayList<>();
         int sum = 0;
@@ -194,7 +202,7 @@ public class DonateServiceImpl implements DonateService{
                 DonateQuery query = processPack(pack, server.getConfigName(), user.getName(), tokensData, false);
                 queries.add(query);
                 ++given;
-                if(forFree) {
+                if(fromAdmin) {
                     query.setSpentMoney(0);
                 }else {
                     sum += query.getSpentMoney();
@@ -204,7 +212,7 @@ public class DonateServiceImpl implements DonateService{
             DonateQuery query = processPack(pack, server.getConfigName(), user.getName(), tokensData, true);
             queries.add(query);
             given = 1;
-            if(forFree) {
+            if(fromAdmin) {
                 query.setSpentMoney(0);
             }else {
                 sum = query.getSpentMoney();
@@ -214,6 +222,9 @@ public class DonateServiceImpl implements DonateService{
         }
 
         consumeMoney(user, sum);
+
+        if(activeBackQuery != null)
+            this.queries.delete(activeBackQuery);
 
         this.queries.saveAll(queries);
 

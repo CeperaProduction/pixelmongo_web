@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughMoneyException;
+import ru.pixelmongo.pixelmongo.exceptions.DonatePackActiveException;
 import ru.pixelmongo.pixelmongo.handlers.DonateExtraHandler;
 import ru.pixelmongo.pixelmongo.handlers.DonatePackTokenProcessResult;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
@@ -54,12 +55,14 @@ public interface DonateService {
      * @param server
      * @param tokensData
      * @param count - sets to 1 if not valid
-     * @param forFree - don't change user balance
+     * @param fromAdmin - don't change user balance and recreate back query if exists
+     *
+     * @throws {@link DonateNotEnoughMoneyException}, {@link DonatePackActiveException}
      *
      * @return count of given packs
      */
     public int buyPack(DonatePack pack, User user, DonateServer server, Map<String, List<String>> tokensData, int count,
-            boolean forFree);
+            boolean fromAdmin);
 
     /**
      * Take money from user

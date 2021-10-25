@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughMoneyException;
+import ru.pixelmongo.pixelmongo.exceptions.DonatePackActiveException;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateServer;
@@ -25,6 +26,7 @@ import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonatePackRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.donate.DonateServerRepository;
 import ru.pixelmongo.pixelmongo.services.DonateService;
+import ru.pixelmongo.pixelmongo.services.TemplateService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
@@ -46,13 +48,8 @@ public class DonateControllerRest {
     @Autowired
     private DonateService donate;
 
-    /*
-    @GetMapping("/pack/{id}")
-    public ResultMessage pack(@PathVariable("id") int packId, Locale loc) {
-        DonatePack pack = getAvailablePack(packId, loc);
-
-    }
-    */
+    @Autowired
+    private TemplateService tpl;
 
     @PostMapping("/buy/{pack}")
     public ResultMessage buyPack(@PathVariable("pack") int packId,
@@ -94,6 +91,18 @@ public class DonateControllerRest {
     public ResultMessage handleNoMoney(DonateNotEnoughMoneyException ex, Locale loc) {
         return new ResultMessage(DefaultResult.ERROR,
                 msg.getMessage("donate.no_money", null, loc));
+    }
+
+    @ExceptionHandler
+    public ResultMessage handlePackActive(DonatePackActiveException ex, Locale loc) {
+        if(ex.getBackExecuteDate().getTime() > System.currentTimeMillis()) {
+            return new ResultMessage(DefaultResult.ERROR,
+                    msg.getMessage("donate.pack.active",
+                            new Object[] {tpl.printDate(ex.getBackExecuteDate(), loc)}, loc));
+        }else {
+            return new ResultMessage(DefaultResult.ERROR,
+                    msg.getMessage("donate.pack.active.now", null, loc));
+        }
     }
 
 }
