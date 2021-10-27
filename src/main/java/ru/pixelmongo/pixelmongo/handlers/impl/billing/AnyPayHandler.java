@@ -40,10 +40,13 @@ public class AnyPayHandler implements BillingHandler{
     @Value("${billing.anypay.enabled}")
     private boolean enabled;
 
+    @Value("${billing.anypay.hidden:false}")
+    private boolean hidden;
+
     @Value("${billing.anypay.priority}")
     private int priority;
 
-    @Value("${billing.anypay.test}")
+    @Value("${billing.anypay.test:false}")
     private boolean allowTest;
 
     @Value("${billing.anypay.url}")
@@ -89,6 +92,11 @@ public class AnyPayHandler implements BillingHandler{
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return !hidden;
     }
 
     @Override

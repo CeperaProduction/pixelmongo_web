@@ -9,5 +9,7 @@ Disallow: /uploads/
 Disallow: /open/
 Disallow: /auth/
 Disallow: /mconfirm
+Disallow: /password
+Disallow: /pay/
 
 Sitemap: https://pixelmongo.ru/sitemap.xml

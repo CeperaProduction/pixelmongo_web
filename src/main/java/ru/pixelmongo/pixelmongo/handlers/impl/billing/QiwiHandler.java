@@ -49,10 +49,13 @@ public class QiwiHandler implements BillingHandler{
     @Value("${billing.qiwi.enabled}")
     private boolean enabled;
 
+    @Value("${billing.qiwi.hidden:false}")
+    private boolean hidden;
+
     @Value("${billing.qiwi.priority}")
     private int priority;
 
-    @Value("${billing.qiwi.test}")
+    @Value("${billing.qiwi.test:false}")
     private boolean testMode;
 
     @Value("${billing.qiwi.url}")
@@ -94,6 +97,11 @@ public class QiwiHandler implements BillingHandler{
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return !hidden;
     }
 
     @Override

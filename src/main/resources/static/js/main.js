@@ -1,3 +1,19 @@
+
+function post(url, data){
+    let form = $('<form></form>');
+    form.attr("method", "post");
+    form.attr("action", url);
+
+    $.each(data, function( key, value ) {
+        let field = $('<input></input>');
+        field.attr("type", "hidden");
+        field.attr("name", key);
+        field.attr("value", value);
+        form.append(field);
+    });
+    $(form).appendTo('body').submit();
+}
+
 $(function () {
 	$('[data-toggle="tooltip"]').tooltip();
 	bsCustomFileInput.init();
@@ -124,7 +140,11 @@ $(function(){
 
 	ajax.forms.bind($('#pay-form'), function(res){
 		if(res.data != undefined && res.data.location != undefined){
-			document.location = res.data.location;
+			if(res.data.data != undefined){
+				post(res.data.location, res.data.data)
+			}else{
+				document.location = res.data.location;
+			}
 		}else{
 			messages.showMessage(res.message, res.result == 'ok' ? 'ok' : 'error');
 		}

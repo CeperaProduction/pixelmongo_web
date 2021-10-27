@@ -24,7 +24,7 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 @RequestMapping("/donate")
 public class DonateController {
 
-    private final static String HIDDEN_SEE_PERM = "admin.donate.access";
+    private final static String HIDDEN_SEE_PERM = "admin.panel.donate";
 
     @Autowired
     private DonatePageRepository pages;

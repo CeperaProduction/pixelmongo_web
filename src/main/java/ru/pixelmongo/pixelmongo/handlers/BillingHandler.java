@@ -14,6 +14,8 @@ public interface BillingHandler {
 
     public boolean isEnabled();
 
+    public boolean isVisible();
+
     public int getPriority();
 
     public String getName();
@@ -25,7 +27,9 @@ public interface BillingHandler {
      * @param loc
      * @param request
      * @param response
-     * @return normally is {@link ResultDataMessage} with status 'OK' containing 'location' with form redirect url
+     * @return normally is {@link ResultDataMessage} with status 'OK' containing
+     * 'location' with form redirect url. If result also has 'data', will use POST
+     * method with parameters from 'data'. 'data' should be key->value map (or object).
      */
     public ResultMessage makeForm(User user, int sum, Locale loc, HttpServletRequest request,
             HttpServletResponse response);

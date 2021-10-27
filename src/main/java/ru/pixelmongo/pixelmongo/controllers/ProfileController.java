@@ -32,6 +32,7 @@ import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.confirm.MailedConfirmationType;
 import ru.pixelmongo.pixelmongo.model.dto.PopupMessage;
 import ru.pixelmongo.pixelmongo.model.dto.forms.UserManageForm;
+import ru.pixelmongo.pixelmongo.repositories.primary.UserGroupRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.repositories.sub.PlayerBanRecordRepository;
 import ru.pixelmongo.pixelmongo.services.BillingService;
@@ -157,7 +158,9 @@ public class ProfileController {
         model.addAttribute("unbanDayCost", unbanHandler.getDayCost());
         model.addAttribute("unbanMaxCost", unbanHandler.getMaxCost());
         List<String> billingHandlers = this.billing.getHandlers().stream()
-                .filter(BillingHandler::isEnabled).map(BillingHandler::getName)
+                .filter(BillingHandler::isEnabled)
+                .filter(h->h.isVisible() || user.getGroup().getId() == UserGroupRepository.GROUP_ID_ADMIN)
+                .map(BillingHandler::getName)
                 .collect(Collectors.toList());
         model.addAttribute("billingHandlers", billingHandlers);
         boolean needRemember = false;

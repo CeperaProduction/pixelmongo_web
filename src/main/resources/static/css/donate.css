@@ -21,6 +21,10 @@
 	color: #fff;
 }
 
+.donate-link.donate-hidden{
+	opacity: 0.35;
+}
+
 .donate-link-block{
 	display: block;
 	width: 100%;

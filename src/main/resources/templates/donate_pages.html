@@ -29,7 +29,8 @@
 				<div class="col-6 col-md-4 mx-auto"
 					th:each="page : ${pages}">
 
-					<a class="donate-link donate-link-page" th:href="@{/donate/{page}(page=${page.tag})}">
+					<a class="donate-link donate-link-page" th:href="@{/donate/{page}(page=${page.tag})}"
+						th:classappend="${page.hidden}?donate-hidden">
 						<span class="donate-link-block" th:style="'background-image : url('+@{${images.get(page)}}+')'">
 							<span class="donate-link-content">
 								<span class="donate-link-text"
