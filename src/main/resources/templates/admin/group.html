@@ -69,15 +69,21 @@
 										th:id="${checkbox_id}"
 										th:name="permissions"
 										th:value="${perm.id}"
-										th:checked="${checkGroup.permissions.contains(perm)}"
+										th:checked="${groupForm.permissions.contains(perm.id)}"
 										th:disabled="${!canChange}">
 									<label class="custom-control-label"
 										th:for="${checkbox_id}"
 										th:text="${@templateService.printPerm(perm)}"></label>
 								</div>
+								<div class="alert alert-danger px-3 my-1"
+											role="alert"
+											th:errors="*{permissions}"></div>
 							</th:block>
 						</div>
 					</div>
+					<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="${groupForm}"></div>
 	        	</form>
 		    </div>
 		    <div class="card-footer" th:if="${can_manage}">

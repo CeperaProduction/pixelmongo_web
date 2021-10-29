@@ -36,6 +36,7 @@ public class DonatePack implements OrderedData<Integer>{
     @Lob
     private String content = "";
 
+    @Lob
     @Convert(converter = StringListConverter.class)
     private List<String> commands = new ArrayList<>();
 
@@ -53,6 +54,7 @@ public class DonatePack implements OrderedData<Integer>{
     private int existTime = 0;
 
     @Column(name = "timed_commands")
+    @Lob
     @Convert(converter = StringListConverter.class)
     private List<String> backCommands = new ArrayList<>();
 

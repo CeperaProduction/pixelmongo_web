@@ -25,12 +25,15 @@
 	<th:block th:replace="/fragments/jquery :: jquery"></th:block>
 	<th:block th:replace="/fragments/bootstrap :: bootstrap"></th:block>
 	<th:block th:replace="/fragments/fontawesome :: fa"></th:block>
+	<th:block th:replace="/fragments/messages :: headers"></th:block>
 
 	<link rel="stylesheet" type="text/css" th:href="@{/static/css/style.css}" />
 
 	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/ajax.js}"></script>
 	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/confirm.js}"></script>
 	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/main.js}"></script>
+
+	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/metric.js}"></script>
 
 	<meta th:if="${_csrf}" name="_csrf" th:content="${_csrf.token}" />
 	<meta th:if="${_csrf}" name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -42,7 +45,7 @@
 
 </head>
 <body class="bg-balls">
-	<div th:replace="/fragments/messages :: messages"></div>
+	<div th:replace="/fragments/messages :: block"></div>
 	<section layout:fragment="main_content"></section>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package ru.pixelmongo.pixelmongo.model.dto.forms;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +14,7 @@ public class UserGroupManageForm {
     @NotBlank
     private String name = "";
     private int permLevel = 1;
-    private Set<UserPermission> permissions = Collections.emptySet();
+    private Set<Integer> permissions = new HashSet<>();
 
     public UserGroupManageForm() {}
 
@@ -26,7 +25,7 @@ public class UserGroupManageForm {
         }else {
             permLevel = group.getPermissionLevel();
         }
-        permissions = new HashSet<>(group.getPermissions());
+        group.getPermissions().forEach(p->this.permissions.add(p.getId()));
     }
 
     public void apply(UserGroup group, Set<UserPermission> availablePerms, int maxPermLevel) {
@@ -34,7 +33,7 @@ public class UserGroupManageForm {
         if(group.getId() != UserGroupRepository.GROUP_ID_ADMIN) {
             group.setPermissionLevel(Math.min(permLevel, maxPermLevel));
             for(UserPermission perm : availablePerms) {
-                if(this.permissions.contains(perm)) {
+                if(this.permissions.contains(perm.getId())) {
                     group.getPermissions().add(perm);
                 }else {
                     group.getPermissions().remove(perm);
@@ -51,11 +50,11 @@ public class UserGroupManageForm {
         this.name = name;
     }
 
-    public Set<UserPermission> getPermissions() {
+    public Set<Integer> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Set<UserPermission> permissions) {
+    public void setPermissions(Set<Integer> permissions) {
         this.permissions = permissions;
     }
 

@@ -141,11 +141,13 @@ public class AnyPayHandler implements BillingHandler{
             return "Error: Test mode disabled";
         if(test) {
             BillingService.LOGGER.info("Got test billing notify request");
+        }
+        if(this.allowTest) {
             BillingService.LOGGER.info("Request params:\n"+toString(params));
         }
         String result = processWebHook(params, test, loc, request, response);
-        if(test)
-            BillingService.LOGGER.info("Test billing request result: "+result);
+        if(this.allowTest)
+            BillingService.LOGGER.info("Billing request result: "+result);
         return result;
     }
 
@@ -165,7 +167,7 @@ public class AnyPayHandler implements BillingHandler{
         if(!isTrusted(request))
             return "Error: Untrusted host";
 
-        if(!checkBillingSign(sign, merchantId, sumStr, billIdStr, test))
+        if(!checkBillingSign(sign, merchantId, sumStr, billIdStr, this.allowTest))
             return "Error: Wrong signature";
 
         if(!merchantId.equals(this.merchantId))
@@ -262,8 +264,10 @@ public class AnyPayHandler implements BillingHandler{
     private boolean checkBillingSign(String sign, String merchantId, String sumStr,
             String billIdStr, boolean test) {
         String[] data = new String[] {merchantId, sumStr, billIdStr, secretKey};
-        String validSign = MD5EncodeUtils.md5(String.join(":", data));
-        if(test) BillingService.LOGGER.info("Valid sign: "+validSign+" Request sign: "+sign);
+        String dataStr = String.join(":", data);
+        String validSign = MD5EncodeUtils.md5(dataStr);
+        if(test) BillingService.LOGGER.info("Sign generation string: "+dataStr+
+                " Valid sign: "+validSign+" Request sign: "+sign);
         return validSign.equals(sign);
     }
 

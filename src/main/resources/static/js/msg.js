@@ -7,11 +7,21 @@ function MessageHandler(){
 
 	let displayCounter = 0;
 
+	let observers = [];
+
 	this.delayTime = 10000;
 
 	this.template = '{text}';
 
 	this.append = false;
+
+	this.addObserver = function(observer){
+		observers.push(observer);
+	}
+
+	function notifyObservers(msg, block){
+		observers.forEach(obs => obs.call(msg, msg, block));
+	}
 
 	function getMessageClass(msg){
 		switch(msg.type){
@@ -85,6 +95,7 @@ function MessageHandler(){
 		if(msg.time != -1){
 			setTimeout(function(){close(message)}, delay);
 		}
+		notifyObservers(msg, message);
 		return index;
 	};
 
@@ -112,7 +123,9 @@ function MessageHandler(){
 		}
 	}
 
-	loadFromCookies();
+	$(function(){
+		loadFromCookies();
+	});
 
 }
 

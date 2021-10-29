@@ -1,7 +1,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
-	<th:block th:fragment="messages">
-		<div id="msg_block"></div>
+	<th:block th:fragment="headers">
 		<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/msg.js}"></script>
+	</th:block>
+
+	<th:block th:fragment="block">
+		<div id="msg_block"></div>
 		<script type="text/javascript">
 			messages.template='<div class="message-content">{text}</div>';
 			messages.append = true;

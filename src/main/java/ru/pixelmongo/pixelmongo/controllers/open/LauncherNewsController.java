@@ -48,6 +48,7 @@ public class LauncherNewsController {
         Element root = doc.createElement("root");
 
         for(VKPost postData : wall.getItems()) {
+            if(postData.getText().isEmpty()) continue;
             Element post = doc.createElement("data");
             Element id = doc.createElement("id");
             id.setTextContent(Integer.toString(postData.getId()));

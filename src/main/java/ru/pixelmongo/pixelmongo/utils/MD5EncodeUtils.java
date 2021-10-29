@@ -6,13 +6,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MD5EncodeUtils {
-    
+
     public static String md5(CharSequence input) {
         return md5(input, 1);
     }
 
     /**
-     * 
+     *
      * @param input - input for hashing
      * @param times - how much times operation MD5 hashing should repeat
      * @return
@@ -32,15 +32,15 @@ public class MD5EncodeUtils {
         }
         return hash;
     }
-    
+
     private static String md5(MessageDigest encoder, CharSequence input) {
         byte[] bytes = input.toString().getBytes(StandardCharsets.UTF_8);
         encoder.update(bytes, 0, bytes.length);
-        String hashedPass = new BigInteger(1, encoder.digest()).toString(16);  
-        if (hashedPass.length() < 32) {
-           hashedPass = "0" + hashedPass; 
+        String hashedPass = new BigInteger(1, encoder.digest()).toString(16);
+        while (hashedPass.length() < 32) {
+           hashedPass = "0" + hashedPass;
         }
         return hashedPass;
     }
-    
+
 }

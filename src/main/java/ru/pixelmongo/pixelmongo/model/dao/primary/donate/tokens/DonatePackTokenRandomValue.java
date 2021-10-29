@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
 import ru.pixelmongo.pixelmongo.utils.StringListConverter;
@@ -15,6 +16,7 @@ import ru.pixelmongo.pixelmongo.utils.StringListConverter;
 public class DonatePackTokenRandomValue extends DonatePackToken{
 
     @Column(name = "data")
+    @Lob
     @Convert(converter = StringListConverter.class)
     private List<String> values;
 

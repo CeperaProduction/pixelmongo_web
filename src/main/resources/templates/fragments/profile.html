@@ -6,7 +6,7 @@
 			<a aria-expanded="false" data-toggle="dropdown" class="nav-link" href="#">
 				<img class="profile-image"
 					th:src="@{${@templateService.avatar}}">
-				<span th:text="${@user.name}"></span>
+				<span class="profile-name" th:text="${@user.name}"></span>
 				<th:block th:if="${mode == 'donate'}">
 					<span class="text-white text-shadow-rainbow font-weight-bold"
 						style="font-size: 0.9em">
