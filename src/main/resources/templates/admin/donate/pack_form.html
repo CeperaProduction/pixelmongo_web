@@ -38,6 +38,7 @@
 							<input type="text" class="form-control"
 								id="inputTitle" placeholder="Название набора"
 								th:field="*{title}"
+								maxlength="250"
 								required>
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
@@ -241,6 +242,7 @@
 									        		<input type="text" class="form-control"
 										        			th:name="|tokens[${token.name}].options|"
 															th:value="${token.getOption(0)}"
+															maxlength="250"
 															required="required">
 												</div>
 												<div  class="donate-token-variants">
@@ -625,6 +627,7 @@
 					</div>
 	        		<input type="text" class="form-control"
 		        			name="tokens[{{token-name}}].options"
+		        			maxlength="250"
 							required="required">
 				</div>
 				<div  class="donate-token-variants">

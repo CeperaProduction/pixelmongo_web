@@ -32,6 +32,9 @@ public class DonatePage implements OrderedData<Integer>{
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
+    private String description;
+
     @OneToMany(mappedBy = "page", cascade = CascadeType.REMOVE)
     @OrderBy("ordinary")
     private List<DonateCategory> categories;
@@ -74,6 +77,14 @@ public class DonatePage implements OrderedData<Integer>{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

@@ -22,6 +22,9 @@ public class DonatePageForm {
     @NotBlank(message = "{value.empty}")
     private String title;
 
+    @NotBlank(message = "{value.empty}")
+    private String description;
+
     private boolean hidden = false;
 
     private boolean enabled = true;
@@ -37,6 +40,7 @@ public class DonatePageForm {
     public DonatePageForm(DonatePage page) {
        this.tag = page.getTag();
        this.title = page.getTitle();
+       this.description = page.getDescription();
        this.hidden = page.isHidden();
        this.enabled = page.isEnabled();
        page.getServers().forEach(s->this.servers.add(s.getId()));
@@ -45,6 +49,7 @@ public class DonatePageForm {
     public void apply(DonatePage page, DonateServerRepository serversRepo) {
         page.setTag(this.tag);
         page.setTitle(this.title);
+        page.setDescription(this.description);
         page.setHidden(this.hidden);
         page.setEnabled(this.enabled);
         page.getServers().clear();
@@ -65,6 +70,14 @@ public class DonatePageForm {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isHidden() {

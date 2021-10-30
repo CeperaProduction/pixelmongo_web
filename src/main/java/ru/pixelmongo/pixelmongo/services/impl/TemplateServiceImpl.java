@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,12 @@ import ru.pixelmongo.pixelmongo.services.UserService;
 @Service("templateService")
 public class TemplateServiceImpl implements TemplateService{
 
+    @Value("${server.url}")
+    private String absoluteUrl;
+
+    @Value("${server.servlet.context-path}")
+    private String basePath;
+
     @Autowired
     private DateFormatter df;
 
@@ -42,6 +49,17 @@ public class TemplateServiceImpl implements TemplateService{
 
     @Autowired
     private SecurityConfig securityConfig;
+
+    @Override
+    public String getAbsoluteUrlBase() {
+        String url = absoluteUrl;
+        if(url.endsWith("/")) url = url.substring(0, url.length()-1);
+        String path = basePath;
+        if(!path.startsWith("/")) path = "/" + path;
+        url += basePath;
+        if(!url.endsWith("/")) url += '/';
+        return url;
+    }
 
     public List<PaginationElement> getPagination(int currentPage,
             int totalPages, int maxButtons) {

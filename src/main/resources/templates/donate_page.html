@@ -7,6 +7,8 @@
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE"
 		th:text="${'Донат - '+page.title}"></title>
 
+	<meta name="description" th:content="${page.description}">
+
 	<link rel="stylesheet" type="text/css" th:href="@{/static/css/donate.css}" />
 	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/donate.js}"></script>
 </head>

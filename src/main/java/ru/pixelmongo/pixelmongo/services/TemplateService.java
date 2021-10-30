@@ -17,6 +17,12 @@ import ru.pixelmongo.pixelmongo.model.dto.PaginationElement;
 public interface TemplateService {
 
     /**
+     * Absolute application base URL containing protocol, domain and path.
+     * @return
+     */
+    public String getAbsoluteUrlBase();
+
+    /**
      * Generates list of {@link PaginationElement} using specified parameters
      *
      * @param currentPage

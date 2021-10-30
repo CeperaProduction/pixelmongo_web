@@ -30,6 +30,7 @@
 							<input type="text" class="form-control"
 								id="inputConfig" placeholder="Server 1"
 								th:field="*{configName}"
+								maxlength="250"
 								required>
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
@@ -45,6 +46,7 @@
 							<input type="text" class="form-control"
 								id="inputDisplay" placeholder="Pixelmon Go Server"
 								th:field="*{displayName}"
+								maxlength="250"
 								required>
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
@@ -57,6 +59,7 @@
 							<div class="input-group">
 				        		<input type="text" class="form-control"
 									id="inputKey" placeholder="Секретный ключ"
+									maxlength="250"
 									th:field="*{key}">
 								<div class="input-group-append">
 									<a id="donate-key-gen" href="#" class="btn btn-outline-secondary">

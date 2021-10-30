@@ -5,7 +5,11 @@
 <head>
 	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Банлист</title>
 
+	<meta name="description" content="Список забаненных на проекте игроков" />
+
 	<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/banlist.js}"></script>
+
+	<link rel="canonical" th:href="${@templateService.absoluteUrlBase+'banlist'}" />
 
 </head>
 <body>
