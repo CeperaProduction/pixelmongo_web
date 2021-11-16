@@ -1,9 +1,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 	<th:block th:fragment="headers">
-		<link rel="stylesheet" type="text/css" th:href="@{/static/css/skin3d.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/static/css/skin3d.css(v=2)}" />
 		<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/skinview3d.js}"></script>
-		<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/skin.js}"></script>
+		<script type="text/javascript" charset="UTF-8" th:src="@{/static/js/skin.js(v=2)}"></script>
 	</th:block>
 
 	<div th:fragment="skin3d(user, width, height)" th:with="id = ${'skin3d-'+user.id}">
@@ -20,15 +20,9 @@
 				let id = "[[${id}]]";
 				let skinUrl = "[[@{${@skinService.getSkinUrlPath(user)}}]]";
 				let capeUrl = "[[@{${@skinService.getCapeUrlPath(user)}}]]";
+				let skinBodyUrl = "[[@{${@skinService.getSkinBodyUrlPath(user)}}]]";
 				let transparent = "[[${transparent}]]" ? true : false;
-				try{
-					skin3d.init(id, skinUrl, capeUrl, transparent);
-				}catch(e){
-					console.log(e);
-					let skinBodyUrl = "[[@{${@skinService.getSkinBodyUrlPath(user)}}]]";
-					let skin2d = '<div id="skin2d" class="skin2d"><div class="skin" style="background-image: url(\''+skinBodyUrl+'\');"></div></div>';
-					$('#skin3d').html(skin2d);
-				}
+				skin3d.prepare(id, skinUrl, capeUrl, transparent, skinBodyUrl);
 			})();
 		</script>
 
