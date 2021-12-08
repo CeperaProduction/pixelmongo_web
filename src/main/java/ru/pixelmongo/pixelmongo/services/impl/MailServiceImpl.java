@@ -33,9 +33,7 @@ public class MailServiceImpl implements MailService{
     public void sendTemplatedMail(String email, String title, String template,
             Map<String, Object> context, MessagePostProcessor mailPostProcessor) throws MessagingException, IOException{
         MimeMessage message = mail.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message,
-                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                StandardCharsets.UTF_8.name());
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
 
         Context ctx = new Context();
         if(context != null)

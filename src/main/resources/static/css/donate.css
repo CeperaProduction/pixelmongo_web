@@ -196,6 +196,11 @@
 	display: none;
 }
 
+.donate-pack-modal img{
+	max-width: 100%;
+	height: auto;
+}
+
 .donate-pack-discount{
 	display: block;
 	position: absolute;

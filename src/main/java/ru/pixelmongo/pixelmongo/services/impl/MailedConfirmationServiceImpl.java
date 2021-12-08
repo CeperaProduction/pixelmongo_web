@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import ru.pixelmongo.pixelmongo.exceptions.MailedConfirmationExpiredException;
@@ -94,7 +95,10 @@ public class MailedConfirmationServiceImpl implements MailedConfirmationService 
 
         try {
             mail.sendTemplatedMail(user.getEmail(), title, template, context, (helper)->{
-                helper.addInline("logo.png", new ClassPathResource("/static/img/mail/logo.png"));
+                Resource resource = new ClassPathResource("/static/img/mail/logo.png");
+                String contentType = helper.getFileTypeMap().getContentType(resource.getFilename());
+                contentType = contentType.replace("x-png", "png");
+                helper.addInline("pgo-logo", resource, contentType);
             });
         } catch (Exception ex) {
             MailService.LOGGER.catching(ex);

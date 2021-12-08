@@ -12,4 +12,6 @@ Disallow: /mconfirm
 Disallow: /password
 Disallow: /pay/
 
+Clean-param: page&search&utm_source
+
 Sitemap: https://pixelmongo.ru/sitemap.xml
