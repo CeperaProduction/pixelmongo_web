@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление внутриигровыми новостями</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Список каналов внутриигровых новостей
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0">
+					<thead>
+						<tr>
+							<th scope="col">Название канала</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="c : ${channels}">
+							<td>
+								<a th:href="@{/admin/ingamenews/channels/{id}(id=${c.id})}"
+									th:text="${c.name}"></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="card-footer">
+		    	<a th:href="@{/admin/ingamenews/channels/new}" class="btn btn-primary">
+		    		<i class="fa fa-plus"></i>
+		    		Добавить канал
+		    	</a>
+		    	<a th:href="@{/admin/ingamenews}" class="btn btn-secondary">
+		    		<i class="fa fa-newspaper"></i>
+		    		Управление новостями
+		    	</a>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

@@ -151,6 +151,10 @@
 			            	sec:authorize="hasAuthority('admin.panel.monitoring')">
 			                <a th:href="@{/admin/monitoring}"><i class="fa fa-server fa-fw"></i> Мониторинг серверов</a>
 			            </li>
+			            <li th:classappend="${mode == 'ingamenews'} ? active"
+			            	sec:authorize="hasAuthority('admin.panel.ingamenews')">
+			                <a th:href="@{/admin/ingamenews}"><i class="fa fa-newspaper fa-fw"></i> Внутриигровые новости</a>
+			            </li>
 			            <li th:classappend="${mode == 'logs'} ? active"
 			            	sec:authorize="hasAuthority('admin.panel.logs')">
 			                <a th:href="@{/admin/logs}"><i class="fa fa-file fa-fw"></i> Логи админ-панели</a>

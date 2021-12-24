@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Упревление внутриигровыми новостями</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Список внутриигровых новостей
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0">
+					<thead>
+						<tr>
+							<th scope="col">Заголовок</th>
+							<th scope="col">Канал</th>
+							<th scope="col">Автор</th>
+							<th scope="col">Дата создания</th>
+							<th scope="col">Последнее изменение</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="n : ${news}">
+							<td>
+								<a th:href="@{/admin/ingamenews/{id}(id=${n.id})}"
+									th:text="${n.title}"></a>
+							</td>
+							<td th:text="${n.channel.name}"></td>
+							<td th:text="${n.authorName}"></td>
+							<td th:text="${@templateService.printDate(n.createDate)}"></td>
+							<td th:text="${@templateService.printDate(n.updateDate)}"></td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="card-footer">
+		    	<a th:href="@{/admin/ingamenews/new}" class="btn btn-primary">
+		    		<i class="fa fa-plus"></i>
+		    		Добавить новость
+		    	</a>
+		    	<a th:href="@{/admin/ingamenews/channels}" class="btn btn-secondary">
+		    		<i class="fa fa-bullhorn"></i>
+		    		Управление каналами
+		    	</a>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

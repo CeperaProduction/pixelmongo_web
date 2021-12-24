@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление внутриигровыми новостями</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+
+		<div class="card mb-4">
+		    <div class="card-header">
+		        <span th:if="${news.id == 0}">Создание внутриигровой новости</span>
+		        <span th:if="${news.id != 0}">
+		        	Изменение внутриигровой новости
+		        </span>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/ingamenews}">
+					<i class="fa fa-backward"></i>
+					Назад
+				</a>
+		    </div>
+		    <div class="card-body">
+	        	<form id="news-form" th:action="@{''}" th:method="${method}" th:object="${newsForm}">
+					<div class="form-group row">
+						<label for="inputTitle" class="col-sm-3 col-form-label text-truncate">Заголовок</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+									id="inputTitle" placeholder="Заголовок новости"
+									th:field="*{title}"
+									maxlength="250"
+									required>
+							<div class="col-12 alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{title}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputChannel" class="col-sm-3 col-form-label text-truncate">Канал</label>
+						<div class="col-sm-9">
+							<select class="custom-select form-control" id="inputChannel"
+								th:field="*{channel}"  required>
+								<option th:each="c : ${channels}"
+									th:value="${c.id}"
+									th:text="${c.name}"></option>
+							</select>
+						</div>
+					</div>
+					<hr class="separator">
+					<div class="form-group">
+						<label for="newsContent" class="form-label text-truncate">Содержимое</label>
+						<div>
+							<textarea id="newsContent" class="text-area" placeholder="Текст новости" th:field="*{text}" required></textarea>
+							<div>
+								<small class="text-muted">Для использования цветов нужно использовать §. Пример: §4Admin</small>
+							</div>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{text}"></div>
+						</div>
+					</div>
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="news-form" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Сохранить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${news.id > 0}">
+					<button type="submit" class="btn btn-danger"
+						data-confirm="Вы уверены, что хотите удалить данную внутриигровую новость? Это действие нельзя отменить."
+						data-confirm-title="Подтверждение">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
+				</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

@@ -6,17 +6,12 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 
-	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/static/img/icons/favicon-180x180.png}">
-	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/static/img/icons/favicon-32x32.png}">
-	<link rel="icon" type="image/png" sizes="16x16" th:href="@{/static/img/icons/favicon-16x16.png}">
-	<link rel="manifest" th:href="@{/static/site.webmanifest}">
-	<link rel="mask-icon" th:href="@{/static/img/icons/safari-pinned-tab.svg}" color="#5bbad5">
-	<link rel="shortcut icon" th:href="@{/favicon.ico}">
-	<meta name="msapplication-TileColor" content="#603cba">
-	<meta name="msapplication-config" th:content="@{/static/browserconfig.xml}">
 	<meta name="theme-color" content="#ffffff">
 
-	<meta property="vk:image" content="https://pixelmongo.ru/static/img/vk_logo.jpg" />
+	<th:block th:replace="/fragments/favicons :: icons"></th:block>
+
+	<meta  property="og:image" content="https://pixelmongo.ru/static/img/vk_logo_large.jpg" />
+	<meta  property="og:image" content="https://pixelmongo.ru/static/img/vk_logo_little.jpg" />
 
 	<meta name="google" content="notranslate">
 

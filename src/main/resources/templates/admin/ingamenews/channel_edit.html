@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление внутриигровыми новостями</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+
+		<div class="card mb-4">
+		    <div class="card-header">
+		        <span th:if="${channel.id == 0}">Создание канала внутриигровых новостей</span>
+		        <span th:if="${channel.id != 0}">
+		        	Изменение канала внутриигровых новостей
+		        </span>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/ingamenews/channels}">
+					<i class="fa fa-backward"></i>
+					Назад
+				</a>
+		    </div>
+		    <div class="card-body">
+	        	<form id="channel-form" th:action="@{''}" th:method="${method}" th:object="${channelForm}">
+					<div class="form-group row">
+						<label for="inputName" class="col-sm-3 col-form-label text-truncate">Название канала</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+									id="inputName"
+									th:field="*{name}"
+									maxlength="250"
+									required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{name}"></div>
+							<div>
+								<small class="text-muted">Название канала в конфигурации сервера должно в точности соответствовать названию данного канала</small>
+							</div>
+						</div>
+					</div>
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="channel-form" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Сохранить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${channel.id > 0}">
+					<button type="submit" class="btn btn-danger"
+						data-confirm="Вы уверены, что хотите удалить данный канал внутриигровых новостей? Это так же удалит все новости в нём. Это действие нельзя отменить."
+						data-confirm-title="Подтверждение">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
+				</form>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>
