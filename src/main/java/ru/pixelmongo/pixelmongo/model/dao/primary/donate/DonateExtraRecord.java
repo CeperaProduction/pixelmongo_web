@@ -25,15 +25,19 @@ public class DonateExtraRecord {
     @Column(name = "money_spent")
     private int spentMoney;
 
+    @Column(name = "money_bonus")
+    private int spentBonus;
+
     private Date date;
 
     private String data;
 
     public DonateExtraRecord() {}
 
-    public DonateExtraRecord(User user, int spentMoney, String data) {
+    public DonateExtraRecord(User user, int spentMoney, int spentBonus, String data) {
         this.userName = user.getName();
         this.spentMoney = spentMoney;
+        this.spentBonus = spentBonus;
         this.data = data;
         this.date = new Date();
     }
@@ -56,6 +60,14 @@ public class DonateExtraRecord {
 
     public void setSpentMoney(int spentMoney) {
         this.spentMoney = spentMoney;
+    }
+
+    public int getSpentBonus() {
+        return spentBonus;
+    }
+
+    public void setSpentBonus(int spentBonus) {
+        this.spentBonus = spentBonus;
     }
 
     public String getData() {

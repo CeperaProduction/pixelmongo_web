@@ -80,7 +80,10 @@
 	        	<div class="card-body">
 	        		<div class="row align-items-center">
 		        		<div class="col text-center text-muted">
-		        			Потрачено за указанный промежуток: <span th:text="${spent_money}"></span>
+		        			Потрачено за указанный промежуток:
+		        			<span title="Реальных" th:text="${spent_money}"></span>
+		        			<span title="Бонусных" th:if="${spent_bonus != 0}"
+		        				th:text="${'+ '+spent_bonus}"></span>
 		        		</div>
 		        	</div>
 	        	</div>
@@ -114,7 +117,12 @@
 								<td th:text="${query.player}"></td>
 								<td th:text="${@templateService.printDate(query.executeAfterDate)}"></td>
 								<td th:text="${@templateService.printDate(query.dateCompletedDate)}"></td>
-								<td class="col-1" th:text="${query.spentMoney}"></td>
+								<td>
+									<span title="Реальных" th:text="${query.spentMoney}"></span>
+									<span title="Бонусных" class="text-muted"
+										th:if="${query.spentBonus != 0}"
+										th:text="${'+ '+query.spentBonus}"></span>
+								</td>
 							</tr>
 						</tbody>
 					</table>

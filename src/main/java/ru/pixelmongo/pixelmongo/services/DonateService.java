@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 
 import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughMoneyException;
 import ru.pixelmongo.pixelmongo.exceptions.DonatePackActiveException;
@@ -44,8 +45,9 @@ public interface DonateService {
      * @param makeBackIfTimed
      * @return
      */
-    public DonateQuery processPack(DonatePack pack, String serverName, String playerName, Map<String, List<String>> tokensData,
-            boolean makeBackIfTimed);
+    public DonateQuery processPack(DonatePack pack, DonateServer server,
+            User user, Map<String, List<String>> tokensData,
+            @Nullable UserBalanceHolder balanceHolder, boolean makeBackIfTimed);
 
     /**
      * Perform pack processing, user balance changes and create queries
@@ -68,10 +70,10 @@ public interface DonateService {
      * Take money from user
      * @param user
      * @param sum
-     * @return new user balance
+     * @return [0] - consumed real money, [1] - consumed bonus money
      * @throws DonateNotEnoughMoneyException if user has not enough money
      */
-    public int consumeMoney(User user, int sum);
+    public int[] consumeMoney(User user, int sum);
 
     public List<String> getExtraTags();
 
@@ -79,10 +81,20 @@ public interface DonateService {
 
     public ResultMessage buyExtra(String extra, User user, Locale loc, boolean forFree);
 
-    public void logExtra(User user, int spentMoney, String content);
+    public void logExtra(User user, int spentMoney, int spentBonus, String content);
 
-    public void logExtra(User user, int spentMoney, String contentLangKey, Object[] contentLangValues);
+    public void logExtra(User user, int spentMoney, int spentBonus, String contentLangKey, Object[] contentLangValues);
 
     public Page<DonateExtraRecord> getExtraLogs(String search, Pageable limits);
+
+    public static interface UserBalanceHolder {
+
+        public int[] consumeBalance(int count);
+
+        public int getRealBalance();
+
+        public int getBonusBalance();
+
+    }
 
 }

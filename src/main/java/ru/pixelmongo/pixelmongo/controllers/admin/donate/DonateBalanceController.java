@@ -93,11 +93,12 @@ public class DonateBalanceController {
         }
 
         int oldBalance = user.getBalance();
-        int newBalance = Math.max(oldBalance + (give ? count : -count), 0);
+        count = (give ? count : -count);
+        int newBalance = Math.max(oldBalance + count, 0);
 
         if(oldBalance != newBalance) {
 
-            user.setBalance(newBalance);
+            user.changeBalance(count);
             users.save(user);
 
             if(give) {

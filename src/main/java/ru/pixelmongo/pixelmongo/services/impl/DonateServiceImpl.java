@@ -119,9 +119,10 @@ public class DonateServiceImpl implements DonateService{
 
     @Override
     public DonateQuery processPack(DonatePack pack,
-            String serverName,
-            String playerName,
+            DonateServer server,
+            User user,
             Map<String, List<String>> tokensData,
+            UserBalanceHolder balanceHolder,
             boolean makeBackIfTimed) {
 
         if(tokensData == null) tokensData = new HashMap<>();
@@ -141,7 +142,7 @@ public class DonateServiceImpl implements DonateService{
             tokensCostChange += (int)Math.round(result.getCostChange()*costMult);
         }
 
-        DonateQuery query = new DonateQuery(pack.getTitle(), serverName, playerName);
+        DonateQuery query = new DonateQuery(pack.getTitle(), server.getConfigName(), user.getName());
         List<String> cmds = pack.getCommands().stream().map(cmd->applyTokens(cmd, tokenValues))
                 .collect(Collectors.toList());
         query.setCommands(cmds);
@@ -150,9 +151,12 @@ public class DonateServiceImpl implements DonateService{
         query.setOffline(pack.isGiveOffline());
         query.setPackId(pack.getId());
 
-        int cost = pack.getActualCost() + tokensCostChange;
+        int cost = Math.max(pack.getActualCost() + tokensCostChange, 0);
 
-        query.setSpentMoney(cost > 0 ? cost : 0);
+        int[] spentArr = balanceHolder.consumeBalance(cost);
+
+        query.setSpentMoney(spentArr[0]);
+        query.setSpentBonus(spentArr[1]);
 
         if(makeBackIfTimed && pack.isTimed()) {
 
@@ -165,6 +169,7 @@ public class DonateServiceImpl implements DonateService{
             backQuery.setTitle(packBackPrefix+query.getTitle());
             backQuery.setInvSpace(0);
             backQuery.setSpentMoney(0);
+            backQuery.setSpentBonus(0);
 
             query.setBack(backQuery);
             backQuery.setBackOf(query);
@@ -194,29 +199,23 @@ public class DonateServiceImpl implements DonateService{
             throw new DonatePackActiveException(pack.getId(), activeBackQuery.getId(),
                     new Date(activeBackQuery.getExecuteAfter()*1000L));
 
+        UserBalanceHolder balanceHolder = new UserBalanceHolderImpl(user, fromAdmin);
+
         List<DonateQuery> queries = new ArrayList<>();
         int sum = 0;
         int given = 0;
         if(count > 1) {
             for(int i = 0; i < count; i++) {
-                DonateQuery query = processPack(pack, server.getConfigName(), user.getName(), tokensData, false);
+                DonateQuery query = processPack(pack, server, user, tokensData, balanceHolder, false);
                 queries.add(query);
                 ++given;
-                if(fromAdmin) {
-                    query.setSpentMoney(0);
-                }else {
-                    sum += query.getSpentMoney();
-                }
+                sum += query.getSpentMoney()+query.getSpentBonus();
             }
         }else {
-            DonateQuery query = processPack(pack, server.getConfigName(), user.getName(), tokensData, true);
+            DonateQuery query = processPack(pack, server, user, tokensData, balanceHolder, true);
             queries.add(query);
             given = 1;
-            if(fromAdmin) {
-                query.setSpentMoney(0);
-            }else {
-                sum = query.getSpentMoney();
-            }
+            sum = query.getSpentMoney()+query.getSpentBonus();
             if(query.getBack() != null)
                 queries.add(query.getBack());
         }
@@ -232,31 +231,33 @@ public class DonateServiceImpl implements DonateService{
     }
 
     @Override
-    public int consumeMoney(User user, int sum) {
-        int balance = user.getBalance();
-        if(sum <= 0) return balance;
+    public int[] consumeMoney(User user, int sum) {
+        if(sum <= 0) return new int[2];
 
+        int balance = user.getBalance();
         int newBalance = balance - sum;
 
         if(newBalance < 0)
             throw new DonateNotEnoughMoneyException(user.getName(), sum, balance);
 
-        user.setBalance(newBalance);
+        int[] c = new UserBalanceHolderImpl(user, false).consumeBalance(sum);
+
+        user.changeBalance(-sum);
 
         users.save(user);
 
-        return newBalance;
+        return c;
     }
 
     @Override
-    public void logExtra(User user, int spentMoney, String content) {
-        DonateExtraRecord record = new DonateExtraRecord(user, spentMoney, content);
+    public void logExtra(User user, int spentMoney, int spentBonus, String content) {
+        DonateExtraRecord record = new DonateExtraRecord(user, spentMoney, spentBonus, content);
         extraRecords.save(record);
     }
 
     @Override
-    public void logExtra(User user, int spentMoney, String contentLangKey, Object[] contentLangValues) {
-        logExtra(user, spentMoney, msg.getMessage(contentLangKey, contentLangValues, defaultLocale));
+    public void logExtra(User user, int spentMoney, int spentBonus, String contentLangKey, Object[] contentLangValues) {
+        logExtra(user, spentMoney, spentBonus, msg.getMessage(contentLangKey, contentLangValues, defaultLocale));
     }
 
     @Override
@@ -284,6 +285,39 @@ public class DonateServiceImpl implements DonateService{
     @Override
     public ResultMessage buyExtra(String extra, User user, Locale loc, boolean forFree) {
         return getExtraHandler(extra).buy(this, user, loc, forFree);
+    }
+
+    private static class UserBalanceHolderImpl implements UserBalanceHolder{
+
+        int real, bonus;
+        boolean fromAdmin;
+
+        UserBalanceHolderImpl(User user, boolean fromAdmin) {
+            this.real = user.getRealBalance();
+            this.bonus = user.getBonusBalance();
+            this.fromAdmin = fromAdmin;
+        }
+
+        @Override
+        public int[] consumeBalance(int count) {
+            if(fromAdmin) return new int[] {0, 0};
+            int spentBonus = Math.min(this.bonus, count);
+            int spentReal = count - spentBonus;
+            this.bonus-=spentBonus;
+            this.real-=spentReal;
+            return new int[] {spentReal, spentBonus};
+        }
+
+        @Override
+        public int getRealBalance() {
+            return real;
+        }
+
+        @Override
+        public int getBonusBalance() {
+            return bonus;
+        }
+
     }
 
 

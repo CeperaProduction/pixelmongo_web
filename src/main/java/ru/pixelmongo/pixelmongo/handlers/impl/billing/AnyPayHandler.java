@@ -242,7 +242,7 @@ public class AnyPayHandler implements BillingHandler{
             bill.setStatus(BillingData.STATUS_DONE);
             bills.save(bill);
 
-            user.setBalance(user.getBalance()+sum);
+            user.setRealBalance(user.getRealBalance()+sum);
             users.save(user);
 
             return "OK";

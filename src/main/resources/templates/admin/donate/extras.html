@@ -50,7 +50,12 @@
 							<td th:text="${log.userName}"></td>
 							<td th:text="${log.data}"></td>
 							<td th:text="${@templateService.printDate(log.date)}"></td>
-							<td th:text="${log.spentMoney}"></td>
+							<td>
+								<span title="Реальных" th:text="${log.spentMoney}"></span>
+								<span title="Бонусных" class="text-muted"
+									th:if="${log.spentBonus != 0}"
+									th:text="${'+ '+log.spentBonus}"></span>
+							</td>
 						</tr>
 					</tbody>
 				</table>

@@ -49,6 +49,7 @@ public class DonateQueryController {
         model.addAttribute("server", new DonateServer());
         model.addAttribute("servers", servers.findAll());
         model.addAttribute("spent_money", 0);
+        model.addAttribute("spent_bonus", 0);
         model.addAttribute("queries", Collections.emptyList());
         return "admin/donate/queries";
     }
@@ -66,12 +67,14 @@ public class DonateQueryController {
         Pageable pageable = PageRequest.of(page-1, 1000);
         Page<DonateQuery> queryPage = queries.getQueries(server, start, end, pageable);
         int spentMoney = queries.getSpentMoney(server, start, end);
+        int spentBonus = queries.getSpentBonus(server, start, end);
 
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         model.addAttribute("server", server);
         model.addAttribute("servers", servers.findAll());
         model.addAttribute("spent_money", spentMoney);
+        model.addAttribute("spent_bonus", spentBonus);
         model.addAttribute("queries", queryPage.getContent());
 
         templateService.addPagination(model, page, queryPage.getTotalPages(), 9);

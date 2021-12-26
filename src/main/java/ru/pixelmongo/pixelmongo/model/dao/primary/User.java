@@ -43,8 +43,11 @@ public class User {
     @JoinColumn(name = "group_id", nullable = false)
     private UserGroup group;
 
-    @Column(columnDefinition = "int(11) not null default 0")
-    private int balance = 0;
+    @Column(name = "balance", columnDefinition = "int(11) not null default 0")
+    private int realBalance = 0;
+
+    @Column(name = "balance_bonus", columnDefinition = "int(11) not null default 0")
+    private int bonusBalance = 0;
 
     @Column(name="reg_date", nullable = false)
     private Date registrationDate;
@@ -129,12 +132,38 @@ public class User {
         this.password = passwordHash;
     }
 
-    public int getBalance() {
-        return balance;
+    public int getRealBalance() {
+        return realBalance;
     }
 
-    public void setBalance(int balance) {
-        this.balance = balance;
+    public int getBonusBalance() {
+        return bonusBalance;
+    }
+
+    public void setRealBalance(int realBalance) {
+        this.realBalance = realBalance;
+    }
+
+    public void setBonusBalance(int bonusBalance) {
+        this.bonusBalance = bonusBalance;
+    }
+
+    public int getBalance() {
+        return getRealBalance() + getBonusBalance();
+    }
+
+    public void changeBalance(int count) {
+        if(count == 0) return;
+        if(count > 0) setBonusBalance(getBonusBalance()+count);
+        else {
+            int mrc = -count - getBonusBalance();
+            if(mrc <= 0) {
+                setBonusBalance(-mrc);
+            }else {
+                setBonusBalance(0);
+                setRealBalance(Math.max(getRealBalance()-mrc, 0));
+            }
+        }
     }
 
     public Date getRegistrationDate() {

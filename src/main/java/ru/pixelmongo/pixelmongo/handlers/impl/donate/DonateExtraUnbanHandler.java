@@ -61,9 +61,9 @@ public class DonateExtraUnbanHandler implements DonateExtraHandler{
             banlist.delete(user);
         }else {
             int cost = getCost(ban);
-            donate.consumeMoney(user, cost);
+            int[] consumed = donate.consumeMoney(user, cost);
             banlist.delete(user);
-            donate.logExtra(user, cost, "donate.extra.unban", null);
+            donate.logExtra(user, consumed[0], consumed[1], "donate.extra.unban", null);
         }
         return new ResultMessage(DefaultResult.OK, msg.getMessage("donate.extra.unban.bought", null, loc));
     }

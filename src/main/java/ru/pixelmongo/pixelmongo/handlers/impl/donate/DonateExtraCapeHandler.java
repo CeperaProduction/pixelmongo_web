@@ -46,10 +46,10 @@ public class DonateExtraCapeHandler implements DonateExtraHandler{
             return new ResultMessage(DefaultResult.ERROR, msg.getMessage("donate.extra.cape.already", null, loc));
         if(!forFree) {
             int cost = getCost(user);
-            donate.consumeMoney(user, cost);
+            int[] consumed = donate.consumeMoney(user, cost);
             user.setHasCape(true);
             users.save(user);
-            donate.logExtra(user, cost, "donate.extra.cape", null);
+            donate.logExtra(user, consumed[0], consumed[1], "donate.extra.cape", null);
         }else {
             user.setHasCape(true);
             users.save(user);

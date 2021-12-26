@@ -67,6 +67,9 @@ public class DonateQuery {
     @Column(name="money_spent", nullable = false)
     private int spentMoney = 0;
 
+    @Column(name="bonus_spent", nullable = false)
+    private int spentBonus = 0;
+
     /*
      * No refference to keep exist when pack is already not.
      * Also this field can be used by other systems to mark special operations.
@@ -87,7 +90,7 @@ public class DonateQuery {
         this.title = title;
         this.server = server;
         this.player = player;
-        this.date = (int) (System.currentTimeMillis()/1000);
+        this.date = (int) (System.currentTimeMillis()/1000L);
         this.executeAfter = this.date;
     }
 
@@ -101,7 +104,7 @@ public class DonateQuery {
         newQuery.title = this.title;
         newQuery.player = this.player;
         newQuery.server = this.server;
-        newQuery.date = (int) (System.currentTimeMillis()/1000);
+        newQuery.date = (int) (System.currentTimeMillis()/1000L);
         newQuery.executeAfter = newQuery.date;
         newQuery.commands = new ArrayList<>(this.commands);
         newQuery.offline = this.offline;
@@ -210,6 +213,14 @@ public class DonateQuery {
 
     public void setSpentMoney(int spentMoney) {
         this.spentMoney = spentMoney;
+    }
+
+    public int getSpentBonus() {
+        return spentBonus;
+    }
+
+    public void setSpentBonus(int spentBonus) {
+        this.spentBonus = spentBonus;
     }
 
     public int getPackId() {

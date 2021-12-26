@@ -230,7 +230,7 @@ public class QiwiHandler implements BillingHandler{
             bill.setStatus(BillingData.STATUS_DONE);
             bills.save(bill);
 
-            user.setBalance(user.getBalance()+sum);
+            user.setRealBalance(user.getRealBalance()+sum);
             users.save(user);
 
 

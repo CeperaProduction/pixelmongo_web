@@ -65,7 +65,17 @@ public final class AnonymousUser extends User{
     }
 
     @Override
-    public void setBalance(int balance) {
+    public void setRealBalance(int balance) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setBonusBalance(int bonusBalance) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void changeBalance(int count) {
         throw new UnsupportedOperationException();
     }
 

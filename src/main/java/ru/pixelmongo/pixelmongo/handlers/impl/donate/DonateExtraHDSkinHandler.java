@@ -46,10 +46,10 @@ public class DonateExtraHDSkinHandler implements DonateExtraHandler{
             return new ResultMessage(DefaultResult.ERROR, msg.getMessage("donate.extra.hd_skin.already", null, loc));
         if(!forFree) {
             int cost = getCost(user);
-            donate.consumeMoney(user, cost);
+            int[] consumed = donate.consumeMoney(user, cost);
             user.setHasHDSkin(true);
             users.save(user);
-            donate.logExtra(user, cost, "donate.extra.hd_skin", null);
+            donate.logExtra(user, consumed[0], consumed[1], "donate.extra.hd_skin", null);
         }else {
             user.setHasHDSkin(true);
             users.save(user);

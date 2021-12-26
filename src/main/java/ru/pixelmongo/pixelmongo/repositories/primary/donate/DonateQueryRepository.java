@@ -43,6 +43,9 @@ public interface DonateQueryRepository extends CrudRepository<DonateQuery, Integ
     @Query("SELECT DISTINCT sum(q.spentMoney) FROM DonateQuery q WHERE q.server = :#{#server.configName} AND q.date >= :start AND q.date <= :end")
     public int getSpentMoney(@Param("server") DonateServer server, @Param("start") int start, @Param("end") int end);
 
+    @Query("SELECT DISTINCT sum(q.spentBonus) FROM DonateQuery q WHERE q.server = :#{#server.configName} AND q.date >= :start AND q.date <= :end")
+    public int getSpentBonus(@Param("server") DonateServer server, @Param("start") int start, @Param("end") int end);
+
 
 
 }
