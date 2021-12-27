@@ -90,7 +90,7 @@
 						<label for="inputEndDate" class="col-sm-3 col-form-label">Конец действия</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control date-picker"
-								id="inputEndDate"required>
+								id="inputEndDate">
 							<input id="inputEndDateVal" type="hidden" th:field="*{endTime}">
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
@@ -176,6 +176,9 @@
 				let date = picker.datepicker('getDate');
 				let val = Math.round(date.getTime()/1000)+86400;
 				valIn.val(val);
+			});
+			picker.datepicker().on('clearDate', function(){
+				valIn.val('');
 			});
 		</script>
 	</div>

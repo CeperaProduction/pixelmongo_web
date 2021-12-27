@@ -69,6 +69,11 @@ public class PromocodeServiceImpl implements PromocodeService{
     }
 
     @Override
+    public boolean isConfirmedEmailOnly() {
+        return requireEmailConfirm;
+    }
+
+    @Override
     public boolean isBlocked(User user, HttpServletRequest request) {
         if(protectTime == 0) return false;
         PromocodeAttemptCache cache1 = this.cache.get("user:"+user.getId());

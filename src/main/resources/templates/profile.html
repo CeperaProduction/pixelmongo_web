@@ -485,7 +485,7 @@
 		<div id="promocode" class="modal fade" tabindex="-1" role="dialog">
 
 			<div class="modal-dialog modal-dialog-centered" role="document">
-				<div class="modal-content">
+				<div class="modal-content" th:with="available = ${!@promocodeService.confirmedEmailOnly || user.emailConfirmed}">
 
 				    <div class="modal-header">
 				      	<h5 class="modal-title">Использование промокода</h5>
@@ -497,7 +497,16 @@
 				    </div>
 
 				    <div class="modal-body pb-0">
-				      	<form id="promocode-form" th:action="@{/profile/promocode}" th:method="POST">
+				    	<table class="table" style="min-height: 120px" th:if="${!available}">
+							<tbody>
+								<tr>
+									<td class="align-middle text-center">
+										Ввод промокода доступен только пользователям с подтвержденным email адресом.
+									</td>
+								</tr>
+							</tbody>
+						</table>
+				      	<form id="promocode-form" th:action="@{/profile/promocode}" th:method="POST" th:if="${available}">
 		      				<div class="form-group row">
 								<label for="inputCode" class="col-sm-4 col-form-label text-truncate">Промокод</label>
 								<div class="col-sm-8">
@@ -507,7 +516,8 @@
 		      				</div>
 				      	</form>
 				    </div>
-				    <div class="modal-footer" >
+
+				    <div class="modal-footer" th:if="${available}">
 				    	<div style="width: 100%">
 					      	<div class="py-1">
 					      		<button form="promocode-form" type="submit" class="btn btn-primary btn-block">

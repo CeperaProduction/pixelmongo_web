@@ -15,6 +15,8 @@ import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 
 public interface PromocodeService {
 
+    public boolean isConfirmedEmailOnly();
+
     public Promocode activate(User user, Promocode promocode) throws PromocodeException, EmailNotConfirmedException;
 
     public Promocode activate(User user, String code) throws PromocodeException, EmailNotConfirmedException;
