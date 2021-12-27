@@ -20,7 +20,7 @@ public class IngameNewsChannel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "channel", cascade = CascadeType.REMOVE)

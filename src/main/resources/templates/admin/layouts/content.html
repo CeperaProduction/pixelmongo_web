@@ -147,6 +147,10 @@
 			            	sec:authorize="hasAuthority('admin.panel.billing')">
 			                <a th:href="@{/admin/billing}"><i class="fa fa-wallet fa-fw"></i> Лог пополнений</a>
 			            </li>
+			            <li th:classappend="${mode == 'promocodes'} ? active"
+			            	sec:authorize="hasAuthority('admin.panel.promocodes')">
+			                <a th:href="@{/admin/promocodes}"><i class="fa fa-ticket-alt fa-fw"></i> Промокоды</a>
+			            </li>
 			            <li th:classappend="${mode == 'monitoring'} ? active"
 			            	sec:authorize="hasAuthority('admin.panel.monitoring')">
 			                <a th:href="@{/admin/monitoring}"><i class="fa fa-server fa-fw"></i> Мониторинг серверов</a>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление промокодами</title>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        Список промокодов
+		        <span th:text="${'('+promocodes_count+')'}"></span>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/promocodes/new}">
+					<i class="fa fa-plus"></i>
+					Создать
+				</a>
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0" th:if="${promocodes_count != 0}">
+					<thead>
+						<tr>
+							<th scope="col">Наименование</th>
+							<th scope="col">Использований</th>
+							<th scope="col">Конец действия</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="promocode : ${promocodes}">
+							<td>
+								<a th:href="@{/admin/promocodes/{id}(id=${promocode.id})}" th:text="${promocode.title}"></a>
+							</td>
+							<td th:text="${promocode.timesUsed+'/'+promocode.maxUses}"></td>
+							<td th:text="${@templateService.printPromocodeEndDate(promocode)}"
+								th:title="${@templateService.printDate(promocode.endDate)}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="container" th:if="${promocodes_count == 0}">
+					<table class="table" style="min-height: 200px">
+						<tbody>
+							<tr>
+								<td class="align-middle text-center">
+									На данный момент нет ни одного промокода
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+		    </div>
+		    <div class="card-footer p-1">
+		    	<div th:if="${promocodes_count != 0}">
+					<div th:replace="~{admin/fragments/pagination :: pagination}"></div>
+				</div>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

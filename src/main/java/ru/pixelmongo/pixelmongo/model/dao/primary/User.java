@@ -68,6 +68,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Staff> staffContainer;
 
+    /**
+     * Used only for cascade promo activations info removing
+     */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<PromocodeActivation> promocodeActivations;
+
     public User() {}
 
     public User(String name, UserGroup group, String email, String passwordHash, String ip) {

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -183,6 +184,10 @@ public class IngameNewsAdminController {
             Locale loc,
             HttpServletRequest request,
             HttpServletResponse response) {
+        if(channels.findByName(form.getName()).isPresent()) {
+            binding.addError(new FieldError("channelForm", "name",
+                    msg.getMessage("admin.ingamenews.channel.exists", null, loc)));
+        }
         if(!binding.hasErrors()) {
             User user = userService.getCurrentUser();
             IngameNewsChannel channel = new IngameNewsChannel(form.getName());
@@ -219,6 +224,10 @@ public class IngameNewsAdminController {
             HttpServletRequest request,
             HttpServletResponse response) {
         IngameNewsChannel channel = findChannel(channelId, loc);
+        if(channels.findByName(form.getName()).filter(c->c.getId() != channelId).isPresent()) {
+            binding.addError(new FieldError("channelForm", "name",
+                    msg.getMessage("admin.ingamenews.channel.exists", null, loc)));
+        }
         if(!binding.hasErrors()) {
             User user = userService.getCurrentUser();
             channel.setName(form.getName());

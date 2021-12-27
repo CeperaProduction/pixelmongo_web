@@ -27,7 +27,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ru.pixelmongo.pixelmongo.exceptions.DonateExtraNotFoundException;
 import ru.pixelmongo.pixelmongo.exceptions.DonateNotEnoughMoneyException;
+import ru.pixelmongo.pixelmongo.exceptions.EmailNotConfirmedException;
+import ru.pixelmongo.pixelmongo.exceptions.PromocodeAlreadyUsedException;
+import ru.pixelmongo.pixelmongo.exceptions.PromocodeException;
+import ru.pixelmongo.pixelmongo.exceptions.PromocodeExpiredException;
+import ru.pixelmongo.pixelmongo.exceptions.PromocodeMaxUsesException;
+import ru.pixelmongo.pixelmongo.exceptions.PromocodeNotFoundException;
 import ru.pixelmongo.pixelmongo.exceptions.WrongImageSizeException;
+import ru.pixelmongo.pixelmongo.model.dao.primary.Promocode;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.confirm.MailedConfirmationType;
 import ru.pixelmongo.pixelmongo.model.dto.forms.SkinUploadForm;
@@ -38,6 +45,7 @@ import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.services.DonateService;
 import ru.pixelmongo.pixelmongo.services.MailedConfirmationService;
 import ru.pixelmongo.pixelmongo.services.PlayerSkinService;
+import ru.pixelmongo.pixelmongo.services.PromocodeService;
 import ru.pixelmongo.pixelmongo.services.UserService;
 
 @RestController
@@ -61,6 +69,9 @@ public class ProfileControllerRest {
 
     @Autowired
     private MailedConfirmationService confirms;
+
+    @Autowired
+    private PromocodeService promocodes;
 
     @PostMapping("/skin")
     public ResultMessage uploadSkin(@Valid SkinUploadForm skinForm, BindingResult binding, Locale loc) {
@@ -161,6 +172,41 @@ public class ProfileControllerRest {
         }
         confirms.sendConfirmation(MailedConfirmationType.MAIL_CONFIRM, user, loc, request, user.getEmail());
         return new ResultMessage(DefaultResult.OK, msg.getMessage("mconfirm.mailconfirm.send", null, loc));
+    }
+
+    @PostMapping("/promocode")
+    public ResultMessage promocode(@RequestParam(name="code") String code, Locale loc,
+            HttpServletRequest request, HttpServletResponse response) {
+        User user = userService.getCurrentUser();
+        if(user.isAnonymous())
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+        if(promocodes.isBlocked(user, request))
+            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.spam", null, loc));
+
+        user = getStoredUser(user);
+
+        try {
+            Promocode promocode = promocodes.activate(user, code);
+            users.save(user);
+            Map<String, Integer> balanceData = new HashMap<String, Integer>();
+            balanceData.put("balance", user.getBalance());
+            return new ResultDataMessage<Map<String, Integer>>(DefaultResult.OK, msg.getMessage("promocodes.activated",
+                    new Object[] {promocode.getTitle(), promocode.getValue()}, loc), balanceData);
+        }catch(EmailNotConfirmedException ex) {
+            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.email.not_confirmed", null, loc));
+        }catch(PromocodeNotFoundException ex) {
+            promocodes.onPromocodeFail(user, request);
+            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.wrong", null, loc));
+        }catch(PromocodeAlreadyUsedException ex) {
+            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.used", null, loc));
+        }catch(PromocodeMaxUsesException ex) {
+            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.used.max", null, loc));
+        }catch(PromocodeExpiredException ex) {
+            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.expired", null, loc));
+        }catch(PromocodeException ex) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ex.getMessage());
+        }
     }
 
     private User getStoredUser(User user) {

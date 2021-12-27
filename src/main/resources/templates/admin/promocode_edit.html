@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{admin/layouts/content}">
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Управление промокодами</title>
+
+	<th:block th:replace="/fragments/bootstrap :: datepicker"></th:block>
+
+</head>
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="card mb-3">
+		    <div class="card-header">
+		        <span th:if="${promocode.id == 0}">Добавление промокода</span>
+		        <th:block th:if="${promocode.id != 0}">
+		        	<span>Изменение промокода</span>
+		        	<span class="text-secondary"
+		        		th:text="|#${promocode.id}|"></span>
+		        </th:block>
+		        <a class="btn btn-sm btn-outline-secondary float-right" th:href="@{/admin/promocodes}">
+					<i class="fa fa-backward"></i>
+					Назад
+				</a>
+		    </div>
+		    <div class="card-body">
+	        	<form id="promocodeForm" th:action="@{''}" th:method="${method}" th:object="${promocodeForm}">
+					<div class="form-group row">
+						<label for="inputTitle" class="col-sm-3 col-form-label text-truncate">Наименование</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputTitle"
+								th:field="*{title}"
+								maxlength="250"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{title}"></div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputCode" class="col-sm-3 col-form-label text-truncate">Промокод</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control"
+								id="inputCode" placeholder="PROMOCODE"
+								th:field="*{code}"
+								maxlength="250"
+								th:readonly="${promocode.id != 0}"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{code}"></div>
+							<small class="text-muted">
+								Уникальное значение. Не чувствительно к регистру.
+							</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputValue" class="col-sm-3 col-form-label text-truncate">Значение</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control"
+								id="inputValue"
+								th:field="*{value}"
+								min="0" max="1000000000"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{value}"></div>
+							<small class="text-muted">
+								Значение, на которое будет увеличен баланс
+							</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="inputMaxUsages" class="col-sm-3 col-form-label">Максимум использований</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control"
+								id="inputMaxUsages"
+								th:field="*{maxUsages}"
+								min="1" max="1000000000"
+								required>
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{maxUsages}"></div>
+						</div>
+					</div>
+
+
+					<div class="form-group row">
+						<label for="inputEndDate" class="col-sm-3 col-form-label">Конец действия</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control date-picker"
+								id="inputEndDate"required>
+							<input id="inputEndDateVal" type="hidden" th:field="*{endTime}">
+							<div class="alert alert-danger px-3 my-1"
+								role="alert"
+								th:errors="*{endTime}"></div>
+							<small class="text-muted">
+								Дата, до которой будет активен промокод (включительно)
+							</small>
+						</div>
+					</div>
+
+
+
+	        	</form>
+		    </div>
+		    <div class="card-footer">
+				<button form="promocodeForm" type="submit" class="btn btn-primary">
+					<i class="fa fa-check"></i>
+					Применить
+				</button>
+				<form class="float-right" th:action="@{''}" th:method="delete" th:if="${promocode.id != 0}">
+					<button type="submit" class="btn btn-danger"
+						data-confirm="Вы уверены, что хотите удалить данный промокод? Это действие нельзя отменить."
+						data-confirm-title="Подтверждение">
+						<i class="fa fa-times"></i>
+						Удалить
+					</button>
+				</form>
+		    </div>
+		</div>
+		<div class="card mb-3" th:if="${promocode.id != 0}">
+		    <div class="card-header">
+		        История активаций
+		        <span th:text="${'('+activations_count+')'}"></span>
+		    </div>
+		    <div class="card-body table-responsive p-0">
+				<table class="table table-striped m-0" th:if="${activations_count != 0}">
+					<thead>
+						<tr>
+							<th scope="col">Логин</th>
+							<th scope="col">Дата</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="activation : ${activations}">
+							<td th:text="${activation.user.name}"></td>
+							<td th:text="${@templateService.printDate(activation.date)}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="container" th:if="${activations_count == 0}">
+					<table class="table" style="min-height: 200px">
+						<tbody>
+							<tr>
+								<td class="align-middle text-center">
+									На данный момент никто не активировал данный промокод
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+		    </div>
+		    <div class="card-footer p-1">
+		    	<div th:if="${activations_count != 0}">
+					<div th:replace="~{admin/fragments/pagination :: pagination}"></div>
+				</div>
+		    </div>
+		</div>
+		<script type="text/javascript">
+			let picker = $('#inputEndDate');
+			let valIn = $('#inputEndDateVal');
+			picker.datepicker({
+				format : 'dd-mm-yyyy',
+				autoclose : true,
+				startDate : new Date(),
+				language : 'ru'
+			});
+			let val = valIn.val();
+			if(val){
+				val -= 86400;
+				picker.datepicker('setDate', new Date(val * 1000));
+			}
+			picker.datepicker().on('changeDate', function(){
+				let date = picker.datepicker('getDate');
+				let val = Math.round(date.getTime()/1000)+86400;
+				valIn.val(val);
+			});
+		</script>
+	</div>
+</body>
+</html>

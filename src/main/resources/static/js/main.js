@@ -133,7 +133,7 @@ $(function(){
 		document.location.reload();
 	});
 
-	ajax.forms.bind($('#skin-delete-form, #cape-delete-form, #skin-buy-form, #cape-buy-form, #unban-form'), function(res){
+	ajax.forms.bind($('#skin-delete-form, #cape-delete-form, #skin-buy-form, #cape-buy-form, #unban-form, #promocode-form'), function(res){
 		msg(res);
 		document.location.reload();
 	});

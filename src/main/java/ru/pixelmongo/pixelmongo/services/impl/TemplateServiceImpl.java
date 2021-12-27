@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ru.pixelmongo.pixelmongo.configs.SecurityConfig;
+import ru.pixelmongo.pixelmongo.model.dao.primary.Promocode;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
@@ -37,6 +38,8 @@ public class TemplateServiceImpl implements TemplateService{
 
     @Autowired
     private DateFormatter df;
+
+    private DateFormatter dateDf = new DateFormatter("yyyy-MM-dd");
 
     @Autowired
     private UserService userService;
@@ -228,6 +231,13 @@ public class TemplateServiceImpl implements TemplateService{
     @Override
     public String getRememberMeParam() {
         return securityConfig.getRememberMeParam();
+    }
+
+    @Override
+    public String printPromocodeEndDate(Promocode promo, Locale loc) {
+        Date date = promo.getEndDate();
+        if(date == null) return "---";
+        return dateDf.print(new Date(date.getTime()-600000), loc);
     }
 
 }

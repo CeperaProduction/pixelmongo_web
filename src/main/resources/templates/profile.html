@@ -96,6 +96,10 @@
 									data-toggle="modal" data-target="#balance">
 									<i class="fa fa-coins"></i> Пополнение баланса
 								</a>
+								<a href="#" class="btn btn-info btn-block"
+									data-toggle="modal" data-target="#promocode">
+									<i class="fa fa-ticket-alt"></i> Использование промокода
+								</a>
 								<th:block th:switch="${status}">
 									<a th:case="'active'" href="#" class="btn btn-secondary btn-block"
 										data-toggle="modal" data-target="#unban">
@@ -455,7 +459,7 @@
 		      					</div>
 		      				</th:block>
 		      				<div class="form-group row">
-								<label for="inputPassword" class="col-sm-4 col-form-label text-truncate">Количество GP</label>
+								<label for="inputSum" class="col-sm-4 col-form-label text-truncate">Количество GP</label>
 								<div class="col-sm-8">
 									<input type="number" class="form-control"
 										id="inputSum" placeholder="Сумма"
@@ -476,6 +480,46 @@
 				</div>
 			</div>
 		</div>
+
+
+		<div id="promocode" class="modal fade" tabindex="-1" role="dialog">
+
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+				    <div class="modal-header">
+				      	<h5 class="modal-title">Использование промокода</h5>
+				      	<button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+				        	<span aria-hidden="true">
+				        		<i class="fa fa-times"></i>
+							</span>
+				      	</button>
+				    </div>
+
+				    <div class="modal-body pb-0">
+				      	<form id="promocode-form" th:action="@{/profile/promocode}" th:method="POST">
+		      				<div class="form-group row">
+								<label for="inputCode" class="col-sm-4 col-form-label text-truncate">Промокод</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" name="code"
+										id="inputCode" maxlength="250" required >
+								</div>
+		      				</div>
+				      	</form>
+				    </div>
+				    <div class="modal-footer" >
+				    	<div style="width: 100%">
+					      	<div class="py-1">
+					      		<button form="promocode-form" type="submit" class="btn btn-primary btn-block">
+					      			Использовать
+					      		</button>
+				      		</div>
+				    	</div>
+				    </div>
+				</div>
+			</div>
+		</div>
+
 
 	</div>
 </body>

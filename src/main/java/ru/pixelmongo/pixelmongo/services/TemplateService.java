@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 
+import ru.pixelmongo.pixelmongo.model.dao.primary.Promocode;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserLoginRecord;
 import ru.pixelmongo.pixelmongo.model.dao.primary.UserPermission;
@@ -107,5 +108,12 @@ public interface TemplateService {
     public String getRememberMeParam();
 
     public boolean isRememberMeAuto();
+
+    public String printPromocodeEndDate(Promocode promo, Locale loc);
+
+    public default String printPromocodeEndDate(Promocode promo){
+        Locale loc = LocaleContextHolder.getLocale();
+        return printPromocodeEndDate(promo, loc);
+    }
 
 }

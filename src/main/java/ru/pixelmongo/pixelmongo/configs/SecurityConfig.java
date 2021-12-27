@@ -261,6 +261,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
             .antMatchers("/admin/ingamenews/**").hasAuthority("admin.panel.ingamenews")
 
+            .antMatchers("/admin/promocodes/**").hasAuthority("admin.panel.promocodes")
+
             .antMatchers("/admin/**").hasAuthority("admin.panel.access")
 
             .anyRequest().permitAll()
