@@ -237,7 +237,7 @@ public class TemplateServiceImpl implements TemplateService{
     public String printPromocodeEndDate(Promocode promo, Locale loc) {
         Date date = promo.getEndDate();
         if(date == null) return "---";
-        return dateDf.print(new Date(date.getTime()-600000), loc);
+        return dateDf.print(new Date(date.getTime()-43000000), loc);
     }
 
 }

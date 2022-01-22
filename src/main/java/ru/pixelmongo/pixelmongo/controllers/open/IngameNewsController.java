@@ -1,5 +1,6 @@
 package ru.pixelmongo.pixelmongo.controllers.open;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,14 +25,19 @@ public class IngameNewsController {
     @Autowired
     private IngameNewsRepository news;
 
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE+";charset=UTF-8")
     public ResultMessage processRequest(@RequestParam(name = "action") String action,
-            @RequestParam(name = "category", required = false) List<String> categories) {
+            @RequestParam(name = "category[]", required = false) List<String> categories1,
+            @RequestParam(name = "category", required = false) List<String> categories2) {
         switch(action) {
         case "check": return new ResultMark(Result.SUCCESS, "Processed",
                 news.getLastUpdate().orElseGet(()->new Date(0)));
         case "fetch":
-            if(categories == null) categories = Collections.emptyList();
+            if(categories1 == null) categories1 = Collections.emptyList();
+            if(categories2 == null) categories2 = Collections.emptyList();
+            List<String> categories = new ArrayList<String>();
+            categories.addAll(categories1);
+            categories.addAll(categories2);
             return new ResultNews(Result.SUCCESS, "Processed",
                     news.getLastUpdate().orElseGet(()->new Date(0)),
                     news.getNewsInChannels(categories).stream()
@@ -56,7 +63,7 @@ public class IngameNewsController {
 
         public News(IngameNews news) {
             this.title = news.getTitle();
-            this.text = news.getText();
+            this.text = news.getText().replace("\r", "");
             this.category = news.getChannel().getName();
             this.author = news.getAuthorName();
             this.time = (int) (news.getCreateDate().getTime()/1000L);

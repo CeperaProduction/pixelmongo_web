@@ -163,8 +163,11 @@
 												th:errors="*{email}"></div>
 											<div th:if="${!user.emailConfirmed}">
 												<small class="text-muted">
-													Подтвердите адрес электронной почты, чтобы
-													улучшить безопасность аккаунта.
+													Подтвердите адрес электронной почты, чтобы разблокировать
+													весь функционал сайта и улучшить безопасность аккаунта.
+													<br>
+													<br>
+													Если вам не приходит письмо с подтверждением - проверьте раздел <strong>спам</strong>
 												</small>
 											</div>
 										</div>
@@ -511,7 +514,7 @@
 								<label for="inputCode" class="col-sm-4 col-form-label text-truncate">Промокод</label>
 								<div class="col-sm-8">
 									<input type="text" class="form-control" name="code"
-										id="inputCode" maxlength="250" required >
+										id="inputCode" maxlength="127" required >
 								</div>
 		      				</div>
 				      	</form>

@@ -21,13 +21,13 @@ import org.springframework.lang.Nullable;
 public class Promocode {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(unique = true, nullable = false)
+    @Column(length = 127, unique = true, nullable = false)
     private String code;
 
     @Column(nullable = false)

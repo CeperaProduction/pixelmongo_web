@@ -13,7 +13,7 @@ public class PromocodeForm {
     private String title = "";
 
     @NotBlank(message = "{value.empty}")
-    @Size(max = 255, message = "{value.too_long}")
+    @Size(max = 127, message = "{value.too_long}")
     private String code = "";
 
     @Min(value = 0, message = "{value.denied}")
