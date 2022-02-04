@@ -1,7 +1,10 @@
 package ru.pixelmongo.pixelmongo.controllers.open;
 
 import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,6 +35,13 @@ public class LauncherNewsController {
     @Autowired
     private VKService vk;
 
+    private Pattern vkLinkPattern;
+
+    @PostConstruct
+    public void init() {
+        vkLinkPattern = Pattern.compile("\\[((id)|(club))\\d+\\|([^\\]]+)\\]");
+    }
+
     @GetMapping(value = "/{category}", produces = MediaType.APPLICATION_XML_VALUE)
     public String getWall(@PathVariable("category") String category) {
         try {
@@ -54,7 +64,7 @@ public class LauncherNewsController {
             id.setTextContent(Integer.toString(postData.getId()));
             post.appendChild(id);
             Element text = doc.createElement("text");
-            text.setTextContent(findText(postData, 10));
+            text.setTextContent(removeVkLinks(findText(postData, 10)));
             post.appendChild(text);
             Element date = doc.createElement("date");
             date.setTextContent(Integer.toString(postData.getDate()));
@@ -92,6 +102,11 @@ public class LauncherNewsController {
             if(!text.isEmpty()) return text;
         }
         return "";
+    }
+
+    private String removeVkLinks(String str) {
+        Matcher matcher = vkLinkPattern.matcher(str);
+        return matcher.replaceAll("$4");
     }
 
 }

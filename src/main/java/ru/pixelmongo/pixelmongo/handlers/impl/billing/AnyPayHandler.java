@@ -30,7 +30,7 @@ import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
 import ru.pixelmongo.pixelmongo.repositories.primary.BillingDataRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.services.BillingService;
-import ru.pixelmongo.pixelmongo.utils.MD5EncodeUtils;
+import ru.pixelmongo.pixelmongo.utils.EncodeUtils;
 
 @Component
 public class AnyPayHandler implements BillingHandler{
@@ -130,7 +130,7 @@ public class AnyPayHandler implements BillingHandler{
 
     private String signForm(int payId, String sumStr) {
         String[] data = new String[] {CURRENCY, sumStr, secretKey, merchantId, Integer.toString(payId)};
-        return MD5EncodeUtils.md5(String.join(":", data));
+        return EncodeUtils.md5(String.join(":", data));
     }
 
     @Override
@@ -265,7 +265,7 @@ public class AnyPayHandler implements BillingHandler{
             String billIdStr, boolean test) {
         String[] data = new String[] {merchantId, sumStr, billIdStr, secretKey};
         String dataStr = String.join(":", data);
-        String validSign = MD5EncodeUtils.md5(dataStr);
+        String validSign = EncodeUtils.md5(dataStr);
         if(test) BillingService.LOGGER.info("Sign generation string: "+dataStr+
                 " Valid sign: "+validSign+" Request sign: "+sign);
         return validSign.equals(sign);

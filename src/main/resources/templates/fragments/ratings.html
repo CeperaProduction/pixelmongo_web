@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<span th:fragment="info">
+		За каждый голос в рейтинге вы получите
+			<b data-toggle="tooltip" data-placement="top" title="Go Point - донат-валюта нашего проекта">
+				<span th:text="${@ratingService.voteReward}"></span> GP
+			</b>.
+		<br>
+		<span th:if="${@ratingService.oncePerDay}">
+			Награду можно получить не чаще, чем раз в день для каждого рейтинга.
+			<br>
+			Суммарно вы сможете получить до
+			<b data-toggle="tooltip" data-placement="top" title="Go Point - донат-валюта нашего проекта">
+				<span th:text="${@ratingService.voteReward*@ratingService.getHandlers().size()}"></span> GP
+			</b>
+			за день.
+		</span>
+	</span>
+
+	<th:block th:fragment="buttons">
+		<th:block th:each="rating : ${@ratingService.getHandlers()}">
+			<th:block th:if="rating.enabled" th:replace="~{/fragments/ratings_buttons :: __${rating.templateFragmentName}__}"></th:block>
+		</th:block>
+	</th:block>
+
+	<div th:fragment="modal" id="vote" class="modal fade" tabindex="-1" role="dialog">
+
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+
+			    <div class="modal-header">
+			      	<h5 class="modal-title">Проголосуй за проект и получи бонус!</h5>
+			      	<button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+			        	<span aria-hidden="true">
+			        		<i class="fa fa-times"></i>
+						</span>
+			      	</button>
+			    </div>
+
+			    <div class="modal-body text-center">
+			    	<div th:include="/fragments/ratings :: buttons" class="mb-3"></div>
+					<div th:include="/fragments/ratings :: info"></div>
+			    </div>
+
+			</div>
+		</div>
+	</div>
+
+
+</html>

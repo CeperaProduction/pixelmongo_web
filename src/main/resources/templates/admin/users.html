@@ -28,7 +28,7 @@
 							</button>
 						</div>
 					</div>
-					<div class="input-group">
+					<div class="input-group mb-2">
 						<div class="input-group-prepend">
 							<label class="input-group-text" for="groupSelect">Группа</label>
 						</div>
@@ -40,6 +40,19 @@
 								th:value="${group.id}"
 								th:text="${group.name}"
 								th:selected="${group.id == group_selected}"></option>
+						</select>
+					</div>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<label class="input-group-text" for="orderSelect">Сортировка</label>
+						</div>
+						<select class="custom-select" id="orderSelect" name="order">
+							<option th:selected="${order != 'reg_date'}" value="name">
+								По нику
+							</option>
+							<option th:selected="${order == 'reg_date'}" value="reg_date">
+								По дате регистрации
+							</option>
 						</select>
 					</div>
 	        	</form>

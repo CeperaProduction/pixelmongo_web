@@ -14,6 +14,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -79,9 +80,10 @@ public class UsersController {
     private SecurityConfig securityConfig;
 
     @GetMapping
-    public String userList(@RequestParam(defaultValue = "1") int page,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) Integer group,
+    public String userList(@RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "search", required = false) String search,
+            @RequestParam(name = "group", required = false) Integer group,
+            @RequestParam(name = "order", defaultValue = "") String order,
             Model model) {
 
         checkPerms(null, false);
@@ -89,16 +91,26 @@ public class UsersController {
         UserGroup userGroup = null;
         if(group != null)
             userGroup = groups.findById(group).orElse(null);
-        Pageable pageable = PageRequest.of(page-1, 50);
-        Page<User> usersPage = this.users.findAllSorted(search, userGroup, pageable);
+        Pageable pageable = PageRequest.of(page-1, 50, getOrder(order));
+        Page<User> usersPage = this.users.findAll(search, userGroup, pageable);
         templateService.addPagination(model, page, usersPage.getTotalPages(), 9);
 
         model.addAttribute("search", StringUtils.hasText(search) ? search : "");
         model.addAttribute("users", usersPage.getContent());
         model.addAttribute("users_count", usersPage.getTotalElements());
         model.addAttribute("groups", groups.findAll());
+        model.addAttribute("order", order);
         model.addAttribute("group_selected", userGroup == null ? 0 : userGroup.getId());
         return "admin/users";
+    }
+
+    private Sort getOrder(String orderStr) {
+        switch(orderStr) {
+        case "reg_date":
+            return Sort.by("registrationDate").descending();
+        default:
+            return Sort.by("name").ascending();
+        }
     }
 
     @GetMapping("/{userName}")

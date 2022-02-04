@@ -81,7 +81,26 @@
 				</div>
 			</div>
 		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-lg-8 p-2">
+					<div class="vote-block gradient-white-block">
+						<th:block th:replace="/fragments/ratings :: buttons"></th:block>
+						<span data-toggle="tooltip" data-placement="bottom"
+							title="Информация о голосовании"
+							style="padding-bottom: 8px">
+							<a href="#" class="btn btn-primary" style="padding: 3px 10px; margin-top: -4px;"
+								data-toggle="modal" data-target="#vote">
+								<i class="fa fa-question-circle fa-fw"></i>
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
 
+
+		<div th:replace="/fragments/ratings :: modal"></div>
 
 	</th:block>
 </body>

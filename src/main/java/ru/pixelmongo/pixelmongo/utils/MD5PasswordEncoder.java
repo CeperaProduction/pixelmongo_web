@@ -12,7 +12,7 @@ public class MD5PasswordEncoder implements PasswordEncoder{
     
     @Override
     public String encode(CharSequence rawPassword) {
-        return MD5EncodeUtils.md5(rawPassword, times);
+        return EncodeUtils.md5(rawPassword, times);
     }
 
     @Override

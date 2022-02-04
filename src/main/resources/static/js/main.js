@@ -201,3 +201,12 @@ $(function(){
 	}
 });
 
+
+$(function(){
+	$('a.btn-rating').on('click', function(e){
+		let url = $(this).data('target');
+		if(url) window.open(url, '_blank');
+		e.preventDefault();
+		return false;
+	});
+});

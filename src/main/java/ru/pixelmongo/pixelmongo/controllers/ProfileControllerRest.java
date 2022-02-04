@@ -73,6 +73,8 @@ public class ProfileControllerRest {
     @Autowired
     private PromocodeService promocodes;
 
+    private final Object PROMO_LOCK = new Object[0];
+
     @PostMapping("/skin")
     public ResultMessage uploadSkin(@Valid SkinUploadForm skinForm, BindingResult binding, Locale loc) {
         if(skinForm == null)
@@ -184,29 +186,34 @@ public class ProfileControllerRest {
         if(promocodes.isBlocked(user, request))
             return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.spam", null, loc));
 
-        user = getStoredUser(user);
+        synchronized(PROMO_LOCK) {
 
-        try {
-            Promocode promocode = promocodes.activate(user, code);
-            users.save(user);
-            Map<String, Integer> balanceData = new HashMap<String, Integer>();
-            balanceData.put("balance", user.getBalance());
-            return new ResultDataMessage<Map<String, Integer>>(DefaultResult.OK, msg.getMessage("promocodes.activated",
-                    new Object[] {promocode.getTitle(), promocode.getValue()}, loc), balanceData);
-        }catch(EmailNotConfirmedException ex) {
-            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.email.not_confirmed", null, loc));
-        }catch(PromocodeNotFoundException ex) {
-            promocodes.onPromocodeFail(user, request);
-            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.wrong", null, loc));
-        }catch(PromocodeAlreadyUsedException ex) {
-            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.used", null, loc));
-        }catch(PromocodeMaxUsesException ex) {
-            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.used.max", null, loc));
-        }catch(PromocodeExpiredException ex) {
-            return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.expired", null, loc));
-        }catch(PromocodeException ex) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ex.getMessage());
+            user = getStoredUser(user);
+
+            try {
+                Promocode promocode = promocodes.activate(user, code);
+                users.save(user);
+                Map<String, Integer> balanceData = new HashMap<String, Integer>();
+                balanceData.put("balance", user.getBalance());
+                return new ResultDataMessage<Map<String, Integer>>(DefaultResult.OK, msg.getMessage("promocodes.activated",
+                        new Object[] {promocode.getTitle(), promocode.getValue()}, loc), balanceData);
+            }catch(EmailNotConfirmedException ex) {
+                return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.email.not_confirmed", null, loc));
+            }catch(PromocodeNotFoundException ex) {
+                promocodes.onPromocodeFail(user, request);
+                return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.wrong", null, loc));
+            }catch(PromocodeAlreadyUsedException ex) {
+                return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.used", null, loc));
+            }catch(PromocodeMaxUsesException ex) {
+                return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.used.max", null, loc));
+            }catch(PromocodeExpiredException ex) {
+                return new ResultMessage(DefaultResult.ERROR, msg.getMessage("promocodes.expired", null, loc));
+            }catch(PromocodeException ex) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, ex.getMessage());
+            }
+
         }
+
     }
 
     private User getStoredUser(User user) {

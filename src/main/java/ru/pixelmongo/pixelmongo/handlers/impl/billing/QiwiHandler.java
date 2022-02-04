@@ -36,7 +36,7 @@ import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
 import ru.pixelmongo.pixelmongo.repositories.primary.BillingDataRepository;
 import ru.pixelmongo.pixelmongo.repositories.primary.UserRepository;
 import ru.pixelmongo.pixelmongo.services.BillingService;
-import ru.pixelmongo.pixelmongo.utils.HMacUtils;
+import ru.pixelmongo.pixelmongo.utils.EncodeUtils;
 
 @Component
 public class QiwiHandler implements BillingHandler{
@@ -291,7 +291,7 @@ public class QiwiHandler implements BillingHandler{
                 bill.getStatus().getValue()
         };
         String dataStr = String.join("|", dataArr);
-        String validSign = HMacUtils.sha256(secretKey, dataStr);
+        String validSign = EncodeUtils.hmacSHA256(secretKey, dataStr);
         if(testMode) {
             BillingService.LOGGER.info("Qiwi hashing data: "+dataStr);
             BillingService.LOGGER.info("Qiwi sign: "+sign+", valid sign: "+validSign);

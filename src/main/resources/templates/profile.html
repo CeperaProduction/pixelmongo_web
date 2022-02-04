@@ -100,6 +100,10 @@
 									data-toggle="modal" data-target="#promocode">
 									<i class="fa fa-ticket-alt"></i> Использование промокода
 								</a>
+								<a href="#" class="btn btn-primary btn-block"
+									data-toggle="modal" data-target="#vote">
+									<i class="fa fa-trophy"></i> Голосование за проект
+								</a>
 								<th:block th:switch="${status}">
 									<a th:case="'active'" href="#" class="btn btn-secondary btn-block"
 										data-toggle="modal" data-target="#unban">
@@ -533,6 +537,7 @@
 			</div>
 		</div>
 
+		<div th:replace="/fragments/ratings :: modal"></div>
 
 	</div>
 </body>

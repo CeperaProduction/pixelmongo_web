@@ -803,3 +803,27 @@ form.link button:active{
 	background-image: url('../img/billing/qiwi.png');
 }
 
+.btn-rating{
+	padding: 0;
+	margin-bottom: 0.25em;
+	box-shadow: 0 0 5px rgba(0,0,0,.3);
+}
+
+.btn-rating img{
+	border: 0px solid #fff;
+	border-radius: 0.25rem;
+}
+
+.vote-block{
+	text-align: center;
+	margin-top: -100px;
+}
+
+@media (max-width: 768px) {
+	.vote-block{
+		text-align: center;
+		margin-top: 50px;
+		margin-bottom: -50px;
+	}
+}
+
