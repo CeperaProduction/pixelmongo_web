@@ -85,6 +85,10 @@
 		<div class="card mb-3">
 		    <div class="card-header">
 		        Информация о голосованиях в рейтингах
+		        <th:block th:if="${votes_count != 0}">
+		        	(<span th:text="${votes_count}"></span>)
+		        </th:block>
+
 		    </div>
 		    <div class="card-body table-responsive p-0">
 				<table class="table table-striped m-0" th:if="${votes_count != 0}">

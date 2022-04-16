@@ -35,6 +35,7 @@
 			<div class="text-center my-2">
 				<div class="donate-categories p-1">
 					<a th:each="category : ${page.categories}"
+							th:if="${category.enabled}"
 							class="btn btn-info text-white mx-2 my-1"
 							th:href="${'#cat'+category.id}"
 							th:text="${category.title}"></a>

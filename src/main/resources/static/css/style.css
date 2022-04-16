@@ -557,7 +557,15 @@ form.link button:active{
 	-moz-transition:background-position 1s linear;
 	-o-transition:background-position 1s linear;
 	transition:background-position 1s linear;
-	transform: translateZ(0);
+}
+
+@media screen and (min-color-index:0) and(-webkit-min-device-pixel-ratio:0) {
+	@media {
+	    .background-moving {
+			display: none;
+			transform: translateZ(0);
+	    }
+	}
 }
 
 .btn-vk{
@@ -807,6 +815,14 @@ form.link button:active{
 	padding: 0;
 	margin-bottom: 0.25em;
 	box-shadow: 0 0 5px rgba(0,0,0,.3);
+	background-color: #3e3573;
+	color: #fff;
+	box-sizing: border-box;
+	border: 2px solid #fff;
+	border-radius: 5px;
+	max-width: 90px;
+	max-height: 35px;
+	overflow: hidden;
 }
 
 .btn-rating img{

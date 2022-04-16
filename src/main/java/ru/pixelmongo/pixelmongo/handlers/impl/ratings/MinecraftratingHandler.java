@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import ru.pixelmongo.pixelmongo.handlers.RatingHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
-import ru.pixelmongo.pixelmongo.services.RatingService;
 import ru.pixelmongo.pixelmongo.utils.EncodeUtils;
 
 @Component("ratingMinecraftrating")
@@ -38,7 +37,7 @@ public class MinecraftratingHandler implements RatingHandler{
         String checkLine = params.get("username")+params.get("timestamp")+key;
         String sign = params.get("signature");
         String validSign = EncodeUtils.sha1(checkLine);
-        RatingService.LOGGER.info("Check line: "+checkLine+" sign: "+sign+" valid_sign: "+validSign);
+        //RatingService.LOGGER.info("Check line: "+checkLine+" sign: "+sign+" valid_sign: "+validSign);
         return validSign.equals(sign);
     }
 

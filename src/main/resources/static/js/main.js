@@ -14,6 +14,16 @@ function post(url, data){
     $(form).appendTo('body').submit();
 }
 
+$(function (){
+	let al = $('[role="alert"]').first();
+	if(al.length){
+		let st = al.offset().top - $(window).height()/3;
+		if(st > 0){
+			$([document.documentElement, document.body]).scrollTop(st);
+		}
+	}
+});
+
 $(function () {
 	$('[data-toggle="tooltip"]').tooltip();
 	bsCustomFileInput.init();
