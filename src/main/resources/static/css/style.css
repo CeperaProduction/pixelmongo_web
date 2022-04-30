@@ -811,6 +811,10 @@ form.link button:active{
 	background-image: url('../img/billing/qiwi.png');
 }
 
+.payment-type.handler-enot{
+	background-image: url('../img/billing/enot.png');
+}
+
 .btn-rating{
 	padding: 0;
 	margin-bottom: 0.25em;

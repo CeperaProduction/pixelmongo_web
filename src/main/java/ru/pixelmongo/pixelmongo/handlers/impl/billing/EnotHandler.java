@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -33,36 +34,42 @@ import ru.pixelmongo.pixelmongo.services.BillingService;
 import ru.pixelmongo.pixelmongo.utils.EncodeUtils;
 
 @Component
-public class AnyPayHandler implements BillingHandler{
+public class EnotHandler implements BillingHandler{
 
     private static final String CURRENCY = "RUB";
 
-    @Value("${billing.anypay.enabled}")
+    @Value("${server.url}")
+    private String serverUrl;
+
+    @Value("${billing.enot.enabled}")
     private boolean enabled;
 
-    @Value("${billing.anypay.hidden:false}")
+    @Value("${billing.enot.hidden:false}")
     private boolean hidden;
 
-    @Value("${billing.anypay.priority}")
+    @Value("${billing.enot.priority}")
     private int priority;
 
-    @Value("${billing.anypay.test:false}")
+    @Value("${billing.enot.test:false}")
     private boolean allowTest;
 
-    @Value("${billing.anypay.url}")
+    @Value("${billing.enot.url}")
     private String merchantUrl;
 
-    @Value("${billing.anypay.id}")
+    @Value("${billing.enot.id}")
     private String merchantId;
 
-    @Value("${billing.anypay.ips}")
+    @Value("${billing.enot.ips:}")
     private String trustedIpsStr;
     private List<IpAddressMatcher> trustedIps;
 
-    @Value("${billing.anypay.key.secret}")
+    @Value("${billing.enot.key.public}")
+    private String publicKey;
+
+    @Value("${billing.enot.key.secret}")
     private String secretKey;
 
-    @Value("${billing.anypay.desc}")
+    @Value("${billing.enot.desc}")
     private String descPattern;
 
     @Autowired
@@ -73,8 +80,6 @@ public class AnyPayHandler implements BillingHandler{
 
     @Autowired
     private DateFormatter df;
-
-    private DateFormatter dfRemote = new DateFormatter("dd.MM.yyyy HH:mm:ss");
 
     @PostConstruct
     public void init() {
@@ -88,7 +93,7 @@ public class AnyPayHandler implements BillingHandler{
 
     @Override
     public String getName() {
-        return "anypay";
+        return "enot";
     }
 
     @Override
@@ -117,13 +122,14 @@ public class AnyPayHandler implements BillingHandler{
         String sign = signForm(bill.getId(), sumStr);
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(merchantUrl);
-        uriBuilder.queryParam("merchant_id", merchantId);
-        uriBuilder.queryParam("amount", sumStr);
-        uriBuilder.queryParam("currency", CURRENCY);
-        uriBuilder.queryParam("pay_id", bill.getId());
-        uriBuilder.queryParam("desc", descStr);
-        uriBuilder.queryParam("sign", sign);
-        uriBuilder.queryParam("email", user.getEmail());
+        uriBuilder.queryParam("m", merchantId);
+        uriBuilder.queryParam("oa", sumStr);
+        uriBuilder.queryParam("cr", CURRENCY);
+        uriBuilder.queryParam("o", bill.getId());
+        uriBuilder.queryParam("c", descStr);
+        uriBuilder.queryParam("s", sign);
+        uriBuilder.queryParam("success_url", getSuccessUrl(bill.getId()));
+        uriBuilder.queryParam("fail_url", getFailUrl(bill.getId()));
 
         Map<String, String> resData = new HashMap<>();
         resData.put("location", uriBuilder.toUriString());
@@ -131,16 +137,30 @@ public class AnyPayHandler implements BillingHandler{
     }
 
     private String signForm(int payId, String sumStr) {
-        String[] data = new String[] {CURRENCY, sumStr, secretKey, merchantId, Integer.toString(payId)};
+        String[] data = new String[] {merchantId, sumStr, publicKey, Integer.toString(payId)};
         return EncodeUtils.md5(String.join(":", data));
+    }
+
+    private String getSuccessUrl(int billId) {
+        String base = serverUrl;
+        if(!base.endsWith("/")) base += "/";
+        return base+"pay/success?pay_id="+billId;
+    }
+
+    private String getFailUrl(int billId) {
+        String base = serverUrl;
+        if(!base.endsWith("/")) base += "/";
+        return base+"pay/fail?pay_id="+billId;
     }
 
     @Override
     public Object processWebHook(Map<String, String> params, Locale loc,
             HttpServletRequest request, HttpServletResponse response) {
         boolean test = params.getOrDefault("test", "").equals("1");
-        if(test && !this.allowTest)
+        if(test && !this.allowTest) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "Error: Test mode disabled";
+        }
         if(test) {
             BillingService.LOGGER.info("Got test billing notify request");
         }
@@ -155,41 +175,52 @@ public class AnyPayHandler implements BillingHandler{
 
     private String processWebHook(Map<String, String> params, boolean test, Locale loc,
             HttpServletRequest request, HttpServletResponse response) {
-        String merchantId = params.get("merchant_id");
-        String billIdStr = params.get("pay_id");
-        String remoteIdStr = params.get("transaction_id");
+        String merchantId = params.get("merchant");
+        String billIdStr = params.get("merchant_id");
+        String remoteIdStr = params.get("intid");
         String currency = params.get("currency");
         String payMethod = params.get("method");
-        String status = params.get("status");
         String sumStr = params.get("amount");
-        String profitStr = params.get("profit");
-        String sign = params.get("sign");
-        String payDate = params.get("pay_date");
+        String profitStr = params.get("credited");
+        String sign = params.get("sign_2");
 
-        if(!isTrusted(request))
+        if(!isTrusted(request)) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             return "Error: Untrusted host";
+        }
 
-        if(!checkBillingSign(sign, merchantId, sumStr, billIdStr, this.allowTest))
+        if(!checkBillingSign(sign, merchantId, sumStr, billIdStr, this.allowTest)) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             return "Error: Wrong signature";
+        }
 
-        if(!merchantId.equals(this.merchantId))
+        if(!merchantId.equals(this.merchantId)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "Error: Wrong merchant";
+        }
 
-        if(!currency.equals(AnyPayHandler.CURRENCY))
+        if(!currency.equals(EnotHandler.CURRENCY)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "Error: Wrong currency";
+        }
 
         BillingData bill;
         try {
             bill = bills.findById(Integer.parseInt(billIdStr)).get();
         }catch (Exception e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "Error: Billing data not found";
         }
 
-        if(!getName().equals(bill.getHandler()))
+        if(!getName().equals(bill.getHandler())) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "Error: This billing data is binded to another handler";
+        }
 
-        if(bill.getStatus() == BillingData.STATUS_ERROR)
+        if(bill.getStatus() == BillingData.STATUS_ERROR) {
+            response.setStatus(HttpStatus.LOCKED.value());
             return "Error: Wrong billing data status";
+        }
 
         if(bill.getStatus() == BillingData.STATUS_DONE) {
             return "Already paid at "+df.print(bill.getUpdated(), loc);
@@ -203,59 +234,46 @@ public class AnyPayHandler implements BillingHandler{
             }
         }
 
-        if(status.equals("paid")) {
-
-            int sum;
-            try {
-                sum = (int)Float.parseFloat(sumStr);
-                if(bill.getSum() != sum)
-                    return "Error: Billing data sum and given amount are mismatched";
-            }catch(Exception ex) {
-                return "Error: Invalid amount value";
-            }
-
-            float profit;
-            try {
-                profit = Float.parseFloat(profitStr);
-            }catch(Exception ex) {
-                if(test) {
-                    profit = 0;
-                }else {
-                    profit = sum;
-                    BillingService.LOGGER.warn("Got pay notify request without profit value (pay_id="+bill.getId()+"). Setting profit to sum value.");
-                }
-            }
-
-            User user = users.findById(bill.getUserId()).orElse(null);
-            if(user == null)
-                return "Error: User not found";
-
-            Date date;
-            try {
-                date = dfRemote.parse(payDate, loc);
-            }catch(Exception ex) {
-                date = new Date();
-            }
-
-            bill.setUpdated(date);
-            bill.setMessage(test ? "Test pay" : "Paid");
-            bill.setProfit(profit);
-            bill.setPayMethod(StringUtils.hasText(payMethod) ? payMethod : test ? "test" : "");
-            bill.setStatus(BillingData.STATUS_DONE);
-            bills.save(bill);
-
-            user.setRealBalance(user.getRealBalance()+sum);
-            users.save(user);
-
-            return "OK";
-        }else {
-
-            bill.setUpdated(new Date());
-            bill.setMessage("Request: "+status);
-            bills.save(bill);
-
-            return bill.getStatus() == BillingData.STATUS_CREATED ? "Ready to pay" : "Unable to pay";
+        int sum;
+        try {
+            sum = (int)Float.parseFloat(sumStr);
+            if(bill.getSum() != sum)
+                return "Error: Billing data sum and given amount are mismatched";
+        }catch(Exception ex) {
+            return "Error: Invalid amount value";
         }
+
+        float profit;
+        try {
+            profit = Float.parseFloat(profitStr);
+        }catch(Exception ex) {
+            if(test) {
+                profit = 0;
+            }else {
+                profit = sum;
+                BillingService.LOGGER.warn("Got pay notify request without profit value (pay_id="+bill.getId()+"). Setting profit to sum value.");
+            }
+        }
+
+        User user = users.findById(bill.getUserId()).orElse(null);
+        if(user == null) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return "Error: User not found";
+        }
+
+        Date date = new Date();
+
+        bill.setUpdated(date);
+        bill.setMessage(test ? "Test pay" : "Paid");
+        bill.setProfit(profit);
+        bill.setPayMethod(StringUtils.hasText(payMethod) ? payMethod : test ? "test" : "");
+        bill.setStatus(BillingData.STATUS_DONE);
+        bills.save(bill);
+
+        user.setRealBalance(user.getRealBalance()+sum);
+        users.save(user);
+
+        return "Good";
     }
 
     private boolean isTrusted(HttpServletRequest request) {
@@ -265,7 +283,7 @@ public class AnyPayHandler implements BillingHandler{
 
     private boolean checkBillingSign(String sign, String merchantId, String sumStr,
             String billIdStr, boolean test) {
-        String[] data = new String[] {merchantId, sumStr, billIdStr, secretKey};
+        String[] data = new String[] {merchantId, sumStr, secretKey, billIdStr};
         String dataStr = String.join(":", data);
         String validSign = EncodeUtils.md5(dataStr);
         if(test) BillingService.LOGGER.info("Sign generation string: "+dataStr+

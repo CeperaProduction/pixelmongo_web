@@ -90,7 +90,9 @@ public class QiwiHandler implements BillingHandler{
     public void init() {
         trustedIps = new ArrayList<>();
         for(String ip : trustedIpsStr.split(",")) {
-            trustedIps.add(new IpAddressMatcher(ip.trim()));
+            ip = ip.trim();
+            if(ip.isEmpty()) continue;
+            trustedIps.add(new IpAddressMatcher(ip));
         }
     }
 
