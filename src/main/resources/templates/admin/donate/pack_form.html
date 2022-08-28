@@ -78,6 +78,11 @@
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
 								th:errors="*{image}"></div>
+
+							<div class="col-sm-9 text-center">
+								<img class="donate-image-preview" th:src="@{${images.get(pack)}}" />
+							</div>
+
 						</div>
 					</div>
 
@@ -702,7 +707,10 @@
 
 		<!-- Templates end -->
 
-		<script type="text/javascript">donate.initPackEditor();</script>
+		<script type="text/javascript">
+			donate.initPackEditor();
+			donate.initImagePreview();
+		</script>
 
 	</div>
 </body>

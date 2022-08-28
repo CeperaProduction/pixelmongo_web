@@ -310,6 +310,14 @@ form.link button:active{
 	padding-top: 10px;
 }
 
+.donate-image-preview{
+	max-width: 250px;
+	height: auto;
+	margin-top: 12px;
+	background-color: #000;
+	box-shadow: 0 0 1px #999;
+}
+
 .skin3d{
 	margin: 0 auto;
 }

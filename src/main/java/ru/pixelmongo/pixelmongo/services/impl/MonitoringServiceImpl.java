@@ -14,12 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -27,6 +26,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,7 +54,7 @@ public class MonitoringServiceImpl implements MonitoringService{
     private long lastUpdate;
     private long lastServerCacheUpdate;
 
-    private Timer updateTimer;
+    private ScheduledExecutorService updateTimer;
     private ExecutorService threadPool;
 
     public MonitoringServiceImpl(long timeout, long nextPingDelay, long serverCacheUpdatePeriod, boolean debug) {
@@ -73,10 +73,10 @@ public class MonitoringServiceImpl implements MonitoringService{
     @PreDestroy
     private void stop() {
         LOGGER.info("Shutdown monitoring service...");
-        updateTimer.cancel();
         try {
+            updateTimer.shutdownNow();
             threadPool.shutdown();
-            while(!threadPool.awaitTermination(1, TimeUnit.SECONDS)) {}
+            threadPool.awaitTermination(1, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             LOGGER.catching(e);
         }
@@ -102,41 +102,38 @@ public class MonitoringServiceImpl implements MonitoringService{
     }
 
     private void startMonitoring() {
-        threadPool = Executors.newCachedThreadPool();
-        updateTimer = new Timer("monitoring_update");
-        TimerTask updateTask = new TimerTask() {
-            @Override
-            public void run() {
-                long start = System.currentTimeMillis();
-                List<MonitoringServer> servers = getServers();
-                Set<String> validTags = servers.stream().map(s->s.getTag()).collect(Collectors.toSet());
-                monitoringCache.keySet().removeIf(tag->!validTags.contains(tag));
-                CountDownLatch lock = new CountDownLatch(servers.size());
-                for(MonitoringServer server : servers) {
-                    threadPool.execute(()->{
-                        if(!server.isNowPinging()) {
-                            MonitoringResult result = pingServer(server);
-                            monitoringCache.put(server.getTag(), result);
-                        }
-                        lock.countDown();
-                    });
-                }
-                try {
-                    lock.await();
-                    long end = System.currentTimeMillis();
-                    lastUpdate = end;
-                    long time = end-start;
-                    if(debug) {
-                        LOGGER.debug("Monitoring calculated for "+String.format("%1.3fs", time/1000.0F));
-                    }
-                } catch (InterruptedException e) {
-                    LOGGER.catching(e);
-                }
-            }
-
-        };
-        updateTimer.schedule(updateTask, 0, nextPingDelay);
+        threadPool = Executors.newCachedThreadPool(new CustomizableThreadFactory("monitoring-update-worker-"));
+        updateTimer = Executors.newScheduledThreadPool(1, new CustomizableThreadFactory("monitoring-update-timer-"));
+        updateTimer.scheduleAtFixedRate(this::updateMonitorings, 0, nextPingDelay, TimeUnit.MILLISECONDS);
         LOGGER.info("Monitorind service started.");
+    }
+
+    private void updateMonitorings() {
+        long start = System.currentTimeMillis();
+        List<MonitoringServer> servers = getServers();
+        Set<String> validTags = servers.stream().map(s->s.getTag()).collect(Collectors.toSet());
+        monitoringCache.keySet().removeIf(tag->!validTags.contains(tag));
+        CountDownLatch lock = new CountDownLatch(servers.size());
+        for(MonitoringServer server : servers) {
+            threadPool.execute(()->{
+                if(!server.isNowPinging()) {
+                    MonitoringResult result = pingServer(server);
+                    monitoringCache.put(server.getTag(), result);
+                }
+                lock.countDown();
+            });
+        }
+        try {
+            lock.await();
+            long end = System.currentTimeMillis();
+            lastUpdate = end;
+            long time = end-start;
+            if(debug) {
+                LOGGER.debug("Monitoring calculated for "+String.format("%1.3fs", time/1000.0F));
+            }
+        } catch (InterruptedException e) {
+            LOGGER.catching(e);
+        }
     }
 
     @Override
@@ -236,7 +233,7 @@ public class MonitoringServiceImpl implements MonitoringService{
 
     //write int without zeros
     private static void writeVarInt(DataOutputStream out, int val) throws IOException {
-        while (true) {
+        while(true) {
             if ((val & 0xFFFFFF80) == 0) {
                 out.writeByte(val);
                 return;
@@ -249,7 +246,7 @@ public class MonitoringServiceImpl implements MonitoringService{
     private static int readVarInt(DataInputStream in) throws IOException {
         int i = 0;
         int j = 0;
-        while (true) {
+        while(true) {
             int k = in.readByte();
             i |= (k & 0x7F) << j++ * 7;
             if (j > 5) {

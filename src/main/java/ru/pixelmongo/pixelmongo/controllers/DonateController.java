@@ -69,26 +69,6 @@ public class DonateController {
         model.addAttribute("tokenHelper", new DonatePackTokenHelper());
     }
 
-    public static class DonateImageResolver {
-
-        private final UploadService upload;
-
-        private DonateImageResolver(UploadService upload) {
-            this.upload = upload;
-        }
-
-        public String get(DonatePage page) {
-            return upload.getUploadPathURLIfExists("/static/img/donate/default_page.jpg", page.getId()+".jpg", "donate", "pages");
-        }
-
-        public String get(DonatePack pack) {
-            return upload.getUploadPathURLIfExists("/static/img/donate/default_pack.jpg", pack.getId()+".jpg", "donate", "packs");
-        }
-
-
-
-    }
-
     public static class DonatePackTokenHelper {
 
         public int getCost(DonatePack pack, DonatePackTokenSelectValue selectToken, int index) {

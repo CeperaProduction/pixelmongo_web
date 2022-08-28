@@ -42,7 +42,7 @@ public class EncodeUtils {
         byte[] bytes = input.toString().getBytes(StandardCharsets.UTF_8);
         encoder.update(bytes, 0, bytes.length);
         String hashedPass = new BigInteger(1, encoder.digest()).toString(16);
-        while (hashedPass.length() < 32) {
+        while(hashedPass.length() < 32) {
            hashedPass = "0" + hashedPass;
         }
         return hashedPass;

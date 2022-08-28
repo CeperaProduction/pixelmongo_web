@@ -1,13 +1,16 @@
 package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import ru.pixelmongo.pixelmongo.services.LoginAttemptService;
 
@@ -17,7 +20,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService{
     private final long protectTime;
 
     private Map<String, LoginAttemptCache> cache = new ConcurrentHashMap<>();
-    private Timer cleanTimer;
+    private ScheduledExecutorService cleanTimer;
 
     public LoginAttemptServiceImpl(int maxAttempts, long protectTime) {
         this.maxAttempts = maxAttempts;
@@ -26,21 +29,16 @@ public class LoginAttemptServiceImpl implements LoginAttemptService{
 
     @PostConstruct
     public void init() {
-        cleanTimer = new Timer("login-attempt-cache-cleaner");
-        cleanTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                long expired = System.currentTimeMillis() - protectTime;
-                cache.values().removeIf(c->c.lastUpdate < expired);
-            }
-        }, 1800000, 1800000);
+        cleanTimer = Executors.newScheduledThreadPool(1, new CustomizableThreadFactory("login-attempt-cache-cleaner-"));
+        cleanTimer.scheduleAtFixedRate(()->cache.values()
+                .removeIf(c->c.lastUpdate<System.currentTimeMillis()-protectTime),
+                30, 30, TimeUnit.MINUTES);
     }
 
     @PreDestroy
     public void stop() {
-        if(cleanTimer != null) cleanTimer.cancel();
+        cleanTimer.shutdownNow();
         cache.clear();
-        cleanTimer = null;
     }
 
     @Override

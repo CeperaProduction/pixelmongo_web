@@ -80,6 +80,11 @@
 							<div class="alert alert-danger px-3 my-1"
 								role="alert"
 								th:errors="*{image}"></div>
+
+							<div class="col-sm-9 text-center">
+								<img class="donate-image-preview" th:src="@{${images.get(page)}}" />
+							</div>
+
 						</div>
 					</div>
 
@@ -140,6 +145,11 @@
 				</form>
 		    </div>
 		</div>
+
+		<script type="text/javascript">
+			donate.initImagePreview();
+		</script>
+
 	</div>
 </body>
 </html>

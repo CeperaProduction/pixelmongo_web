@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import ru.pixelmongo.pixelmongo.controllers.DonateImageResolver;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateCategory;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonateDisplayType;
 import ru.pixelmongo.pixelmongo.model.dao.primary.donate.DonatePack;
@@ -529,6 +530,7 @@ public class DonateContentController {
         model.addAttribute("servers", servers.findAll());
         model.addAttribute("image_width", PAGE_IMG_WIDTH);
         model.addAttribute("image_height", PAGE_IMG_HEIGHT);
+        model.addAttribute("images", new DonateImageResolver(upload));
     }
 
     private void addEditorAttributes(Model model, String method, DonateCategory category, DonatePage page) {
@@ -544,6 +546,7 @@ public class DonateContentController {
         model.addAttribute("page", page);
         model.addAttribute("pack", pack);
         model.addAttribute("token_types", DonatePackTokenType.values());
+        model.addAttribute("images", new DonateImageResolver(upload));
     }
 
     //OTHER

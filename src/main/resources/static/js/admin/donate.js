@@ -3,6 +3,24 @@ const donate = new DonateAdmin();
 
 function DonateAdmin(){
 
+	function initImagePreview(){
+		let image = $('.donate-image-preview');
+		image.each(function(){
+			let img = $(this);
+			img.data('src', img.attr('src'));
+		});
+
+		$('input:file#imageInput').change(function(){
+			let files = this.files;
+			if(files){
+				image.attr('src', URL.createObjectURL(files[0]));
+			}else{
+				image.attr('src', image.data('src'));
+			}
+		});
+
+	}
+
 	function initPackEditor(){
 
 		let loading = true;
@@ -441,6 +459,7 @@ function DonateAdmin(){
 	}
 
 	return {
+		initImagePreview,
 		initPackEditor,
 		initSortables,
 		initServerEditor,

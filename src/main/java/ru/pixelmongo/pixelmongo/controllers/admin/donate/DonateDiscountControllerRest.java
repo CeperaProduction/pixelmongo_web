@@ -85,19 +85,19 @@ public class DonateDiscountControllerRest {
             packs.save(pack);
             log("admin.log.donate.discount.set.pack", request, value, pack.getTitle()+" "+pack.getId());
             message = msg.getMessage("admin.donate.discount.set.pack",
-                    new Object[] {value, pack.getTitle()+" "+pack.getId()}, loc);
+                    new Object[] {value, pack.getTitle()+" #"+pack.getId()}, loc);
         }else if(categoryId != 0) {
             DonateCategory category = find(categories.findById(categoryId));
             packs.setDiscount(category, value);
             log("admin.log.donate.discount.set.category", request, value, category.getTitle()+" "+category.getId());
             message = msg.getMessage("admin.donate.discount.set.category",
-                    new Object[] {value, category.getTitle()+" "+category.getId()}, loc);
+                    new Object[] {value, category.getTitle()+" #"+category.getId()}, loc);
         }else if(pageId != 0) {
             DonatePage page = find(pages.findById(pageId));
             packs.setDiscount(page, value);
             log("admin.log.donate.discount.set.page", request, value, page.getTitle()+" "+page.getId());
             message = msg.getMessage("admin.donate.discount.set.page",
-                    new Object[] {value, page.getTitle()+" "+page.getId()}, loc);
+                    new Object[] {value, page.getTitle()+" #"+page.getId()}, loc);
         }else {
             packs.setDiscount(value);
             log("admin.log.donate.discount.set", request, value);

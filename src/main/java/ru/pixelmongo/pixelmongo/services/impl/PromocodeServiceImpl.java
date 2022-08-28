@@ -2,9 +2,10 @@ package ru.pixelmongo.pixelmongo.services.impl;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -14,6 +15,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import ru.pixelmongo.pixelmongo.exceptions.EmailNotConfirmedException;
 import ru.pixelmongo.pixelmongo.exceptions.PromocodeAlreadyUsedException;
@@ -41,7 +43,7 @@ public class PromocodeServiceImpl implements PromocodeService{
     private final long protectTime;
 
     private Map<String, PromocodeAttemptCache> cache = new ConcurrentHashMap<>();
-    private Timer cleanTimer;
+    private ScheduledExecutorService cleanTimer;
 
     public PromocodeServiceImpl(boolean requireEmailConfirm, int maxAttempts, long protectTime) {
         this.requireEmailConfirm = requireEmailConfirm;
@@ -51,19 +53,15 @@ public class PromocodeServiceImpl implements PromocodeService{
 
     @PostConstruct
     public void init() {
-        cleanTimer = new Timer("promocode-attempt-cache-cleaner");
-        cleanTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                long expired = System.currentTimeMillis() - protectTime;
-                cache.values().removeIf(c->c.lastUpdate < expired);
-            }
-        }, 1800000, 1800000);
+        cleanTimer = Executors.newScheduledThreadPool(1, new CustomizableThreadFactory("promocode-attempt-cache-cleaner-"));
+        cleanTimer.scheduleAtFixedRate(()->cache.values()
+                .removeIf(c->c.lastUpdate<System.currentTimeMillis()-protectTime),
+                30, 30, TimeUnit.MINUTES);
     }
 
     @PreDestroy
     public void stop() {
-        if(cleanTimer != null) cleanTimer.cancel();
+        cleanTimer.shutdownNow();
         cache.clear();
         cleanTimer = null;
     }

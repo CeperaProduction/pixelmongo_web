@@ -3,9 +3,10 @@ package ru.pixelmongo.pixelmongo.services.impl;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -15,6 +16,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -39,7 +41,7 @@ public class VKServiceImpl implements VKService {
 
     private long lastUpdate;
 
-    private Timer wallUpdateTimer;
+    private ScheduledExecutorService wallUpdateTimer;
 
     private boolean shutdown = false;
 
@@ -54,20 +56,15 @@ public class VKServiceImpl implements VKService {
     public void init() {
         if(newsUpdatePeriod == 0)
             throw new IllegalStateException("News update period is not specified");
-        wallUpdateTimer = new Timer("vk-service-news-updator");
-        wallUpdateTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                updateWalls();
-            }
-        }, 5000, newsUpdatePeriod);
+        wallUpdateTimer = Executors.newScheduledThreadPool(1, new CustomizableThreadFactory("vk-service-news-updator-"));
+        wallUpdateTimer.scheduleAtFixedRate(this::updateWalls, 5000, newsUpdatePeriod, TimeUnit.MILLISECONDS);
         LOGGER.info("VK walls updating started");
     }
 
     @PreDestroy
     public void stop() {
         shutdown = true;
-        wallUpdateTimer.cancel();
+        wallUpdateTimer.shutdownNow();
         LOGGER.info("VK walls updating stopped");
     }
 
