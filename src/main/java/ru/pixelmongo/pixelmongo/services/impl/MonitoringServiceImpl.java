@@ -202,8 +202,8 @@ public class MonitoringServiceImpl implements MonitoringService{
                     Map<?, ?> jsonRoot = (Map<?, ?>)mapper.readValue(receivedJson, Map.class);
                     String motd = (String) ((Map<?, ?>)jsonRoot.get("description")).get("text");
                     Map<?, ?> jsonPlayers = (Map<?, ?>) jsonRoot.get("players");
-                    int currentPlayers = (int) jsonPlayers.get("online");
-                    int maxPlayers = (int) jsonPlayers.get("max");
+                    int currentPlayers = (Integer) jsonPlayers.get("online");
+                    int maxPlayers = (Integer) jsonPlayers.get("max");
                     result = new MonitoringResultImpl(server, currentPlayers, maxPlayers, motd);
                     if(debug) {
                         LOGGER.debug("Server "+server.getTag()

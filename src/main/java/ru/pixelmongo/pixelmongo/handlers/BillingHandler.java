@@ -41,7 +41,7 @@ public interface BillingHandler {
      * @param response
      * @return
      */
-    public Object processWebHook(Map<String, String> params, Locale loc,
+    public Object processWebHook(Map<String, String> params, String body, Locale loc,
             HttpServletRequest request, HttpServletResponse response);
 
 }

@@ -40,10 +40,10 @@ public interface DonateQueryRepository extends CrudRepository<DonateQuery, Integ
         return findByServerAndPlayerAndPackIdAndBackOfNotNullAndDoneFalse(server.getConfigName(), user.getName(), pack.getId());
     }
 
-    @Query("SELECT DISTINCT sum(q.spentMoney) FROM DonateQuery q WHERE q.server = :#{#server.configName} AND q.date >= :start AND q.date <= :end")
+    @Query("SELECT DISTINCT coalesce(sum(q.spentMoney),0) FROM DonateQuery q WHERE q.server = :#{#server.configName} AND q.date >= :start AND q.date <= :end")
     public int getSpentMoney(@Param("server") DonateServer server, @Param("start") int start, @Param("end") int end);
 
-    @Query("SELECT DISTINCT sum(q.spentBonus) FROM DonateQuery q WHERE q.server = :#{#server.configName} AND q.date >= :start AND q.date <= :end")
+    @Query("SELECT DISTINCT coalesce(sum(q.spentBonus),0) FROM DonateQuery q WHERE q.server = :#{#server.configName} AND q.date >= :start AND q.date <= :end")
     public int getSpentBonus(@Param("server") DonateServer server, @Param("start") int start, @Param("end") int end);
 
 

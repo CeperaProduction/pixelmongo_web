@@ -145,7 +145,7 @@ public class QiwiHandler implements BillingHandler{
     }
 
     @Override
-    public Object processWebHook(Map<String, String> params, Locale loc, HttpServletRequest request,
+    public Object processWebHook(Map<String, String> params, String body, Locale loc, HttpServletRequest request,
             HttpServletResponse response) {
 
         if(testMode) {

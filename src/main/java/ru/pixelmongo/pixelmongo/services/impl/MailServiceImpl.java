@@ -43,7 +43,7 @@ public class MailServiceImpl implements MailService{
         helper.setTo(email);
         helper.setSubject(title);
         helper.setText(html, true);
-        helper.setFrom(systemEmail);
+        helper.setFrom(systemEmail, "Pixelmon Go");
 
         if(mailPostProcessor != null)
             mailPostProcessor.process(helper);

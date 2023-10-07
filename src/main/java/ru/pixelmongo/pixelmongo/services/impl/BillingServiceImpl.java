@@ -64,14 +64,14 @@ public class BillingServiceImpl implements BillingService{
     }
 
     @Override
-    public Object handleWebHook(String handlerName, Map<String, String> params, Locale loc,
+    public Object handleWebHook(String handlerName, Map<String, String> params, String body, Locale loc,
             HttpServletRequest request, HttpServletResponse response) {
         BillingHandler handler = billings.get(handlerName);
         if(handler == null)
             throw new BillingHandlerNotFoundException(handlerName);
         if(!handler.isEnabled())
             throw new BillingHandlerDisabledException(handlerName);
-        return handler.processWebHook(params, loc, request, response);
+        return handler.processWebHook(params, body, loc, request, response);
     }
 
 }

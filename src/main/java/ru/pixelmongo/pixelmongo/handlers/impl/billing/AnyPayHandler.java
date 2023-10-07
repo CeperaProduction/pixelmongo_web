@@ -136,7 +136,7 @@ public class AnyPayHandler implements BillingHandler{
     }
 
     @Override
-    public Object processWebHook(Map<String, String> params, Locale loc,
+    public Object processWebHook(Map<String, String> params, String body, Locale loc,
             HttpServletRequest request, HttpServletResponse response) {
         boolean test = params.getOrDefault("test", "").equals("1");
         if(test && !this.allowTest)

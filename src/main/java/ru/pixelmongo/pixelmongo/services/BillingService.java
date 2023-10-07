@@ -54,7 +54,7 @@ public interface BillingService {
      *
      * @throws #{@link BillingHandlerNotFoundException}, {@link BillingHandlerDisabledException}
      */
-    public Object handleWebHook(String handlerName, Map<String, String> params, Locale loc,
+    public Object handleWebHook(String handlerName, Map<String, String> params, String body, Locale loc,
             HttpServletRequest request, HttpServletResponse response);
 
 }

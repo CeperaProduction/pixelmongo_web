@@ -1,13 +1,15 @@
 package ru.pixelmongo.pixelmongo.handlers.impl.billing;
 
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -16,15 +18,27 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import ru.pixelmongo.pixelmongo.handlers.BillingHandler;
 import ru.pixelmongo.pixelmongo.model.dao.primary.BillingData;
 import ru.pixelmongo.pixelmongo.model.dao.primary.User;
+import ru.pixelmongo.pixelmongo.model.dto.enot.EnotPaymentCreateRequest;
+import ru.pixelmongo.pixelmongo.model.dto.enot.EnotPaymentCreateResponse;
+import ru.pixelmongo.pixelmongo.model.dto.enot.EnotWebhookBody;
 import ru.pixelmongo.pixelmongo.model.dto.results.DefaultResult;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultDataMessage;
 import ru.pixelmongo.pixelmongo.model.dto.results.ResultMessage;
@@ -51,7 +65,7 @@ public class EnotHandler implements BillingHandler{
     private int priority;
 
     @Value("${billing.enot.test:false}")
-    private boolean allowTest;
+    private boolean testMode;
 
     @Value("${billing.enot.url}")
     private String merchantUrl;
@@ -80,6 +94,15 @@ public class EnotHandler implements BillingHandler{
 
     @Autowired
     private DateFormatter df;
+
+    @Autowired
+    private RestTemplate rest;
+
+    private ObjectMapper mapper = new ObjectMapper();
+
+    public EnotHandler() {
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     @PostConstruct
     public void init() {
@@ -117,28 +140,47 @@ public class EnotHandler implements BillingHandler{
         BillingData bill = new BillingData(this, user, sum);
         bill = bills.save(bill);
 
-        String sumStr = sum+".00";
+        int billId = bill.getId();
         String descStr = MessageFormat.format(descPattern, user.getName(), sum);
-        String sign = signForm(bill.getId(), sumStr);
 
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(merchantUrl);
-        uriBuilder.queryParam("m", merchantId);
-        uriBuilder.queryParam("oa", sumStr);
-        uriBuilder.queryParam("cr", CURRENCY);
-        uriBuilder.queryParam("o", bill.getId());
-        uriBuilder.queryParam("c", descStr);
-        uriBuilder.queryParam("s", sign);
-        uriBuilder.queryParam("success_url", getSuccessUrl(bill.getId()));
-        uriBuilder.queryParam("fail_url", getFailUrl(bill.getId()));
+        EnotPaymentCreateRequest createRequest = new EnotPaymentCreateRequest(merchantId,
+                sum, CURRENCY, Integer.toString(billId), descStr, user.getEmail(), getSuccessUrl(billId), getFailUrl(billId));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.add("x-api-key", publicKey);
+
+        HttpEntity<String> httpEntity;
+        try {
+            httpEntity = new HttpEntity<>(mapper.writeValueAsString(createRequest), headers);
+        } catch (JsonProcessingException e) {
+            BillingService.LOGGER.error(e);
+            return new ResultMessage(DefaultResult.ERROR, e.toString());
+        }
+
+        String createResponseString = rest.postForObject(URI.create(merchantUrl),
+                httpEntity, String.class);
+
+        EnotPaymentCreateResponse createResponse;
+        try {
+            createResponse = mapper.readValue(createResponseString, EnotPaymentCreateResponse.class);
+        }catch (Exception e) {
+            BillingService.LOGGER.error("Bad response received from Enot: {}", createResponseString);
+            return new ResultMessage(DefaultResult.ERROR, createResponseString);
+        }
+
+        if(!createResponse.isStatusCheck()) {
+            BillingService.LOGGER.error("Bad response received from Enot: {}", createResponseString);
+            if(createResponse.getError() != null) {
+                return new ResultMessage(DefaultResult.ERROR, createResponse.getError());
+            }
+            return new ResultMessage(DefaultResult.ERROR, createResponseString);
+        }
 
         Map<String, String> resData = new HashMap<>();
-        resData.put("location", uriBuilder.toUriString());
+        resData.put("location", createResponse.getData().getUrl());
         return new ResultDataMessage<Map<String, String>>(DefaultResult.OK, "Payment data created", resData);
-    }
-
-    private String signForm(int payId, String sumStr) {
-        String[] data = new String[] {merchantId, sumStr, publicKey, Integer.toString(payId)};
-        return EncodeUtils.md5(String.join(":", data));
     }
 
     private String getSuccessUrl(int billId) {
@@ -154,49 +196,57 @@ public class EnotHandler implements BillingHandler{
     }
 
     @Override
-    public Object processWebHook(Map<String, String> params, Locale loc,
+    public Object processWebHook(Map<String, String> params, String bodyStr, Locale loc,
             HttpServletRequest request, HttpServletResponse response) {
-        boolean test = params.getOrDefault("test", "").equals("1");
-        if(test && !this.allowTest) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "Error: Test mode disabled";
-        }
-        if(test) {
-            BillingService.LOGGER.info("Got test billing notify request");
-        }
-        if(this.allowTest) {
-            BillingService.LOGGER.info("Request params:\n"+toString(params));
-        }
-        String result = processWebHook(params, test, loc, request, response);
-        if(this.allowTest)
-            BillingService.LOGGER.info("Billing request result: "+result);
-        return result;
-    }
-
-    private String processWebHook(Map<String, String> params, boolean test, Locale loc,
-            HttpServletRequest request, HttpServletResponse response) {
-        String merchantId = params.get("merchant");
-        String billIdStr = params.get("merchant_id");
-        String remoteIdStr = params.get("intid");
-        String currency = params.get("currency");
-        String payMethod = params.get("method");
-        String sumStr = params.get("amount");
-        String profitStr = params.get("credited");
-        String sign = params.get("sign_2");
 
         if(!isTrusted(request)) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return "Error: Untrusted host";
         }
 
-        if(!checkBillingSign(sign, merchantId, sumStr, billIdStr, this.allowTest)) {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            return "Error: Wrong signature";
+        if(!request.getMethod().equals("POST")) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return "Error: Bad method";
         }
 
-        if(!merchantId.equals(this.merchantId)) {
+        EnotWebhookBody body;
+        try {
+
+            String sign = request.getHeader("x-api-sha256-signature");
+            JsonNode bodyJsonNode = mapper.readTree(bodyStr);
+            if(!bodyJsonNode.isObject()) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                return "Error: Bad request (2)";
+            }
+
+            if(!checkBillingSign(sign, (ObjectNode) bodyJsonNode)) {
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                return "Error: Wrong signature";
+            }
+            body = mapper.treeToValue(bodyJsonNode, EnotWebhookBody.class);
+        }catch(Exception e) {
+            BillingService.LOGGER.warn("Can't read request of webhook from Enot", e);
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "Error: Wrong merchant";
+            return "Error: Bad request (1)";
+        }
+
+        return processWebHook(body, loc, request, response);
+    }
+
+    private String processWebHook(EnotWebhookBody body, Locale loc,
+            HttpServletRequest request, HttpServletResponse response) {
+        String billIdStr = body.getOrderId();
+        //String remoteIdStr = body.getInvoiceId();
+        String currency = body.getCurrency();
+        String payMethod = body.getPayService();
+        String sumStr = body.getAmount();
+        String profitStr = body.getCredited();
+        int type = body.getType();
+        int code = body.getCode();
+
+        if(type != 1 && code != 1) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return "Error: Bad request (3)";
         }
 
         if(!currency.equals(EnotHandler.CURRENCY)) {
@@ -226,6 +276,7 @@ public class EnotHandler implements BillingHandler{
             return "Already paid at "+df.print(bill.getUpdated(), loc);
         }
 
+        /*
         if(remoteIdStr != null) {
             try {
                 bill.setBillingId(Long.parseLong(remoteIdStr));
@@ -233,13 +284,17 @@ public class EnotHandler implements BillingHandler{
                 BillingService.LOGGER.catching(ex);
             }
         }
+        */
 
         int sum;
         try {
             sum = (int)Float.parseFloat(sumStr);
-            if(bill.getSum() != sum)
+            if(bill.getSum() != sum) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
                 return "Error: Billing data sum and given amount are mismatched";
+            }
         }catch(Exception ex) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "Error: Invalid amount value";
         }
 
@@ -247,12 +302,8 @@ public class EnotHandler implements BillingHandler{
         try {
             profit = Float.parseFloat(profitStr);
         }catch(Exception ex) {
-            if(test) {
-                profit = 0;
-            }else {
-                profit = sum;
-                BillingService.LOGGER.warn("Got pay notify request without profit value (pay_id="+bill.getId()+"). Setting profit to sum value.");
-            }
+            profit = sum;
+            BillingService.LOGGER.warn("Got pay notify request without profit value (pay_id={}). Setting profit to sum value.", bill.getId());
         }
 
         User user = users.findById(bill.getUserId()).orElse(null);
@@ -264,9 +315,9 @@ public class EnotHandler implements BillingHandler{
         Date date = new Date();
 
         bill.setUpdated(date);
-        bill.setMessage(test ? "Test pay" : "Paid");
+        bill.setMessage("Paid");
         bill.setProfit(profit);
-        bill.setPayMethod(StringUtils.hasText(payMethod) ? payMethod : test ? "test" : "");
+        bill.setPayMethod(StringUtils.hasText(payMethod) ? payMethod : "");
         bill.setStatus(BillingData.STATUS_DONE);
         bills.save(bill);
 
@@ -281,23 +332,12 @@ public class EnotHandler implements BillingHandler{
         return trustedIps.stream().anyMatch(ip->ip.matches(request));
     }
 
-    private boolean checkBillingSign(String sign, String merchantId, String sumStr,
-            String billIdStr, boolean test) {
-        String[] data = new String[] {merchantId, sumStr, secretKey, billIdStr};
-        String dataStr = String.join(":", data);
-        String validSign = EncodeUtils.md5(dataStr);
-        if(test) BillingService.LOGGER.info("Sign generation string: "+dataStr+
-                " Valid sign: "+validSign+" Request sign: "+sign);
-        return validSign.equals(sign);
-    }
-
-    private String toString(Map<String, String> map) {
-        StringBuilder sb = new StringBuilder();
-        for(Entry<String, String> ent : map.entrySet()) {
-            sb.append(ent.getKey()).append(" : ").append(ent.getValue());
-            sb.append('\n');
-        }
-        return sb.toString();
+    private boolean checkBillingSign(String sign, ObjectNode body) throws JsonProcessingException {
+        Map<String, JsonNode> sortedMap = new TreeMap<>();
+        body.fields().forEachRemaining(entry->sortedMap.put(entry.getKey(), entry.getValue()));
+        String sortedBody = mapper.writeValueAsString(sortedMap);
+        String calculatedSign = EncodeUtils.hmacSHA256(secretKey, sortedBody);
+        return calculatedSign.equals(sign);
     }
 
 }

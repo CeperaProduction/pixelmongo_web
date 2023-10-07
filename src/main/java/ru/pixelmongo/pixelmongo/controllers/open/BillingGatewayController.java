@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,8 +26,9 @@ public class BillingGatewayController {
     @RequestMapping(value = "/{handler}", method = {RequestMethod.GET, RequestMethod.POST})
     public Object handleWebHook(@PathVariable("handler") String handlerName,
             @RequestParam Map<String, String> allParams, Locale loc,
+            @RequestBody String body,
             HttpServletRequest request, HttpServletResponse response) {
-        return billing.handleWebHook(handlerName, allParams, loc, request, response);
+        return billing.handleWebHook(handlerName, allParams, body, loc, request, response);
     }
 
 }

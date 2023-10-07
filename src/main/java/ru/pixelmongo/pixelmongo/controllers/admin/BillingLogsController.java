@@ -72,7 +72,7 @@ public class BillingLogsController {
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         List<String> billingHandlers = this.billing.getHandlers().stream()
-                .filter(BillingHandler::isEnabled).map(BillingHandler::getName)
+                .map(BillingHandler::getName)
                 .collect(Collectors.toList());
         model.addAttribute("billingHandlers", billingHandlers);
         model.addAttribute("handler", billingHandler);
